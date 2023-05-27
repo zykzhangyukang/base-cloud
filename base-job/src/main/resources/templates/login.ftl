@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  	<#import "common/common.macro.ftl" as netCommon>
+  	<#import "./common/common.macro.ftl" as netCommon>
 	<@netCommon.commonStyle />
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/plugins/iCheck/square/blue.css">
 	<title>${I18n.admin_name}</title>
@@ -15,11 +15,11 @@
 			<div class="login-box-body">
 				<p class="login-box-msg">${I18n.admin_name}</p>
 				<div class="form-group has-feedback">
-	            	<input type="text" name="userName" class="form-control" placeholder="${I18n.login_username_placeholder}"  maxlength="18" >
+	            	<input type="text" name="userName" class="form-control" placeholder="${I18n.login_username_placeholder}" value="admin" maxlength="20" >
 	            	<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 				</div>
 	          	<div class="form-group has-feedback">
-	            	<input type="password" name="password" class="form-control" placeholder="${I18n.login_password_placeholder}"  maxlength="18" >
+	            	<input type="password" name="password" class="form-control" placeholder="${I18n.login_password_placeholder}" value="123456" maxlength="20" >
 	            	<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 	          	</div>
 				<div class="row">

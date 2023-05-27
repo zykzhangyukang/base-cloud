@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class JobApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobApplication.class, args);
+        SpringApplication.run(JobApplication.class, args);
 	}
 
 }

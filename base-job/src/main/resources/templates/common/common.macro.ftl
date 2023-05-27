@@ -34,9 +34,9 @@
 </#macro>
 
 <#macro commonScript>
-	<!-- jQuery -->
+	<!-- jQuery 2.1.4 -->
 	<script src="${request.contextPath}/static/adminlte/bower_components/jquery/jquery.min.js"></script>
-	<!-- Bootstrap -->
+	<!-- Bootstrap 3.3.5 -->
 	<script src="${request.contextPath}/static/adminlte/bower_components/bootstrap/js/bootstrap.min.js"></script>
 	<!-- FastClick -->
 	<script src="${request.contextPath}/static/adminlte/bower_components/fastclick/fastclick.js"></script>
@@ -84,11 +84,11 @@
 					<#-- login user -->
                     <li class="dropdown">
                         <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            ${I18n.system_welcome} ${Request["XXL_JOB_LOGIN_IDENTITY"].username}
+                            欢迎 ${Request["XXL_JOB_LOGIN_IDENTITY"].username}
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li id="updatePwd" ><a href="javascript:">${I18n.change_pwd}</a></li>
+                            <li id="updatePwd" ><a href="javascript:">修改密码</a></li>
                             <li id="logoutBtn" ><a href="javascript:">${I18n.logout_btn}</a></li>
                         </ul>
                     </li>
@@ -103,19 +103,19 @@
 		<div class="modal-dialog ">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" >${I18n.change_pwd}</h4>
+					<h4 class="modal-title" >修改密码</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal form" role="form" >
 						<div class="form-group">
-							<label for="lastname" class="col-sm-2 control-label">${I18n.change_pwd_field_newpwd}<font color="red">*</font></label>
-							<div class="col-sm-10"><input type="text" class="form-control" name="password" placeholder="${I18n.system_please_input} ${I18n.change_pwd_field_newpwd}" maxlength="18" ></div>
+							<label for="lastname" class="col-sm-2 control-label">新密码<font color="red">*</font></label>
+							<div class="col-sm-10"><input type="text" class="form-control" name="password" placeholder="请输入新密码" maxlength="100" ></div>
 						</div>
 						<hr>
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-6">
-								<button type="submit" class="btn btn-primary"  >${I18n.system_save}</button>
-								<button type="button" class="btn btn-default" data-dismiss="modal">${I18n.system_cancel}</button>
+								<button type="submit" class="btn btn-primary"  >保存</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 							</div>
 						</div>
 					</form>
@@ -141,7 +141,7 @@
                     <li class="nav-click <#if pageName == "jobgroup">active</#if>" ><a href="${request.contextPath}/jobgroup"><i class="fa fa-circle-o text-red"></i><span>${I18n.jobgroup_name}</span></a></li>
                     <li class="nav-click <#if pageName == "user">active</#if>" ><a href="${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
 				</#if>
-<#--				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>-->
+				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>
 			</ul>
 		</section>
 		<!-- /.sidebar -->
@@ -230,7 +230,7 @@
         Powered by <b>XXL-JOB</b> ${I18n.admin_version}
 		<div class="pull-right hidden-xs">
             <strong>Copyright &copy; 2015-${.now?string('yyyy')} &nbsp;
-                <a href="https://www.xuxueli.com/" target="_blank" >xuxueli</a>
+                <a href="http://www.xuxueli.com/" target="_blank" >xuxueli</a>
 				&nbsp;
                 <a href="https://github.com/xuxueli/xxl-job" target="_blank" >github</a>
             </strong><!-- All rights reserved. -->

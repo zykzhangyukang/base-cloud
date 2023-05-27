@@ -125,7 +125,7 @@ $(function(){
                 if (data.code == 200) {
                     $('#updatePwdModal').modal('hide');
 
-                    layer.msg( I18n.change_pwd_suc_to_logout );
+                    layer.msg( '修改密码成功，即将注销登陆' );
                     setTimeout(function(){
                         $.post(base_url + "/logout", function(data, status) {
                             if (data.code == 200) {
@@ -133,7 +133,7 @@ $(function(){
                             } else {
                                 layer.open({
                                     icon: '2',
-                                    content: (data.msg|| I18n.logout_fail)
+                                    content: (data.msg||'注销失败')
                                 });
                             }
                         });
@@ -141,7 +141,7 @@ $(function(){
                 } else {
                     layer.open({
                         icon: '2',
-                        content: (data.msg|| I18n.change_pwd + I18n.system_fail )
+                        content: (data.msg||'修改密码失败')
                     });
                 }
             });
