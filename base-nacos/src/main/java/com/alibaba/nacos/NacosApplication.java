@@ -47,8 +47,8 @@ public class NacosApplication {
 		System.setProperty(ConfigConstants.PORT, "8848");
 		System.setProperty(ConfigConstants.STANDALONE_MODE, "true");
 		System.setProperty(ConfigConstants.AUTH_ENABLED, "false");
-		System.setProperty(ConfigConstants.LOG_BASEDIR, System.getProperty("java.io.tmpdir"));
-		System.setProperty(ConfigConstants.LOG_ENABLED, "false");
+		System.setProperty(ConfigConstants.LOG_BASEDIR, "Logs");
+		System.setProperty(ConfigConstants.LOG_ENABLED, "true");
 		return true;
 	}
 
