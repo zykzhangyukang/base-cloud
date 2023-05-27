@@ -28,13 +28,11 @@
                 <version>${i.project.version}</version>
             </dependency>
 
-
             <dependency>
                 <groupId>com.coderman</groupId>
                 <artifactId>base-auth-service</artifactId>
                 <version>${i.project.version}</version>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>

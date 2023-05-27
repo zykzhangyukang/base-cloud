@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>base-nacos</artifactId>
-    <version>1.0.0</version>
+    <version>${i.project.version}</version>
 
     <description>nacos 注册配置中心 </description>
 
@@ -44,5 +44,13 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
