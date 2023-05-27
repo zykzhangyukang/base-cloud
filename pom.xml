@@ -4,21 +4,60 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <modules>
-        <module>base-auth</module>
-        <module>base-gateway</module>
-    </modules>
+    <parent>
+        <groupId>com.coderman</groupId>
+        <artifactId>base-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
     <artifactId>base-cloud</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <parent>
-        <artifactId>base-parent</artifactId>
-        <groupId>com.coderman</groupId>
-        <version>1.0.0</version>
-    </parent>
+    <modules>
+        <module>base-auth</module>
+        <module>base-gateway</module>
+        <module>base-job</module>
+        <module>base-nacos</module>
+    </modules>
 
+    <properties>
+        <base.parent.version>1.0.0</base.parent.version>
+        <spring.cloud.alibaba.version>2.2.0.RELEASE</spring.cloud.alibaba.version>
+        <spring.cloud.version>Hoxton.RELEASE</spring.cloud.version>
+    </properties>
 
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- spring cloud 依赖 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- spring cloud alibaba 依赖 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
