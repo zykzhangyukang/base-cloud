@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/${domain}")
 public class HelloController {
 
-    @Value("${msg}")
+    @Value("${msg:hello}")
     private String msg;
 
     @GetMapping(value = "/get/config")
