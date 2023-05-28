@@ -17,7 +17,7 @@
     </parent>
 
     <artifactId>base-auth</artifactId>
-    <version>1.0.0-DEV-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <dependencyManagement>
         <dependencies>

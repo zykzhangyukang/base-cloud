@@ -19,6 +19,7 @@
         <module>base-gateway</module>
         <module>base-job</module>
         <module>base-nacos</module>
+        <module>base-file</module>
     </modules>
 
     <properties>
