@@ -25,13 +25,13 @@
             <dependency>
                 <groupId>com.coderman</groupId>
                 <artifactId>base-auth-api</artifactId>
-                <version>${i.project.version}</version>
+                <version>${i.cloud.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.coderman</groupId>
                 <artifactId>base-auth-service</artifactId>
-                <version>${i.project.version}</version>
+                <version>${i.cloud.version}</version>
             </dependency>
 
         </dependencies>

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>base-nacos</artifactId>
-    <version>${i.project.version}</version>
+    <version>${i.cloud.version}</version>
 
     <description>nacos 注册配置中心 </description>
 

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>base-job</artifactId>
-    <version>${i.project.version}</version>
+    <version>${i.cloud.version}</version>
 
     <description>xxl job admin 控制台内置方便开发</description>
     <packaging>jar</packaging>

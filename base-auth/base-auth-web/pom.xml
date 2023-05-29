@@ -11,7 +11,7 @@
 
     <packaging>jar</packaging>
     <artifactId>base-auth-web</artifactId>
-    <version>${i.project.version}</version>
+    <version>${i.cloud.version}</version>
 
     <dependencies>
 

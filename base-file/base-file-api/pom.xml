@@ -8,7 +8,7 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>${i.project.version}</version>
+    <version>${i.cloud.version}</version>
 
     <artifactId>base-file-api</artifactId>
 
