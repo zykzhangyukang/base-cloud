@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <packaging>jar</packaging>
     <artifactId>base-auth-web</artifactId>
     <version>${i.project.version}</version>
 

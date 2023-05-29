@@ -1,4 +1,4 @@
-package com.coderman.auth.job;
+package com.coderman.auth.jobhandler;
 
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
@@ -6,17 +6,15 @@ import com.xxl.job.core.handler.annotation.JobHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@JobHandler(value = "helloWordJob")
+@JobHandler(value="demoJobHandler")
 @Component
 @Slf4j
-public class HelloWordJob extends IJobHandler {
+public class DemoJobHandler extends IJobHandler {
 
     @Override
-    public ReturnT<String> execute(String param) {
-
-
-        log.info("HelloWordJob running~~");
-
-        return ReturnT.SUCCESS;
+    public ReturnT<String> execute(String param) throws Exception {
+        log.info("demoJobHandler.........");
+        return SUCCESS;
     }
+
 }
