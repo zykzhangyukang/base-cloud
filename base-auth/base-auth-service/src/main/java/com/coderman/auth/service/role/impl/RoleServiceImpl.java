@@ -32,7 +32,6 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,19 +53,19 @@ public class RoleServiceImpl implements RoleService {
     @Resource
     private RoleDAO roleDAO;
 
-    @Autowired
+    @Resource
     private UserRoleDAO userRoleDAO;
 
-    @Autowired
+    @Resource
     private UserDAO userDAO;
 
-    @Autowired
+    @Resource
     private FuncService funcService;
 
-    @Autowired
+    @Resource
     private FuncDAO funcDAO;
 
-    @Autowired
+    @Resource
     private RoleFuncDAO roleFuncDAO;
 
 

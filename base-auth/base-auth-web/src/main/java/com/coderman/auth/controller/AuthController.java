@@ -51,7 +51,7 @@ public class AuthController {
      * @param project 项目名称
      * @return
      */
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取权限系统所有资源信息api")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "资源信息api")
     @PostMapping(value = "/api/resc/all")
     public ResultVO<Map<String, Set<Integer>>> sysRescAll(@RequestParam(value = "domain") String project,
                                                           @RequestParam(value = "authSecurityCode", required = false) String authSecurityCode) {
@@ -59,7 +59,7 @@ public class AuthController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取用户信息api")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户信息api")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "AuthUserVO", value = {"realName", "rescIdList", "deptCode", "username", "token"}),
@@ -76,6 +76,7 @@ public class AuthController {
      *
      * @return
      */
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "常量列表")
     @GetMapping(value = "/const/all")
     public ResultVO<Map<String, List<ConstItems>>> constAll() {
 

@@ -29,11 +29,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,16 +48,16 @@ import java.util.stream.Collectors;
 @Service
 public class FuncServiceImpl implements FuncService {
 
-    @Autowired
+    @Resource
     private FuncDAO funcDAO;
 
-    @Autowired
+    @Resource
     private RoleFuncDAO roleFuncDAO;
 
-    @Autowired
+    @Resource
     private FuncRescDAO funcRescDAO;
 
-    @Autowired
+    @Resource
     private UserRoleDAO userRoleDAO;
 
 

@@ -12,10 +12,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping(value = "/${domain}/func")
 public class FuncController {
 
-    @Autowired
+    @Resource
     private FuncService funcService;
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取功能树")
