@@ -1,0 +1,131 @@
+// 导航栏
+.el-menu.el-menu--horizontal {
+  border: none;
+}
+
+// 表格
+.vxe-header--column {
+  background-color: #f2f2f2;
+}
+
+// 取消padding表格
+.table__no_padding {
+  .vxe-table--header {
+    .vxe-cell {
+      padding: 2px 2px;
+    }
+  }
+  .vxe-table--body {
+    .vxe-cell {
+      padding: 2px 2px;
+    }
+  }
+  .el-table__cell {
+    padding: 2px 0;
+    > .cell {
+      padding: 0 2px;
+    }
+  }
+}
+
+// element的确认框
+.el-message-box__wrapper {
+  z-index: 6000 !important;
+}
+
+// 链接跳转样式
+// .el-link--inner {
+//   text-decoration: underline !important;
+//   font-size: 12px;
+// }
+
+//element ui
+.todo_calendar {
+  .el-calendar-table__row {
+    // height: 400px;
+    td {
+      height: 100%;
+
+      .el-calendar-day {
+        height: 100%;
+      }
+    }
+  }
+}
+
+// 修改表格头部颜色
+.el-table {
+  thead {
+    color: #444;
+  }
+}
+.el-table td,
+.el-table th {
+  padding: 5px 0;
+}
+
+.el-card {
+  margin-bottom: 8px;
+}
+
+.el-input__inner {
+  padding: 0 0.6em;
+}
+
+.el-menu-item {
+  padding: 0 10px;
+}
+
+.el-submenu__title {
+  padding: 0 10px;
+}
+
+.el-input--mini {
+  font-size: 12px;
+
+  .el-input__inner {
+    line-height: 28px;
+    height: 28px;
+  }
+}
+
+.el-card__header {
+  padding: 10px 18px;
+  color: #606266;
+  background: #f8f8f8 !important;
+  font-weight: 700;
+}
+
+.el-card__body {
+  padding: 10px;
+}
+
+.el-tabs__content {
+  padding: 0 !important;
+}
+
+.el-divider--horizontal {
+  margin: 4px 0;
+}
+
+.el-upload-dragger {
+  height: 120px !important;
+
+  .el-icon-upload {
+    margin: 5px;
+  }
+}
+
+.el-popover {
+  padding: 6px !important;
+}
+
+// vxe
+.vxe-input--panel.type--date {
+  z-index: 2003 !important;
+}
+
+// 将element 的input框的 计数优化
+.el-input__count {
+  line-height: 12px !important;
+}

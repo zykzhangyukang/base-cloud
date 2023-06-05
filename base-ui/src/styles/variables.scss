@@ -1,0 +1,6 @@
+// 头部高度
+$headerHeight: 60px;
+// 主体高度
+$mainHeight: calc(100% - #{$headerHeight});
+// TagView高度
+$tagViewHeight: 34px;

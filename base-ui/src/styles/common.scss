@@ -1,0 +1,211 @@
+/*************************************************start******************************************************/
+//一些简单的class工具标签
+.pt-10 {
+  padding-top: 10px;
+}
+/*************************************************end*********************************************************/
+
+// 页面的内容元素
+// 页面内容元素
+.page-container {
+  height: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+.page-container-item .el-card__body {
+  // 筛选栏
+  .vxe-form {
+    margin-bottom: 8px;
+    .vxe-select,
+    .vxe-input {
+      width: 100%;
+    }
+  }
+  .vxe-form--item {
+    padding: 0.1em 0.4em 0.1em 0;
+    width: 340px;
+  }
+  .vxe-form--item.search-btn {
+    width: auto;
+  }
+
+  // 操作按钮
+  .tool-btn {
+    margin: 0 2px;
+  }
+  .table-footer {
+    height: 42px;
+    position: relative;
+    overflow: hidden;
+
+    .pagination-container {
+      padding-top: 10px;
+      float: right;
+    }
+  }
+}
+// 页面元素
+.page-container-item:first-child .el-card__body,
+.filer_container .el-card__body {
+  padding-bottom: 0;
+  // .vxe-form--item:last-child {
+  // 	width: auto;
+  // }
+}
+
+// 使得输入框光标居中
+.text-align-input {
+  .el-input__inner {
+    text-align: center;
+  }
+}
+
+// 表单搜索框虚线
+.custom-search-form-border {
+  border: 1px dashed green;
+  padding: 0 10px;
+  .vxe-form--item {
+    padding: 0.1em 0.4em 0.1em 0;
+  }
+}
+
+.header-cell {
+  padding: 0 !important;
+  .vxe-cell {
+    padding: 0 !important;
+  }
+  .vxe-table--render-default .vxe-table--body-wrapper,
+  .vxe-table--render-default .vxe-table--footer-wrapper {
+    height: 0 !important;
+  }
+  .vxe-table--empty-placeholder {
+    display: none !important;
+  }
+  .vxe-header--gutter {
+    display: none !important;
+  }
+}
+.expand--row {
+  line-height: 24px;
+  padding: 8px;
+}
+// 横向居中
+.custom-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.custom-x-center {
+  display: flex;
+  justify-content: center;
+}
+.custom-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.vxe-modal--box {
+  z-index: 2;
+}
+.row-expand-cover .el-table__expand-icon {
+  visibility: hidden;
+}
+
+// 表格按钮
+.table-value {
+  margin: 2px 0;
+}
+/* 清除浮动 */
+.clearfix::after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: ' ';
+  clear: both;
+  height: 0;
+}
+/* 文字限制行 */
+.one-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.two-line {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.three-line {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.four-line {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+// 文字颜色
+.color-yellow {
+  color: #ebb563 !important;
+}
+.color-red {
+  color: #f56c6c !important;
+}
+.color-blue {
+  color: #409eff !important;
+}
+.color-green {
+  color: #67c23a !important;
+}
+.color-999 {
+  color: #999;
+}
+
+// SKU样式
+.sku-style {
+  color: #f39c12;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+// 表头固定
+.header-fixed {
+  position: fixed !important;
+  z-index: 11 !important;
+  top: 94px;
+  width: calc(100% - 44px);
+  overflow-x: auto !important;
+}
+.toolbar-fixed {
+  position: fixed !important;
+  z-index: 11 !important;
+  top: 94px;
+  background-color: #fff;
+  width: calc(100% - 50px);
+}
+.header-null {
+  display: none !important;
+}
+
+.page-form-item {
+  margin-bottom: 20px;
+  padding: 0 10px;
+  background-color: #fff;
+}
+
+.yellow-span {
+  font-size: 12px;
+  color: #f8f8ff;
+  background: #daa520;
+}
+.blue-span {
+  background-color: blue;
+  color: white;
+}

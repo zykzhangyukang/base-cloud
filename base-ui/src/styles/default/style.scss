@@ -1,0 +1,15 @@
+.week-mode {
+  overflow: hidden;
+  filter: invert(80%);
+}
+
+.split-right {
+  &:not(:last-child) {
+    border-right: 1px solid rgba(98, 98, 98, 0.2);
+  }
+}
+.disabled {
+  cursor: not-allowed;
+  //color: @disabled-color;
+  pointer-events: none;
+}
