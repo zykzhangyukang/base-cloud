@@ -36,14 +36,14 @@ public class UserController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户登录")
     @PostMapping(value = "/login")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_STRING,value = "用户名"),
-            @ApiImplicitParam(name = "password", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_STRING,value = "密码"),
+            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING,value = "用户名"),
+            @ApiImplicitParam(name = "password", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING,value = "密码"),
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserLoginRespVO",value = {"realName", "deptCode", "username", "token","deptName"})
     })
-    public ResultVO<UserLoginRespVO> login(@ApiIgnore UserLoginDTO userLoginDTO) {
+    public ResultVO<UserLoginRespVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         return this.userService.login(userLoginDTO);
     }
 
@@ -69,12 +69,12 @@ public class UserController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取用户信息")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "获取用户信息")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","roles","funcKeys","menus"}),
     })
-    @GetMapping(value = "/info")
+    @PostMapping(value = "/info")
     public ResultVO<UserPermissionVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME,required = false) String token){
         return this.userService.info(token);
     }

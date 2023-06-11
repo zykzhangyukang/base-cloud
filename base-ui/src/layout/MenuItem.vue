@@ -1,6 +1,6 @@
 <template>
   <a-menu-item @click="toPage(item)">
-    <component v-if='item.icon' :is="item.icon" ></component><span>{{item.title}}</span>
+    <component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.funcName}}</span>
   </a-menu-item>
 </template>
 <script>
@@ -22,8 +22,8 @@ export default {
   },
   methods:{
     toPage(item){
-      if(item.key){
-        this.$router.push({name: item.name});
+      if(item.funcKey){
+        this.$router.push({name: item.funcKey});
       }else {
         this.$message.error("访问的页面不存在！");
       }

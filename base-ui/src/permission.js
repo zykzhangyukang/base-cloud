@@ -1,4 +1,4 @@
-import router, {routes} from './routers'
+import router from './routers'
 import ruleRoutes from './routers/ruleRoutes'
 import store from './store'
 import { message } from 'ant-design-vue'
@@ -10,9 +10,9 @@ function recursionRouter(userRouter = [], allRouter = []) {
   const realRouters = [];
   allRouter.forEach((v, i) => {
     userRouter.forEach((item, index) => {
-      if (v.name === item.name) {
-        if (item.subs && item.subs.length > 0) {
-          v.children = recursionRouter(item.subs, v.children);
+      if (v.name === item.funcKey) {
+        if (item.subs && item.children.length > 0) {
+          v.children = recursionRouter(item.children, v.children);
         }
         store.setMenuItem(item, 'key', v.path);
         realRouters.push(v);
@@ -59,8 +59,8 @@ router.beforeEach(async(to, from, next) => {
         try {
           let res = await sendUserInfo()
           if($iscode(res)){
-            store.setUserInfo(res.data);
-            let routesMap = getRoutes(res.data.menus)
+            store.setUserInfo(res.result);
+            let routesMap = getRoutes(res.result.menus)
             router.$addRoutes(routesMap);
             next({ ...to, replace: true });
           }else {

@@ -47,11 +47,11 @@
 @import '../style/views/login.less';
 </style>
 <script>
-import store from '../store';
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
-import {sendLogin} from '../api/login';
-import {$iscode} from '../utils/app';
-export default {
+  import store from '../store';
+  import {LockOutlined, UserOutlined} from '@ant-design/icons-vue'
+  import {sendLogin} from '@/api/login';
+
+  export default {
   name: 'Login',
   components: {
     UserOutlined,
@@ -61,8 +61,8 @@ export default {
     return {
       loading: false,
       formModel: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       }
     }
   },
@@ -70,22 +70,21 @@ export default {
     setUserToken(token) {
       store.setUserToken(token);
     },
-    async handleSubmitFinish() {
+    handleSubmitFinish() {
       this.loading = true;
-      try{
-        let res = await sendLogin({
-          username: this.formModel.username,
-          password: this.formModel.password,
-        });
+      sendLogin({
+                    username: this.formModel.username,
+                    password: this.formModel.password,
+                  }).then(res=>{
+
+        this.$message.success("登入成功")
+        localStorage.setItem('token', res.result.token);
+        this.setUserToken(res.result.token);
+        this.$router.push('/');
+
+      }).finally(e=>{
         this.loading = false;
-        if($iscode(res,true)){
-          localStorage.setItem('token', res.data.token);
-          this.setUserToken(res.data.token);
-          this.$router.push('/');
-        };
-      }catch(e){
-        this.loading = false;
-      };
+      })
     },
     handleSubmitFinishFailed(errorInfo){
       console.log('Failed:', errorInfo);

@@ -9,12 +9,11 @@ export const setRouter = (router,route)=>{
 export const getRouter = ()=>{
   return __router;
 }
-export const $iscode = (res, isShowSussessMessage)=>{
-  if(res.code === 1){
-    isShowSussessMessage && message.success(res.message);
+export const $iscode = (res, isShowMessage)=>{
+  if(res.code === 200){
     return true;
   } else {
-    isShowSussessMessage && message.error(res.message);
+    isShowMessage && message.error(res.msg);
     return false;
   }
 }
