@@ -453,13 +453,15 @@
       f.func_name,
       f.func_key,
       f.func_icon,
-      f.parent_id
+      f.parent_id,
+      f.func_sort
       from auth_user u
       inner join auth_user_role ur on u.user_id = ur.user_id
       inner join auth_role r on ur.role_id = r.role_id
       inner join auth_role_func rf on r.role_id = rf.role_id
       inner join auth_func f on rf.func_id = f.func_id
       where u.user_id = #{userId} and f.func_type = 'dir' and f.func_key !='root'
+       order by f.func_sort asc
   </select>
 
   <select id="selectFuncKeyListByUserId" resultType="string">

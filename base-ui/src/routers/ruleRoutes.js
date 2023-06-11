@@ -1,7 +1,13 @@
 const Auth =() =>  import(/* webpackChunkName: 'login' */'../views/Auth');
 const Sync =() =>  import(/* webpackChunkName: 'login' */'../views/Sync');
+const Index = () => import(/* webpackChunkName: 'login' */'../views/Index.vue');
 
 const routes = [
+    {
+        path: '/index',
+        name: 'Index',
+        component: Index
+    },
     {
         path: '/auth',
         name: 'Auth',
