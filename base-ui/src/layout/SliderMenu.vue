@@ -11,10 +11,10 @@
     <template v-for='(item) of menu'>
       <sub-menu 
         v-if="item.children && item.children.length > 0 && item.children.filter(v=>v.hidden).length!==item.children.length"
-        :key='item.funcName'
+        :key='item.funcKey'
         :item='item'
       ></sub-menu>
-      <menu-item v-else :key='item.funcName' :item='item'></menu-item>
+      <menu-item v-else :key='item.funcKey' :item='item'></menu-item>
     </template>
   </a-menu>
 </template>
@@ -33,26 +33,26 @@ const getPathName = (pathname, menuTree,parentName) => {
           return parentName;
         }else {
           if (parentName) {
-            return menuTree[i].funcName
+            return menuTree[i].funcKey
           } else {
             return {
               opens: [],
-              select: menuTree[i].funcName
+              select: menuTree[i].funcKey
             };
           }
         }
       }
     }
     if (menuTree[i].children && menuTree[i].children.length>0) {
-      let str = getPathName(pathname, menuTree[i].children , menuTree[i].funcName);
+      let str = getPathName(pathname, menuTree[i].children , menuTree[i].funcKey);
       if(typeof str == 'object'){
         return {
-          opens: str.opens.concat([menuTree[i].funcName]),
+          opens: str.opens.concat([menuTree[i].funcKey]),
           select: str.select
         };
       } else if (typeof str == 'string') {
         return {
-          opens: [menuTree[i].funcName],
+          opens: [menuTree[i].funcKey],
           select: str
         };
       }

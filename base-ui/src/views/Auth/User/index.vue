@@ -1,5 +1,5 @@
 <template>
-    <a-layout class='index animated fadeIn'>
+    <a-layout class='user-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
                 <a-button type="danger">添加</a-button>

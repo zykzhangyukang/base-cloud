@@ -58,22 +58,14 @@ router.beforeEach(async(to, from, next) => {
       if (userInfo && userInfo.menus && userInfo.menus.length>0) {
         next()
       } else {
-        try {
-          let res = await sendUserInfo()
-          if($iscode(res)){
-            store.setUserInfo(res.result);
-            let routesMap = getRoutes(res.result.menus)
-            router.$addRoutes(routesMap);
-            next({ ...to, replace: true });
-          }else {
-            localStorage.clear();
-            next(`/login`)
-          }
-        } catch (error) {
-          message.error(error || 'Has Error')
-          localStorage.clear();
-          next(`/login`)
-        }
+        // 获取用户信息
+        let res = await sendUserInfo();
+        store.setUserInfo(res.result);
+
+        // 动态路由获取
+        let routesMap = getRoutes(res.result.menus)
+        router.$addRoutes(routesMap);
+        next({ ...to, replace: true });
       }
     }
   } else {

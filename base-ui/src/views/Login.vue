@@ -77,10 +77,13 @@
                     password: this.formModel.password,
                   }).then(res=>{
 
-        this.$message.success("登入成功")
         localStorage.setItem('token', res.result.token);
         this.setUserToken(res.result.token);
-        this.$router.push('/');
+
+        this.$router.push('/').then(()=>{
+
+          this.$message.success("登录成功!");
+        })
 
       }).finally(e=>{
         this.loading = false;

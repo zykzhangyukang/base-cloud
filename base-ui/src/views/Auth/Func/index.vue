@@ -1,5 +1,5 @@
 <template>
-    <a-layout class='index animated fadeIn'>
+    <a-layout class='func-container'>
         <a-card>
             <h1>功能管理</h1>
         </a-card>

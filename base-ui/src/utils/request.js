@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {message} from 'ant-design-vue'
+import router from "@/routers";
 
 const service = axios.create({
     baseURL: 'http://192.168.2.247:8080',
@@ -24,19 +25,23 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
 
-
-
         if (response.data.code === 200) {
 
             return Promise.resolve(response.data);
 
-        }else if (response.data.code === 401){
+        }else if (response.data.code === 403){
 
             message.error('您没有访问该资源的权限');
 
         }else if(response.data.code === 401){
 
-            message.error('请先登录再服务访问该资源');
+
+            localStorage.clear();
+
+            router.push('/login').then(()=>{
+
+                message.error('用户会话已过期');
+            })
 
         }else if(response.data.code === 404){
 
@@ -51,8 +56,6 @@ service.interceptors.response.use(
         return Promise.reject(response.data);
     },
     (error) => {
-
-        // console.log(error)
 
         if (error.response.data.statusCode === 400) {
 

@@ -1,5 +1,5 @@
 <template>
-    <a-layout class='index animated fadeIn'>
+    <a-layout class='role-container'>
         <a-card>
             <h1>角色管理</h1>
         </a-card>

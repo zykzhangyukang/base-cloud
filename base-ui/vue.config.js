@@ -29,7 +29,7 @@ module.exports = {
         lessOptions: {
           modifyVars: {
             // antd-design-vue 库样式定制
-            // 'primary-color': '#7546c9',
+            'primary-color': '#2d8cf0',
           },
           javascriptEnabled: true,
         },
