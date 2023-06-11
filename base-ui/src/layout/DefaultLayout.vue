@@ -40,14 +40,14 @@ const getBreadCrumb = (pathname,menuTree,crumb) => {
     // 符合则添加到面包屑中
     if(pathname.search(menuTree[i].key) === 0){
       if(menuTree[i].key === pathname){
-        crumb.unshift(menuTree[i].title);
+        crumb.unshift(menuTree[i].funcName);
         return true;
       }else {
         // 不符合如果有子集继续查找
-        if(menuTree[i].subs && menuTree[i].subs.length>0){
-          let state = getBreadCrumb(pathname, menuTree[i].subs, crumb);
+        if(menuTree[i].children && menuTree[i].children.length>0){
+          let state = getBreadCrumb(pathname, menuTree[i].children, crumb);
           if(state){
-            crumb.unshift(menuTree[i].title);
+            crumb.unshift(menuTree[i].funcName);
             return true;
           }
         }

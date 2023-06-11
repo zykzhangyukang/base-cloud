@@ -22,8 +22,8 @@ export default {
   },
   methods:{
     toPage(item){
-      if(item.funcKey){
-        this.$router.push({name: item.funcKey});
+      if(item.key){
+        this.$router.push(item.key);
       }else {
         this.$message.error("访问的页面不存在！");
       }

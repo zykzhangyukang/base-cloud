@@ -6,10 +6,10 @@
     <template v-for='(itemChild) of item.children'>
       <sub-menu 
         v-if="itemChild.children && itemChild.children.length > 0 && itemChild.children.filter(v=>v.hidden).length!==itemChild.subs.length"
-        :key='itemChild.funcKey'
+        :key='itemChild.funcName'
         :item='itemChild'
       ></sub-menu>
-      <menu-item v-else :key='itemChild.funcKey' :item='itemChild'></menu-item>
+      <menu-item v-else :key='itemChild.funcName' :item='itemChild'></menu-item>
     </template>
   </a-sub-menu>
 </template>

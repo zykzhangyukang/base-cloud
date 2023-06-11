@@ -15,7 +15,7 @@
       <div>
         <a-dropdown>
           <template v-slot:overlay>
-            <a-menu :style="{ width: '20rem' }">
+            <a-menu :style="{ width: '15rem' }">
               <a-menu-item-group title='用户设置'>
                   <a-menu-divider />
                   <a-menu-item>

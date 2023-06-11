@@ -6,15 +6,20 @@ import {sendUserInfo} from './api/login';
 import {$iscode} from './utils/app';
 
 // 后端返回的菜单来匹配对应的路由
-function recursionRouter(userRouter = [], allRouter = []) {
+function recursionRouter(userRouter = [], allRouter = [],parentPath="") {
   const realRouters = [];
   allRouter.forEach((v, i) => {
     userRouter.forEach((item, index) => {
       if (v.name === item.funcKey) {
-        if (item.subs && item.children.length > 0) {
-          v.children = recursionRouter(item.children, v.children);
+        if (item.children && item.children.length > 0) {
+          v.children = recursionRouter(item.children, v.children,v.path);
         }
-        store.setMenuItem(item, 'key', v.path);
+        let pth = v.path;
+        if(parentPath){
+          pth = parentPath+'/'+v.path;
+        }
+
+        store.setMenuItem(item, 'key', pth);
         realRouters.push(v);
       }
     })
@@ -37,10 +42,7 @@ const getMenuList = (menuTree,menuList) => {
 };
 //获取当前用户所有可以访问的路由权限
 const getRoutes = (menuTree) => {
-  return recursionRouter(menuTree,ruleRoutes)
-  // let menuList = [];
-  // getMenuList(menuTree,menuList);
-  // return menuList;
+  return recursionRouter(menuTree,ruleRoutes,"")
 };
 const whiteList = ['/login'] // no redirect whitelist
 

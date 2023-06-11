@@ -33,26 +33,26 @@ const getPathName = (pathname, menuTree,parentName) => {
           return parentName;
         }else {
           if (parentName) {
-            return menuTree[i].name
+            return menuTree[i].funcName
           } else {
             return {
               opens: [],
-              select: menuTree[i].name
+              select: menuTree[i].funcName
             };
           }
         }
       }
     }
-    if (menuTree[i].subs && menuTree[i].subs.length>0) {
-      let str = getPathName(pathname, menuTree[i].subs , menuTree[i].name);
+    if (menuTree[i].children && menuTree[i].children.length>0) {
+      let str = getPathName(pathname, menuTree[i].children , menuTree[i].funcName);
       if(typeof str == 'object'){
         return {
-          opens: str.opens.concat([menuTree[i].name]),
+          opens: str.opens.concat([menuTree[i].funcName]),
           select: str.select
         };
       } else if (typeof str == 'string') {
         return {
-          opens: [menuTree[i].name],
+          opens: [menuTree[i].funcName],
           select: str
         };
       }
@@ -103,6 +103,7 @@ export default {
     },
     '$route'(newVal){
       let d = getPathName(this.$route.path, this.menu);
+      console.log(d)
       if(d) {
         this.openKeys = d.opens;
         this.selectedKeys = [d.select];
@@ -118,6 +119,7 @@ export default {
   },
   methods: {
     onOpenChange(v) {
+      console.log(v)
       if (v.length === 0 || v.length === 1) {
           this.openKeys = v;
           return void 0;
