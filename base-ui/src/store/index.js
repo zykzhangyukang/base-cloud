@@ -1,43 +1,35 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-    constant: [],
-    editableTabsValue: '/sync/index',
-    editableTabs:[
-      {
-        title: '系统首页',
-        name: '/sync/index',
-        icon: 'el-icon-s-home',
-        close: false,
-      }
-    ]
+import {reactive} from 'vue';
+export default {
+  state: reactive({
+    app: {
+      menuToggle: false,
+    },
+    user: {
+      token:'',
+      info: {}
+    }
+  }),
+  setMenuItem(item, key, value) {
+    item[key] = value;
   },
-  mutations: {
-    saveAllConst(state, allConst) {
-      state.constant =allConst;
-    },
-    addTabs(state,tab){
-      if(state.editableTabs.findIndex(e=>e.name===tab.path)===-1){
-        state.editableTabs.push({
-          title:tab.name,
-          name:tab.path,
-          icon: tab.icon,
-          close:true
-        })
-      }
-      state.editableTabsValue=tab.path
-    },
-
-    changeTabs(state,name){
-      state.editableTabsValue = name;
+  setAppLanguage(language) {
+    this.state.app.language = language;
+  },
+  setAppMenuToggle(toggle) {
+    this.state.app.menuToggle = toggle;
+  },
+  setUserToken(token){
+    if(token){
+      this.state.user.token = token;
+    }else{
+      this.state.user.token = ''
     }
   },
-  actions: {
+  setUserInfo(info) {
+    if(info){
+      this.state.user.info = info;
+    }else{
+      this.state.user.info = {}
+    }
   },
-  modules: {
-  }
-})
+}

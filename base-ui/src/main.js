@@ -1,32 +1,12 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.less';
+import 'animate.css'
+import './style/base.less'
+import './style/App.less'
 import App from './App.vue'
-import router from './router'
+import router from './routers'
+import './permission' 
 import store from './store'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import sendAjax from './util/networking'
-import VueResource from 'vue-resource'
-import interceptors from "./util/interceptors";
-
-import VueHighlightJS from 'vue-highlightjs'
-import 'highlight.js/styles/stackoverflow-dark.css'
-
-
-Vue.use(VueHighlightJS)
-
-
-
-Vue.prototype.$sendAjax = sendAjax;
-
-Vue.config.productionTip = false
-Vue.use(ElementUI);
-Vue.use(VueResource);
-
-interceptors(store,router);
-
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
-
+createApp(App).use(Antd).use(store).use(router).mount('#root')
+ 
