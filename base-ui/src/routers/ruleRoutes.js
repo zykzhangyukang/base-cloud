@@ -1,5 +1,5 @@
-const Auth =() =>  import(/* webpackChunkName: 'login' */'../views/Auth');
-const Sync =() =>  import(/* webpackChunkName: 'login' */'../views/Sync');
+const Auth =() =>  import(/* webpackChunkName: 'login' */'../views/auth');
+const Sync =() =>  import(/* webpackChunkName: 'login' */'../views/sync');
 
 const routes = [
     {
@@ -10,22 +10,22 @@ const routes = [
             {
                 path: 'user',
                 name: 'AuthUser',
-                component: () => import('../views/Auth/User/index'),
+                component: () => import('../views/auth/user/index'),
             },
             {
                 path: 'role',
                 name: 'AuthRole',
-                component: () => import('../views/Auth/Role/index')
+                component: () => import('../views/auth/role/index')
             },
             {
                 path: 'resc',
                 name: 'AuthResc',
-                component: () => import('../views/Auth/Resc/index')
+                component: () => import('../views/auth/resc/index')
             },
             {
                 path: 'func',
                 name: 'AuthFunc',
-                component: () => import('../views/Auth/Func/index')
+                component: () => import('../views/auth/func/index')
             }
         ]
     },
@@ -37,22 +37,22 @@ const routes = [
             {
                 path: 'plan',
                 name: 'SyncPlan',
-                component: () => import('../views/Sync/Plan/index'),
+                component: () => import('../views/sync/plan/index'),
             },
             {
                 path: 'result',
                 name: 'SyncResult',
-                component: () => import('../views/Sync/Result/index')
+                component: () => import('../views/sync/result/index')
             },
             {
                 path: 'msg',
                 name: 'SyncMsg',
-                component: () => import('../views/Sync/Msg/index')
+                component: () => import('../views/sync/msg/index')
             },
             {
                 path: 'callback',
                 name: 'SyncCallback',
-                component: () => import('../views/Sync/Callback/index')
+                component: () => import('../views/sync/callback/index')
             }
         ]
     },

@@ -49,7 +49,7 @@
 <script>
   import store from '../store';
   import {LockOutlined, UserOutlined} from '@ant-design/icons-vue'
-  import {sendLogin} from '@/api/login';
+  import { authUserLogin } from '@/api/auth';
 
   export default {
   name: 'Login',
@@ -72,7 +72,7 @@
     },
     handleSubmitFinish() {
       this.loading = true;
-      sendLogin({
+      authUserLogin({
                     username: this.formModel.username,
                     password: this.formModel.password,
                   }).then(res=>{

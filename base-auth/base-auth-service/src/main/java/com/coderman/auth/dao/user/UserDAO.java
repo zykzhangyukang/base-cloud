@@ -4,12 +4,21 @@ import com.coderman.auth.model.user.UserExample;
 import com.coderman.auth.model.user.UserModel;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.mybatis.dao.BaseDAO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UserDAO extends BaseDAO<UserModel, UserExample> {
 
+
+    /**
+     * 根据用户名查询用户信息
+     *
+     * @param username
+     * @return
+     */
+    UserVO selectByUsernameVos(@Param(value = "username") String username);
 
 
     /**

@@ -28,7 +28,7 @@ import AppAside from './AppAside'
 import AppHeader from './AppHeader'
 import AppFooter from './AppFooter'
 import avatar from '@/assets/images/user.png'
-import {sendLogout} from '@/api/login';
+import { authUserLogout } from '@/api/auth';
 import {$iscode} from '@/utils/app';
 import { nextTick } from 'vue'
 //返回除了首页之外的面包屑
@@ -84,9 +84,6 @@ export default {
       avatar,
     }
   },
-  created() {
-    console.log(store.state.user.info.menus)
-  },
   mounted() {
   },
   methods: {
@@ -97,16 +94,9 @@ export default {
       store.setAppLanguage(lang);
     },
     async loginOut() {
-      try{
-        let res = await sendLogout();
-        if($iscode(res,true)){
-          localStorage.clear();
-          await this.$router.push('/login');
-        }
-      }catch(e){
-        localStorage.clear();
-        await this.$router.push('/login');
-      }
+      await authUserLogout();
+      localStorage.clear();
+      await this.$router.push('/login');
     }
   },
   watch: {

@@ -299,4 +299,11 @@
     </where>
   </sql>
 
+  <select id="selectByUsernameVos" resultMap="pageBaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from auth_user
+    where username = #{username}
+  </select>
+
 </mapper>

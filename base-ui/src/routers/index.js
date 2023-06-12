@@ -1,8 +1,8 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import DefaultLayout from '../layout/DefaultLayout.vue';
 // 基础页面
-const View404 = () => import(/* webpackChunkName: '404' */'../views/Error/404.vue');
-const View500 = () => import(/* webpackChunkName: '500' */'../views/Error/500.vue');
+const View404 = () => import(/* webpackChunkName: '404' */'../views/error/404.vue');
+const View500 = () => import(/* webpackChunkName: '500' */'../views/error/500.vue');
 const Login = () => import(/* webpackChunkName: 'login' */'../views/Login.vue');
 const Index = () => import(/* webpackChunkName: 'login' */'../views/Index.vue');
 

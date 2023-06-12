@@ -5,6 +5,8 @@ import com.coderman.api.exception.BusinessException;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.user.UserLoginDTO;
+import com.coderman.auth.dto.user.UserPageDTO;
+import com.coderman.auth.dto.user.UserSaveDTO;
 import com.coderman.auth.vo.user.*;
 
 import java.util.List;
@@ -18,20 +20,17 @@ public interface UserService {
     /**
      * 用户列表
      *
-     * @param currentPage
-     * @param pageSize
-     * @param queryVO
      * @return
      */
-    ResultVO<PageVO<List<UserVO>>> page(Integer currentPage, Integer pageSize, UserVO queryVO);
+    ResultVO<PageVO<List<UserVO>>> page(UserPageDTO queryVO);
 
     /**
      * 用户新增
      *
-     * @param userVO
+     * @param userSaveDTO
      * @return
      */
-    ResultVO<Void> save(UserVO userVO);
+    ResultVO<Void> save(UserSaveDTO userSaveDTO);
 
 
     /**

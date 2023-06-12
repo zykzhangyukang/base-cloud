@@ -7,7 +7,8 @@ export default {
     user: {
       token:'',
       info: {}
-    }
+    },
+    constList: [],
   }),
   setMenuItem(item, key, value) {
     item[key] = value;
@@ -32,4 +33,11 @@ export default {
       this.state.user.info = {}
     }
   },
+  setConstList(list){
+    if(list){
+      this.state.constList = list;
+    }else {
+      this.state.constList = [];
+    }
+  }
 }

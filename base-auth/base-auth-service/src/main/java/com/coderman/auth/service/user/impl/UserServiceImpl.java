@@ -1,6 +1,5 @@
 package com.coderman.auth.service.user.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.exception.BusinessException;
@@ -14,6 +13,8 @@ import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
 import com.coderman.auth.dto.user.UserLoginDTO;
+import com.coderman.auth.dto.user.UserPageDTO;
+import com.coderman.auth.dto.user.UserSaveDTO;
 import com.coderman.auth.model.dept.DeptExample;
 import com.coderman.auth.model.dept.DeptModel;
 import com.coderman.auth.model.role.RoleModel;
@@ -34,10 +35,8 @@ import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
 import com.coderman.service.util.MD5Utils;
 import com.coderman.service.util.UUIDUtils;
-import com.xxl.job.core.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -124,17 +123,17 @@ public class UserServiceImpl extends BaseService implements UserService {
             authUserVO.setRealName(dbUser.getRealName());
             authUserVO.setRescIdList(getUserRescIds(dbUser.getUsername()));
 
-            if(StringUtils.isNotBlank(authUserVO.getDeptCode())){
+            if (StringUtils.isNotBlank(authUserVO.getDeptCode())) {
 
                 ResultVO<DeptModel> deptModelResultVO = this.deptService.selectDeptByCode(authUserVO.getDeptCode());
-                if(Objects.nonNull(deptModelResultVO.getResult())){
+                if (Objects.nonNull(deptModelResultVO.getResult())) {
                     authUserVO.setDeptName(deptModelResultVO.getResult().getDeptName());
                 }
             }
 
             this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + token, authUserVO, 12 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
 
-            return ResultUtil.getSuccess(UserLoginRespVO.class,  this.convertUserLoginRespVO(authUserVO));
+            return ResultUtil.getSuccess(UserLoginRespVO.class, this.convertUserLoginRespVO(authUserVO));
 
         } catch (Exception e) {
 
@@ -147,7 +146,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     private UserLoginRespVO convertUserLoginRespVO(AuthUserVO authUserVO) {
 
-        Assert.notNull(authUserVO,"authUserVO is null");
+        Assert.notNull(authUserVO, "authUserVO is null");
 
         UserLoginRespVO userLoginRespVO = new UserLoginRespVO();
         userLoginRespVO.setUsername(authUserVO.getUsername());
@@ -179,23 +178,23 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "获取用户信息")
     public ResultVO<UserPermissionVO> info(@LogErrorParam String token) {
 
-        if(StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401,"访问令牌为空");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空");
         }
 
         AuthUserVO authUserVO = this.getUserByToken(token).getResult();
 
         if (null == authUserVO) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401,"用户会话已过期");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期");
         }
 
         UserVO userVO = this.selectUserByName(authUserVO.getUsername()).getResult();
 
-        if(null == userVO){
+        if (null == userVO) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401,"用户会话已过期");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期");
         }
 
         UserPermissionVO userPermissionVO = new UserPermissionVO();
@@ -243,8 +242,8 @@ public class UserServiceImpl extends BaseService implements UserService {
     public ResultVO<String> refreshLogin(String token) {
 
         AuthUserVO oldAuthUserVO = this.getUserByToken(token).getResult();
-        if(oldAuthUserVO == null){
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401,"会话已过期,请重新登入");
+        if (oldAuthUserVO == null) {
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "会话已过期,请重新登入");
         }
 
         // 删除当前token
@@ -259,7 +258,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         String newToken = UUIDUtils.getPrimaryValue();
 
         if (!first.isPresent()) {
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401,"用户信息不存在");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户信息不存在");
         }
 
         UserModel dbUser = first.get();
@@ -271,23 +270,34 @@ public class UserServiceImpl extends BaseService implements UserService {
         newAuthUserVo.setToken(newToken);
         newAuthUserVo.setRescIdList(getUserRescIds(dbUser.getUsername()));
         this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + newToken, newAuthUserVo, 12 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
-        return ResultUtil.getSuccess(String.class,newToken);
+        return ResultUtil.getSuccess(String.class, newToken);
     }
 
 
     /**
      * 用户列表
      *
-     * @param currentPage
-     * @param pageSize
      * @param queryVO
      * @return
      */
     @Override
-    @LogError(value = "用户列表")
-    public ResultVO<PageVO<List<UserVO>>> page(Integer currentPage, Integer pageSize, UserVO queryVO) {
+    @LogError(value = "查询用户列表")
+    public ResultVO<PageVO<List<UserVO>>> page(@LogErrorParam UserPageDTO queryVO) {
 
         Map<String, Object> conditionMap = new HashMap<>();
+
+        Integer pageSize = queryVO.getPageSize();
+        Integer currentPage = queryVO.getCurrentPage();
+
+        if (Objects.isNull(currentPage)) {
+
+            currentPage = 1;
+        }
+
+        if (Objects.isNull(pageSize)) {
+
+            pageSize = 20;
+        }
 
         if (StringUtils.isNotBlank(queryVO.getUsername())) {
             conditionMap.put("username", queryVO.getUsername());
@@ -305,7 +315,6 @@ public class UserServiceImpl extends BaseService implements UserService {
             conditionMap.put("deptCode", queryVO.getDeptCode());
         }
 
-
         PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
 
         // 总条数
@@ -320,18 +329,22 @@ public class UserServiceImpl extends BaseService implements UserService {
     /**
      * 用户创建
      *
-     * @param userVO
+     * @param userSaveDTO
      * @return
      */
     @Override
     @LogError(value = "新增用户信息")
-    public ResultVO<Void> save(UserVO userVO) {
+    public ResultVO<Void> save(@LogErrorParam UserSaveDTO userSaveDTO) {
 
-        String username = userVO.getUsername();
-        String realName = userVO.getRealName();
-        String password = userVO.getPassword();
+        String username = userSaveDTO.getUsername();
+        String realName = userSaveDTO.getRealName();
+        String password = userSaveDTO.getPassword();
+        Integer userStatus = userSaveDTO.getUserStatus();
+        String deptCode = userSaveDTO.getDeptCode();
+        Date currentDate = new Date();
 
         if (StringUtils.isBlank(username)) {
+
             return ResultUtil.getWarn("用户账号不能为空");
         }
 
@@ -341,51 +354,47 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         if (StringUtils.isBlank(realName)) {
+
             return ResultUtil.getWarn("真实姓名不能为空!");
         }
 
         if (StringUtils.length(realName) < 2 || StringUtils.length(realName) > 10) {
+
             return ResultUtil.getWarn("真实姓名不能为空!");
         }
 
         if (StringUtils.isBlank(password)) {
+
             return ResultUtil.getWarn("登入密码不能为空!");
         }
 
         if (StringUtils.length(password) < 5 || StringUtils.length(username) > 15) {
+
             return ResultUtil.getWarn("登入密码5-15个字符!");
         }
 
-        if (userVO.getUserStatus() == null) {
+        if (Objects.isNull(userStatus)) {
+
             return ResultUtil.getWarn("用户状态不能为空!");
         }
 
-        if (userVO.getDeptCode() == null) {
-            return ResultUtil.getWarn("用户部门不能为空!");
-        }
-
-
         // 校验是否存在账号
-        UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(username);
-        long count = this.userDAO.countByExample(example);
+        UserVO userVO = this.userDAO.selectByUsernameVos(username);
 
-        if (count > 0) {
-            throw new BusinessException("存在重复的账号【" + username + "】!");
+        if (Objects.nonNull(userVO)) {
+
+            return ResultUtil.getFail("存在重复的账号【" + username + "】!");
         }
-
 
         // 新增用户
-        Date now = new Date();
-
         UserModel insertModel = new UserModel();
         insertModel.setUsername(username);
         insertModel.setRealName(realName);
         insertModel.setPassword(MD5Utils.md5Hex(password.getBytes()));
-        insertModel.setCreateTime(now);
-        insertModel.setUpdateTime(now);
-        insertModel.setUserStatus(userVO.getUserStatus());
-        insertModel.setDeptCode(userVO.getDeptCode());
+        insertModel.setCreateTime(currentDate);
+        insertModel.setUpdateTime(currentDate);
+        insertModel.setUserStatus(userStatus);
+        insertModel.setDeptCode(deptCode);
 
         this.userDAO.insert(insertModel);
 
@@ -403,12 +412,12 @@ public class UserServiceImpl extends BaseService implements UserService {
     public ResultVO<Void> delete(Integer userId) {
 
         UserModel dbUserModel = this.userDAO.selectByPrimaryKey(userId);
-        if(dbUserModel == null){
+        if (dbUserModel == null) {
 
             return ResultUtil.getFail("用户信息不存在");
         }
 
-        if(dbUserModel.getUserStatus().equals(AuthConstant.USER_STATUS_ENABLE)){
+        if (dbUserModel.getUserStatus().equals(AuthConstant.USER_STATUS_ENABLE)) {
 
             return ResultUtil.getFail("启用状态的用户不能删除");
         }

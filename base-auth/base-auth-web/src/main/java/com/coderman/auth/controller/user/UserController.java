@@ -4,6 +4,8 @@ import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.user.UserLoginDTO;
+import com.coderman.auth.dto.user.UserPageDTO;
+import com.coderman.auth.dto.user.UserSaveDTO;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.user.*;
 import com.coderman.swagger.annotation.ApiReturnParam;
@@ -132,16 +134,24 @@ public class UserController {
         return this.userService.select(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户列表")
-    @GetMapping(value = "/page")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "查询用户列表")
+    @PostMapping(value = "/page")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "currentPage", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_INT, value = "当前页码", required = true, defaultValue = "1"),
+            @ApiImplicitParam(name = "pageSize", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_INT, value = "每页显示条数", required = true, defaultValue = "20"),
+            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "用户名"),
+            @ApiImplicitParam(name = "realName", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "真实姓名"),
+            @ApiImplicitParam(name = "deptCode", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "部门编号"),
+            @ApiImplicitParam(name = "userStatus", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "用户状态"),
+    })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO", value = {"dataList", "pageRow", "totalRow", "currPage", "totalPage"}),
-            @ApiReturnParam(name = "UserVO", value = {"realName", "deptName", "password", "userStatus", "createTime", "updateTime", "userId", "deptCode", "username"})
+            @ApiReturnParam(name = "UserVO", value = {"realName", "deptName", "password", "userStatus", "createTime",
+                    "updateTime", "userId", "deptCode", "username"})
     })
-    public ResultVO<PageVO<List<UserVO>>> page(@RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
-                                               @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, UserVO queryVO) {
-        return this.userService.page(currentPage, pageSize, queryVO);
+    public ResultVO<PageVO<List<UserVO>>> page(@RequestBody UserPageDTO queryVO) {
+        return this.userService.page(queryVO);
     }
 
 
@@ -184,20 +194,20 @@ public class UserController {
         return this.userService.updateDisable(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "保存用户")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "新增用户")
     @PostMapping(value = "/save")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "用户账号", required = true),
-            @ApiImplicitParam(name = "password", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "密码", required = true),
-            @ApiImplicitParam(name = "realName", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "用户姓名", required = true),
-            @ApiImplicitParam(name = "userStatus", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户状态", required = true),
-            @ApiImplicitParam(name = "deptCode", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "部门编号", required = true)
+            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "用户账号", required = true),
+            @ApiImplicitParam(name = "password", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "密码", required = true),
+            @ApiImplicitParam(name = "realName", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "用户姓名", required = true),
+            @ApiImplicitParam(name = "userStatus", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_INT, value = "用户状态", required = true),
+            @ApiImplicitParam(name = "deptCode", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "部门编号")
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> save(@ApiIgnore UserVO userVO) {
-        return this.userService.save(userVO);
+    public ResultVO<Void> save(@RequestBody UserSaveDTO userSaveDTO) {
+        return this.userService.save(userSaveDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "删除用户")

@@ -1,9 +1,7 @@
 import router from './routers'
 import ruleRoutes from './routers/ruleRoutes'
 import store from './store'
-import { message } from 'ant-design-vue'
-import {sendUserInfo} from './api/login';
-import {$iscode} from './utils/app';
+import {authUserInfo,authConstAll} from './api/auth';
 
 // 后端返回的菜单来匹配对应的路由
 function recursionRouter(userRouter = [], allRouter = [],parentPath="") {
@@ -27,19 +25,7 @@ function recursionRouter(userRouter = [], allRouter = [],parentPath="") {
   return realRouters;
 }
 
-//转化当前用户导航菜单权限tree为一维数组list
-const getMenuList = (menuTree,menuList) => {
-  for(let i = 0; i< menuTree.length; i++){
-    let route = ruleRoutes.find(r => r.name === menuTree[i].name);
-    if (route) {
-      menuList.push(route);
-      store.setMenuItem(menuTree[i], 'key', route.path);
-    }
-    if(menuTree[i].subs && menuTree[i].subs.length>0){
-      getMenuList(menuTree[i].subs,menuList);
-    }
-  }
-};
+
 //获取当前用户所有可以访问的路由权限
 const getRoutes = (menuTree) => {
   return recursionRouter(menuTree,ruleRoutes,"")
@@ -58,13 +44,17 @@ router.beforeEach(async(to, from, next) => {
       if (userInfo && userInfo.menus && userInfo.menus.length>0) {
         next()
       } else {
-        // 获取用户信息
-        let res = await sendUserInfo();
-        store.setUserInfo(res.result);
 
-        // 动态路由获取
+        // 获取用户信息
+        let res = await authUserInfo();
+        store.setUserInfo(res.result);
         let routesMap = getRoutes(res.result.menus)
         router.$addRoutes(routesMap);
+
+        // 常量数据获取
+        let constList = await authConstAll();
+        store.setConstList(constList);
+
         next({ ...to, replace: true });
       }
     }

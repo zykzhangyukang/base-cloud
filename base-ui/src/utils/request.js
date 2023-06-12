@@ -2,7 +2,7 @@ import axios from 'axios'
 import {message} from 'ant-design-vue'
 import router from "@/routers";
 
-const service = axios.create({
+const http = axios.create({
     baseURL: 'http://127.0.0.1:8989',
     timeout: 10000,
     headers:{
@@ -12,7 +12,7 @@ const service = axios.create({
     }
 })
 
-service.interceptors.request.use(
+http.interceptors.request.use(
     config => {
         config.headers['Authorization'] = localStorage.getItem('token') || '';
         return config
@@ -22,7 +22,7 @@ service.interceptors.request.use(
     }
 )
 
-service.interceptors.response.use(
+http.interceptors.response.use(
     (response) => {
 
         if (response.data.code === 200) {
@@ -84,7 +84,4 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-let ser = (config)=>{
-    return service(config);
-}
-export default ser
+export default http

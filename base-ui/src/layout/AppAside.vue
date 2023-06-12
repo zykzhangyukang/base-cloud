@@ -1,7 +1,7 @@
 <template>
   <a-layout-sider :theme='theme' class='aside' :collapsed='menuToggle'>
     <div class="logo">
-      <a rel='noopener noreferrer' href='/'>
+      <a href='/'>
         <img :src="Logo" alt=""/> 
         <span v-if='!menuToggle' class='ml15'>微服务系统</span>
       </a>
