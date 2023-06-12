@@ -3,7 +3,7 @@ import {message} from 'ant-design-vue'
 import router from "@/routers";
 
 const service = axios.create({
-    baseURL: 'http://192.168.2.247:8080',
+    baseURL: 'http://127.0.0.1:8989',
     timeout: 10000,
     headers:{
         post:{

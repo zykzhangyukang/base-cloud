@@ -4,6 +4,7 @@ import DefaultLayout from '../layout/DefaultLayout.vue';
 const View404 = () => import(/* webpackChunkName: '404' */'../views/Error/404.vue');
 const View500 = () => import(/* webpackChunkName: '500' */'../views/Error/500.vue');
 const Login = () => import(/* webpackChunkName: 'login' */'../views/Login.vue');
+const Index = () => import(/* webpackChunkName: 'login' */'../views/Index.vue');
 
 export const routes = [
     {
@@ -11,7 +12,13 @@ export const routes = [
         redirect: '/index',
         name: 'Root',
         component: DefaultLayout,
-        children: []
+        children: [
+            {
+                path: '/index',
+                name: 'Index',
+                component: Index
+            }
+        ]
     },
     {
         path: '/404',
