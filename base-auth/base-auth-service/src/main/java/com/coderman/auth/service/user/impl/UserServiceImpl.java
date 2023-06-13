@@ -365,17 +365,22 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (StringUtils.isBlank(password)) {
 
-            return ResultUtil.getWarn("登入密码不能为空!");
+            return ResultUtil.getWarn("登入密码不能为空！");
         }
 
         if (StringUtils.length(password) < 5 || StringUtils.length(username) > 15) {
 
-            return ResultUtil.getWarn("登入密码5-15个字符!");
+            return ResultUtil.getWarn("登入密码5-15个字符！");
+        }
+
+        if(StringUtils.isBlank(deptCode)){
+
+            return ResultUtil.getWarn("所属部门不能为空！");
         }
 
         if (Objects.isNull(userStatus)) {
 
-            return ResultUtil.getWarn("用户状态不能为空!");
+            return ResultUtil.getWarn("用户状态不能为空！");
         }
 
         // 校验是否存在账号
@@ -536,7 +541,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         if (AuthConstant.USER_STATUS_ENABLE.equals(db.getUserStatus())) {
-            return ResultUtil.getWarn("用户已经是启用状态");
+            return ResultUtil.getWarn("已经是启用状态！");
         }
 
 

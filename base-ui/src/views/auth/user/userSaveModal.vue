@@ -17,8 +17,10 @@
             <a-form-item label="真实姓名">
                 <a-input v-model:value="form.realName" />
             </a-form-item>
-            <a-form-item label="部门编号">
-                <a-input v-model:value="form.deptCode" />
+            <a-form-item label="所属部门">
+                <a-select v-model:value="form.deptCode" placeholder="请选择部门" :style="{width:'200px'}">
+                    <a-select-option v-for="item in deptList" :value="item.deptCode" :key="item.deptId">{{item.deptName}}</a-select-option>
+                </a-select>
             </a-form-item>
             <a-form-item label="状态">
                 <a-radio-group v-model:value="form.userStatus">
@@ -30,19 +32,20 @@
 </template>
 
 <script>
-    import {authUserSave} from "@/api/auth"
+    import {authDeptList, authUserSave} from "@/api/auth"
     import {authDomain, formatConst, getConst} from "@/utils/constant";
     export default {
         name: "userSaveModal.vue",
         data() {
             return {
+                deptList: [],
                 visible: false,
                 labelCol: { span: 4 },
                 wrapperCol: { span: 18 },
                 form:{
                     username: '',
                     password: '',
-                    userStatus: 1,
+                    userStatus: 0,
                     deptCode: ''
                 },
             }
@@ -56,18 +59,22 @@
             }
         },
         methods:{
-            async handleOk(){
-                const res = await authUserSave(this.form);
-                this.$message.success("新增用户成功");
-                this.handleClose();
-                this.$emit('success')
+            handleOk() {
+                authUserSave(this.form).then(res => {
+                    this.$message.success("新增用户成功");
+                    this.handleClose();
+                    this.$emit('success')
+                })
             },
             handleClose(){
                 this.visible = false
-                this.form = this.$options.data().form
+                this.form = this.$options.data().form;
             },
             open(){
                 this.visible = true;
+                authDeptList().then(res=>{
+                    this.deptList=res.result;
+                })
             }
         }
     }

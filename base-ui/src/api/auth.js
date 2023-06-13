@@ -1,5 +1,37 @@
 import http from '../utils/request'
 
+/**
+ * 启用用户
+ */
+export const authUserEnable = (id) => {
+    return http({
+        url: `/auth/user/${id}/enable`,
+        method: 'put',
+    })
+}
+
+
+/**
+ * 禁用用户
+ */
+export const authUserDisable = (id) => {
+    return http({
+        url: `/auth/user/${id}/disable`,
+        method: 'put',
+    })
+}
+
+
+/**
+ * 删除用户
+ */
+export const authDeptList = param => {
+    return http({
+        url: `/auth/dept/list`,
+        method: 'get',
+        param
+    })
+}
 
 /**
  * 删除用户

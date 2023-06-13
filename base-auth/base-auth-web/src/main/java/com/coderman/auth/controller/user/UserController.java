@@ -7,7 +7,10 @@ import com.coderman.auth.dto.user.UserLoginDTO;
 import com.coderman.auth.dto.user.UserPageDTO;
 import com.coderman.auth.dto.user.UserSaveDTO;
 import com.coderman.auth.service.user.UserService;
-import com.coderman.auth.vo.user.*;
+import com.coderman.auth.vo.user.UserAssignVO;
+import com.coderman.auth.vo.user.UserLoginRespVO;
+import com.coderman.auth.vo.user.UserPermissionVO;
+import com.coderman.auth.vo.user.UserVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -166,27 +169,27 @@ public class UserController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "启用用户")
-    @GetMapping(value = "/update/enable")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "启用用户")
+    @PutMapping(value = "/{userId}/enable")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
+            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> updateEnable(@RequestParam(value = "userId") Integer userId) {
+    public ResultVO<Void> updateEnable(@PathVariable(value = "userId") Integer userId) {
         return this.userService.updateEnable(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "禁用用户")
-    @GetMapping(value = "/update/disable")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "禁用用户")
+    @PutMapping(value = "/{userId}/disable")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
+            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> disable(@RequestParam(value = "userId") Integer userId) {
+    public ResultVO<Void> disable(@PathVariable(value = "userId") Integer userId) {
         return this.userService.updateDisable(userId);
     }
 

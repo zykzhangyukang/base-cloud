@@ -15,6 +15,11 @@
                 <a-form-item label="真实姓名" name='realName'>
                     <a-input v-model:value="searchParams.realName" :style="{width:'180px'}" placeholder="真实姓名输入框"></a-input>
                 </a-form-item>
+                <a-form-item label="所属部门">
+                    <a-select v-model:value="searchParams.userStatus" :style="{width:'180px'}" placeholder="用户状态">
+                        <a-select-option v-for="item in userStatusG" :value="item.code" :key="item.code">{{userStatusGName[item.code]}}</a-select-option>
+                    </a-select>
+                </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange">搜索</a-button>
                 </a-form-item>
@@ -49,18 +54,21 @@
                                  @confirm="handleDelete(record.userId)">
                              <a-button size="small" type="link">删除</a-button>
                           </a-popconfirm>
-                        <a-dropdown>
-                            <a class="ant-dropdown-link" @click.prevent>
+                        <a-dropdown :trigger="['click']">
+                            <a class="ant-dropdown-link" @click.prevent >
                               设置
                               <DownOutlined />
                             </a>
                             <template #overlay>
                               <a-menu>
                                 <a-menu-item>
-                                  <a href="javascript:;">启用</a>
+                                  <a href="javascript:;" @click="handleEnable(record.userId)">启用账号</a>
                                 </a-menu-item>
                                 <a-menu-item>
-                                  <a href="javascript:;">禁用</a>
+                                  <a href="javascript:;" @click="handleDisable(record.userId)">禁用账号</a>
+                                </a-menu-item>
+                                     <a-menu-item>
+                                  <a href="javascript:;">修改密码</a>
                                 </a-menu-item>
                               </a-menu>
                             </template>
@@ -87,10 +95,13 @@
 </template>
 
 <script>
-    import {authUserDelete, authUserPage} from "@/api/auth"
+    import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
     import userSaveModal from '@/views/auth/user/userSaveModal'
     import {authDomain, formatConst, getConst} from "@/utils/constant";
     import { DownOutlined } from '@ant-design/icons-vue';
+    import { Modal } from 'ant-design-vue';
+    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+    import { createVNode, defineComponent } from 'vue';
     export default {
         name: "User.vue",
         components: {
@@ -164,6 +175,38 @@
             }
         },
         methods:{
+            handleEnable(userId){
+                const _this = this;
+                Modal.confirm({
+                    title:  '是否启用用户?',
+                    cancelText: "取消",
+                    okText: "确定",
+                    icon: () => createVNode(ExclamationCircleOutlined),
+                    onOk() {
+                        authUserEnable(userId).then(res=>{
+                            _this.$message.success("启用用户成功！");
+                            _this.queryData();
+                        })
+                    },
+                    onCancel() {},
+                })
+            },
+            handleDisable(userId){
+                const _this = this;
+                Modal.confirm({
+                        title:  '是否锁定用户?',
+                        cancelText: "取消",
+                        okText: "确定",
+                        icon: () => createVNode(ExclamationCircleOutlined),
+                        onOk() {
+                            authUserDisable(userId).then(res=>{
+                                _this.$message.success("锁定用户成功！");
+                                _this.queryData();
+                            })
+                        },
+                        onCancel() {},
+            })
+            },
             handleEdit(id){
 
             },
