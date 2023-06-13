@@ -27,7 +27,6 @@
         data() {
             return {
                 confirmLoading:  false,
-                deptList: [],
                 visible: false,
                 labelCol: { span: 4 },
                 wrapperCol: { span: 18 },

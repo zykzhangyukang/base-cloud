@@ -70,6 +70,9 @@
                                      <a-menu-item>
                                   <a href="javascript:;" @click="handleUpdatePwd(record.userId)">修改密码</a>
                                 </a-menu-item>
+                                  <a-menu-item>
+                                  <a href="javascript:;" @click="handleAssignRole(record.userId)">分配角色</a>
+                                </a-menu-item>
                               </a-menu>
                             </template>
                           </a-dropdown>
@@ -89,9 +92,14 @@
                     @showSizeChange="pageSizeChange">
             </a-pagination>
 
+            <!-- 新增用户 -->
             <user-save-modal  ref="userSaveModal" @success="queryData"></user-save-modal>
+            <!-- 更新用户 -->
             <user-update-modal ref="userUpdateModal" @success="queryData"></user-update-modal>
+            <!-- 更新密码 -->
             <update-pwd ref="updatePwd"></update-pwd>
+            <!-- 用户分配角色 -->
+            <user-assign-role ref="userAssignRole"></user-assign-role>
         </a-card>
     </a-layout>
 </template>
@@ -100,6 +108,7 @@
     import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
     import userSaveModal from '@/views/auth/user/userSaveModal'
     import userUpdateModal from "@/views/auth/user/userUpdateModal";
+    import userAssignRole from "@/views/auth/user/userAssignRole";
     import updatePwd from "@/views/auth/user/updatePwd";
     import {authDomain, formatConst, getConst} from "@/utils/constant";
     import { DownOutlined,ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -111,7 +120,8 @@
             userSaveModal,
             DownOutlined,
             userUpdateModal,
-            updatePwd
+            updatePwd,
+            userAssignRole
         },
         data() {
             return {
@@ -165,7 +175,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: '250px',
+                        width: '200px',
                         slots: { customRender: 'action' },
                     },
                 ],
@@ -198,6 +208,9 @@
             },
             handleUpdatePwd(userId){
                 this.$refs['updatePwd'].open(userId);
+            },
+            handleAssignRole(userId){
+                this.$refs['userAssignRole'].open(userId);
             },
             handleDisable(userId){
                 const _this = this;

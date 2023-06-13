@@ -58,6 +58,28 @@ export const authRolePage = data => {
 /************************************ 用户 *********************************/
 
 /**
+ *  用户分配角色初始化
+ */
+export const authUserAssignUpdate = (data) => {
+    return http({
+        url: `/auth/user/assign/update`,
+        method: 'put',
+        data
+    })
+}
+
+
+/**
+ *  用户分配角色初始化
+ */
+export const authUserAssignInit = (id) => {
+    return http({
+        url: `/auth/user/${id}/assign/init`,
+        method: 'get',
+    })
+}
+
+/**
  * 根据id获取用户信息
  */
 export const authUserUpdatePwd = (data) => {

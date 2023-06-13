@@ -23,4 +23,11 @@ public interface UserRoleDAO extends BaseDAO<UserRoleModel, UserRoleExample> {
      * @param assignedIdList
      */
     void insertBatchByRoleId(@Param(value = "roleId") Integer roleId, @Param(value = "userIds") List<Integer> assignedIdList);
+
+    /**
+     * 根据用户id删除关联关系
+     *
+     * @param userId
+     */
+    void deleteByUserId(@Param(value = "userId") Integer userId);
 }

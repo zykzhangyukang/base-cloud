@@ -95,11 +95,9 @@ public interface UserService {
     /**
      * 用户分配角色
      *
-     * @param userId
-     * @param assignedIdList
      * @return
      */
-    ResultVO<Void> updateAssign(Integer userId, List<Integer> assignedIdList);
+    ResultVO<Void> updateAssign(UserAssignDTO userAssignDTO);
 
     /**
      * 查看用户拥有的角色信息

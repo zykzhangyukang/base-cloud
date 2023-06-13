@@ -603,24 +603,31 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    @Transactional
     @LogError(value = "用户分配角色")
-    public ResultVO<Void> updateAssign(Integer userId, List<Integer> assignedIdList) {
+    public ResultVO<Void> updateAssign(@LogErrorParam UserAssignDTO userAssignDTO) {
+
+        Integer userId = userAssignDTO.getUserId();
+        List<Integer> roleIdList = userAssignDTO.getRoleIdList();
+
+        if (Objects.isNull(userId)) {
+
+            return ResultUtil.getWarn("用户id不能为空！");
+        }
 
         UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
+
         if (userModel == null) {
-            throw new BusinessException("需要分配的用户不存在!");
+
+            return ResultUtil.getWarn("用户不存在！");
         }
 
         // 清空之前的权限
-        UserRoleExample example = new UserRoleExample();
-        example.createCriteria().andUserIdEqualTo(userId);
-        this.userRoleDAO.deleteByExample(example);
+        this.userRoleDAO.deleteByUserId(userId);
 
         // 批量新增
-        if (!CollectionUtils.isEmpty(assignedIdList)) {
+        if (!CollectionUtils.isEmpty(roleIdList)) {
 
-            this.userRoleDAO.insertBatchByUserId(userId, assignedIdList);
+            this.userRoleDAO.insertBatchByUserId(userId, roleIdList);
         }
 
         return ResultUtil.getSuccess();

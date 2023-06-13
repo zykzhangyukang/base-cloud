@@ -95,7 +95,7 @@ public class UserController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户分配初始化")
-    @GetMapping(value = "/role/update/init")
+    @GetMapping(value = "/{userId}/assign/init")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })
@@ -103,22 +103,17 @@ public class UserController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserAssignVO", value = {"assignedIdList", "roleList", "userId"})
     })
-    public ResultVO<UserAssignVO> selectAssignInit(@RequestParam(value = "userId") Integer userId) {
+    public ResultVO<UserAssignVO> selectAssignInit(@PathVariable(value = "userId") Integer userId) {
         return this.userService.selectAssignInit(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户角色分配")
-    @PostMapping(value = "/role/update")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true),
-            @ApiImplicitParam(name = "assignedIdList", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_OBJECT, value = "分配的角色id集合", required = true),
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "用户分配角色")
+    @PutMapping(value = "/assign/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> updateAssign(@RequestParam(value = "userId") Integer userId,
-                                       @RequestParam(value = "assignedIdList") List<Integer> assignedIdList) {
-        return this.userService.updateAssign(userId, assignedIdList);
+    public ResultVO<Void> updateAssign(@RequestBody UserAssignDTO userAssignDTO) {
+        return this.userService.updateAssign(userAssignDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "根据ID获取用户信息")
