@@ -4,9 +4,7 @@ package com.coderman.auth.service.user;
 import com.coderman.api.exception.BusinessException;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.auth.dto.user.UserLoginDTO;
-import com.coderman.auth.dto.user.UserPageDTO;
-import com.coderman.auth.dto.user.UserSaveDTO;
+import com.coderman.auth.dto.user.*;
 import com.coderman.auth.vo.user.*;
 
 import java.util.List;
@@ -44,10 +42,10 @@ public interface UserService {
     /**
      * 更新用户
      *
-     * @param userVO
+     * @param userUpdateDTO
      * @return
      */
-    ResultVO<Void> update(UserVO userVO);
+    ResultVO<Void> update(UserUpdateDTO userUpdateDTO);
 
 
     /**
@@ -56,7 +54,7 @@ public interface UserService {
      * @param userId
      * @return
      */
-    ResultVO<UserVO> select(Integer userId);
+    ResultVO<UserVO> selectUserById(Integer userId);
 
 
     /**
@@ -115,15 +113,13 @@ public interface UserService {
     /**
      * 设置密码
      *
-     * @param password
-     * @param userId
      * @return
      */
-    ResultVO<Void> updatePassword(Integer userId, String password);
+    ResultVO<Void> updatePassword(UserUpdatePwdDTO userUpdatePwdDTO);
 
 
     /**
-     * 用户登入
+     * 用户登录
      *
      * @param userLoginDTO
      * @return
@@ -149,7 +145,7 @@ public interface UserService {
 
 
     /**
-     * 用户注销登入
+     * 用户注销登录
      *
      * @param token 令牌
      * @return
@@ -158,7 +154,7 @@ public interface UserService {
 
 
     /**
-     * 用户刷新登入
+     * 用户刷新登录
      *
      * @return
      */

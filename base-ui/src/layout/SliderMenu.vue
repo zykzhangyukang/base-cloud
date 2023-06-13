@@ -103,7 +103,6 @@ export default {
     },
     '$route'(newVal){
       let d = getPathName(this.$route.path, this.menu);
-      console.log(d)
       if(d) {
         this.openKeys = d.opens;
         this.selectedKeys = [d.select];
@@ -119,7 +118,6 @@ export default {
   },
   methods: {
     onOpenChange(v) {
-      console.log(v)
       if (v.length === 0 || v.length === 1) {
           this.openKeys = v;
           return void 0;

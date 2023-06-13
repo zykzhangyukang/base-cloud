@@ -12,9 +12,7 @@ import com.coderman.auth.dao.dept.DeptDAO;
 import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
-import com.coderman.auth.dto.user.UserLoginDTO;
-import com.coderman.auth.dto.user.UserPageDTO;
-import com.coderman.auth.dto.user.UserSaveDTO;
+import com.coderman.auth.dto.user.*;
 import com.coderman.auth.model.dept.DeptExample;
 import com.coderman.auth.model.dept.DeptModel;
 import com.coderman.auth.model.role.RoleModel;
@@ -81,7 +79,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 
     @Override
-    @LogError(value = "用户登入")
+    @LogError(value = "用户登录")
     public ResultVO<UserLoginRespVO> login(@LogErrorParam UserLoginDTO userLoginDTO) throws BusinessException {
 
         try {
@@ -94,7 +92,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
 
             if (StringUtils.isBlank(password)) {
-                return ResultUtil.getWarn("登入密码不能为空");
+                return ResultUtil.getWarn("登录密码不能为空");
             }
 
             UserExample example = new UserExample();
@@ -137,9 +135,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         } catch (Exception e) {
 
-            logger.error("用户登入失败,username:{},msg:{}", userLoginDTO.getUsername(), e.getMessage(), e);
+            logger.error("用户登录失败,username:{},msg:{}", userLoginDTO.getUsername(), e.getMessage(), e);
 
-            return ResultUtil.getFail("登入失败,请联系技术人员处理.");
+            return ResultUtil.getFail("登录失败,请联系技术人员处理.");
         }
 
     }
@@ -226,7 +224,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    @LogError(value = "用户退出登入")
+    @LogError(value = "用户退出登录")
     public ResultVO<Void> logout(@LogErrorParam String token) {
 
         // 删除token
@@ -238,12 +236,12 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    @LogError(value = "用户刷新登入")
+    @LogError(value = "用户刷新登录")
     public ResultVO<String> refreshLogin(String token) {
 
         AuthUserVO oldAuthUserVO = this.getUserByToken(token).getResult();
         if (oldAuthUserVO == null) {
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "会话已过期,请重新登入");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "会话已过期,请重新登录");
         }
 
         // 删除当前token
@@ -355,22 +353,22 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (StringUtils.isBlank(realName)) {
 
-            return ResultUtil.getWarn("真实姓名不能为空!");
+            return ResultUtil.getWarn("真实姓名不能为空！");
         }
 
         if (StringUtils.length(realName) < 2 || StringUtils.length(realName) > 10) {
 
-            return ResultUtil.getWarn("真实姓名不能为空!");
+            return ResultUtil.getWarn("真实姓名2-10个字符！");
         }
 
         if (StringUtils.isBlank(password)) {
 
-            return ResultUtil.getWarn("登入密码不能为空！");
+            return ResultUtil.getWarn("登录密码不能为空！");
         }
 
-        if (StringUtils.length(password) < 5 || StringUtils.length(username) > 15) {
+        if (StringUtils.length(password) < 5 || StringUtils.length(password) > 15) {
 
-            return ResultUtil.getWarn("登入密码5-15个字符！");
+            return ResultUtil.getWarn("登录密码5-15个字符！");
         }
 
         if(StringUtils.isBlank(deptCode)){
@@ -439,47 +437,40 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     @LogError(value = "更新用户信息")
-    public ResultVO<Void> update(UserVO userVO) {
+    public ResultVO<Void> update(UserUpdateDTO userUpdateDTO) {
 
-        String username = userVO.getUsername();
-        String realName = userVO.getRealName();
+        Integer userId = userUpdateDTO.getUserId();
+        String realName = userUpdateDTO.getRealName();
+        String deptCode = userUpdateDTO.getDeptCode();
+        Integer userStatus = userUpdateDTO.getUserStatus();
 
+        if (StringUtils.isBlank(deptCode)) {
 
-        if (userVO.getDeptCode() == null) {
-            throw new BusinessException("用户部门不能为空!");
+            return ResultUtil.getWarn("所属部门不能为空！");
         }
 
-        if (StringUtils.isBlank(username)) {
-            throw new BusinessException("用户账号不能为空");
-        }
+        if (Objects.isNull(userStatus)) {
 
-        if (userVO.getUserStatus() == null) {
-            throw new BusinessException("用户状态不能为空!");
+            return ResultUtil.getWarn("用户状态不能为空！");
         }
 
         if (StringUtils.isBlank(realName)) {
-            throw new BusinessException("真实姓名不能为空!");
-        }
 
-        if (StringUtils.length(username) < 5 || StringUtils.length(username) > 15) {
-
-            throw new BusinessException("用户账号5-15个字符!");
+            return ResultUtil.getWarn("真实姓名不能为空！");
         }
 
         if (StringUtils.length(realName) < 2 || StringUtils.length(realName) > 10) {
-            throw new BusinessException("真实姓名2-10个字符!");
+
+            return ResultUtil.getWarn("真实姓名2-10个字符！");
         }
 
-
-        UserModel updateModel = new UserModel();
-
-
         // 更新
-        updateModel.setUserId(userVO.getUserId());
+        UserModel updateModel = new UserModel();
+        updateModel.setUserId(userId);
         updateModel.setUpdateTime(new Date());
-        updateModel.setRealName(userVO.getRealName());
-        updateModel.setUserStatus(userVO.getUserStatus());
-        updateModel.setDeptCode(userVO.getDeptCode());
+        updateModel.setRealName(realName);
+        updateModel.setUserStatus(userStatus);
+        updateModel.setDeptCode(deptCode);
 
         this.userDAO.updateByPrimaryKeySelective(updateModel);
         return ResultUtil.getSuccess();
@@ -487,15 +478,22 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     @LogError(value = "获取用户信息")
-    public ResultVO<UserVO> select(Integer userId) {
+    public ResultVO<UserVO> selectUserById(Integer userId) {
+
+        if(Objects.isNull(userId)){
+
+            return ResultUtil.getWarn("用户id不能为空！");
+        }
+
         UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
         if (null == userModel) {
-            throw new BusinessException("用户不存在!");
+
+            return ResultUtil.getWarn("用户不存在！");
         }
 
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(userModel, userVO);
-        userVO.setPassword(null); // 移除敏感信息
+        userVO.setPassword(null);
         return ResultUtil.getSuccess(UserVO.class, userVO);
     }
 
@@ -639,13 +637,38 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public ResultVO<Void> updatePassword(Integer userId, String password) {
+    @LogError(value = "用户更新密码")
+    public ResultVO<Void> updatePassword(UserUpdatePwdDTO userUpdatePwdDTO) {
 
-        UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
-        if (userModel == null) {
-            throw new BusinessException("用户不存在!");
+        Integer userId = userUpdatePwdDTO.getUserId();
+        String password = userUpdatePwdDTO.getPassword();
+
+        if(Objects.isNull(userId)){
+
+            return ResultUtil.getWarn("用户id不能为空！");
         }
 
+        if (StringUtils.isBlank(password)) {
+
+            return ResultUtil.getWarn("登录密码不能为空！");
+        }
+
+        if (StringUtils.isBlank(password)) {
+
+            return ResultUtil.getWarn("登录密码不能为空！");
+        }
+
+        if (StringUtils.length(password) < 5 || StringUtils.length(password) > 15) {
+
+            return ResultUtil.getWarn("登录密码5-15个字符！");
+        }
+
+        UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
+
+        if (userModel == null) {
+
+            return ResultUtil.getWarn("用户不存在！");
+        }
 
         UserModel record = new UserModel();
         record.setUserId(userId);

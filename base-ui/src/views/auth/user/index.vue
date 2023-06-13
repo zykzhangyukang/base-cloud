@@ -46,7 +46,7 @@
 
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small" type="link" @click="handleEdit(record.userId)">编辑</a-button>
+                        <a-button size="small" type="link" @click="handleUpdate(record.userId)">编辑</a-button>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
@@ -68,7 +68,7 @@
                                   <a href="javascript:;" @click="handleDisable(record.userId)">禁用账号</a>
                                 </a-menu-item>
                                      <a-menu-item>
-                                  <a href="javascript:;">修改密码</a>
+                                  <a href="javascript:;" @click="handleUpdatePwd(record.userId)">修改密码</a>
                                 </a-menu-item>
                               </a-menu>
                             </template>
@@ -90,6 +90,8 @@
             </a-pagination>
 
             <user-save-modal  ref="userSaveModal" @success="queryData"></user-save-modal>
+            <user-update-modal ref="userUpdateModal" @success="queryData"></user-update-modal>
+            <update-pwd ref="updatePwd"></update-pwd>
         </a-card>
     </a-layout>
 </template>
@@ -97,16 +99,19 @@
 <script>
     import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
     import userSaveModal from '@/views/auth/user/userSaveModal'
+    import userUpdateModal from "@/views/auth/user/userUpdateModal";
+    import updatePwd from "@/views/auth/user/updatePwd";
     import {authDomain, formatConst, getConst} from "@/utils/constant";
-    import { DownOutlined } from '@ant-design/icons-vue';
+    import { DownOutlined,ExclamationCircleOutlined } from '@ant-design/icons-vue';
     import { Modal } from 'ant-design-vue';
-    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
     import { createVNode, defineComponent } from 'vue';
     export default {
         name: "User.vue",
         components: {
             userSaveModal,
             DownOutlined,
+            userUpdateModal,
+            updatePwd
         },
         data() {
             return {
@@ -191,6 +196,9 @@
                     onCancel() {},
                 })
             },
+            handleUpdatePwd(userId){
+                this.$refs['updatePwd'].open(userId);
+            },
             handleDisable(userId){
                 const _this = this;
                 Modal.confirm({
@@ -207,8 +215,8 @@
                         onCancel() {},
             })
             },
-            handleEdit(id){
-
+            handleUpdate(id){
+                this.$refs['userUpdateModal'].open(id);
             },
             handleDelete(id){
                 authUserDelete(id).then(e=>{

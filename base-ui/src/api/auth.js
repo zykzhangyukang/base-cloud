@@ -1,6 +1,41 @@
 import http from '../utils/request'
 
 /**
+ * 根据id获取用户信息
+ */
+export const authUserUpdatePwd = (data) => {
+    return http({
+        url: `/auth/user/update/password`,
+        method: 'put',
+        data
+    })
+}
+
+
+/**
+ * 根据id获取用户信息
+ */
+export const authUserUpdate = (data) => {
+    return http({
+        url: `/auth/user/update`,
+        method: 'put',
+        data
+    })
+}
+
+
+
+/**
+ * 根据id获取用户信息
+ */
+export const authUserSelectById = (id) => {
+    return http({
+        url: `/auth/user/${id}`,
+        method: 'get',
+    })
+}
+
+/**
  * 启用用户
  */
 export const authUserEnable = (id) => {

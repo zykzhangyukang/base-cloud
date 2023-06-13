@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * 当前登入用户信息
+ * 当前登录用户信息
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -32,7 +32,7 @@ public class AuthUserVO extends BaseModel {
     @ApiModelProperty(value = "真实名称")
     private String realName;
 
-    @ApiModelProperty(value = "登入token")
+    @ApiModelProperty(value = "登录token")
     private String token;
 
     @ApiModelProperty(value = "会话过期时间")
