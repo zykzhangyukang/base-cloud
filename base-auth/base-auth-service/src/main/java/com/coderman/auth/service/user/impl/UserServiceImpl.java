@@ -282,7 +282,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "查询用户列表")
     public ResultVO<PageVO<List<UserVO>>> page(@LogErrorParam UserPageDTO queryVO) {
 
-        Map<String, Object> conditionMap = new HashMap<>();
+        Map<String, Object> conditionMap = new HashMap<>(4);
 
         Integer pageSize = queryVO.getPageSize();
         Integer currentPage = queryVO.getCurrentPage();
@@ -318,8 +318,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         // 总条数
         Long count = this.userDAO.countPage(conditionMap);
 
-        // 分页
-        List<UserVO> userVOList = this.userDAO.selectPage(conditionMap);
+        List<UserVO> userVOList =  new ArrayList<>();
+
+        if(count >0){
+
+            userVOList   = this.userDAO.selectPage(conditionMap);
+        }
+
 
         return ResultUtil.getSuccessPage(UserVO.class, PageUtil.getPageVO(count, userVOList, currentPage, pageSize));
     }
@@ -420,7 +425,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             return ResultUtil.getFail("用户信息不存在！");
         }
 
-        if (dbUserModel.getUserStatus().equals(AuthConstant.USER_STATUS_ENABLE)) {
+        if (AuthConstant.USER_STATUS_ENABLE.equals(dbUserModel.getUserStatus())) {
 
             return ResultUtil.getFail("启用状态的用户不能删除！");
         }

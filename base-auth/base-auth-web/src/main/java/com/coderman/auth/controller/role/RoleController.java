@@ -2,6 +2,9 @@ package com.coderman.auth.controller.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.role.RolePageDTO;
+import com.coderman.auth.dto.role.RoleSaveDTO;
+import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
@@ -109,77 +112,59 @@ public class RoleController {
     }
 
 
-
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "角色列表")
-    @GetMapping(value = "/page")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "currentPage",paramType = SwaggerConstant.PARAM_FORM,value = "当前页",dataType = SwaggerConstant.DATA_INT,required = true),
-            @ApiImplicitParam(name = "pageSize",paramType = SwaggerConstant.PARAM_FORM,value = "每页大小",dataType = SwaggerConstant.DATA_INT,required = true),
-            @ApiImplicitParam(name = "roleName",paramType = SwaggerConstant.PARAM_FORM,value = "角色名称",dataType = SwaggerConstant.DATA_STRING),
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色列表")
+    @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"dataList",  "pageRow", "totalRow", "currPage", "totalPage"}),
             @ApiReturnParam(name = "RoleVO",value = {"roleDesc", "createTime", "roleId", "roleName", "updateTime", "userNameList"})
     })
-    public ResultVO<PageVO<List<RoleVO>>> page(@RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
-                                               @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize,
-                                               @ApiIgnore RoleVO queryVO) {
-        return this.roleService.page(currentPage, pageSize,queryVO);
+    public ResultVO<PageVO<List<RoleVO>>> page(@RequestBody RolePageDTO rolePageDTO) {
+        return this.roleService.page(rolePageDTO);
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "保存角色")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleName",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "角色名称",required = true),
-            @ApiImplicitParam(name = "roleDesc",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "角色描述",required = true)
-    })
-    @ApiReturnParams({
-            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "新增角色")
     @PostMapping(value = "/save")
-    public ResultVO<Void> save(@ApiIgnore RoleVO roleVO) {
-        return this.roleService.save(roleVO);
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
+    })
+    public ResultVO<Void> save(@RequestBody RoleSaveDTO roleSaveDTO) {
+        return this.roleService.save(roleSaveDTO);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "更新角色")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "更新角色")
+    @PutMapping(value = "/update")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
+    })
+    public ResultVO<Void> update(@RequestBody RoleUpdateDTO roleUpdateDTO) {
+        return this.roleService.update(roleUpdateDTO);
+    }
+
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "删除角色")
+    @DeleteMapping(value = "/delete/{roleId}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true),
-            @ApiImplicitParam(name = "roleName",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "角色名称",required = true),
-            @ApiImplicitParam(name = "roleDesc",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "角色描述",required = true)
+            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    @PostMapping(value = "/update")
-    public ResultVO<Void> update(@ApiIgnore RoleVO roleVO) {
-        return this.roleService.update(roleVO);
-    }
-
-
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "删除角色")
-    @GetMapping(value = "/delete")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
-    })
-    @ApiReturnParams({
-            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
-    })
-    public ResultVO<Void> delete(@RequestParam(value = "roleId") Integer roleId) {
+    public ResultVO<Void> delete(@PathVariable(value = "roleId") Integer roleId) {
         return this.roleService.delete(roleId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取角色")
-    @GetMapping(value = "/select")
+    @GetMapping(value = "/{roleId}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
+            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "RoleVO",value = {"roleName","roleDesc","roleId"})
     })
-    public ResultVO<RoleVO> select(@RequestParam(value = "roleId") Integer roleId) {
-        return this.roleService.select(roleId);
+    public ResultVO<RoleVO> selectRoleById(@PathVariable(value = "roleId") Integer roleId) {
+        return this.roleService.selectRoleById(roleId);
     }
 
 

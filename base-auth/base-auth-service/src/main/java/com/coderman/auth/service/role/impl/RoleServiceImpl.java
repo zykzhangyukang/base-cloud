@@ -1,6 +1,7 @@
 package com.coderman.auth.service.role.impl;
 
 import com.coderman.api.exception.BusinessException;
+import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
@@ -9,6 +10,9 @@ import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
+import com.coderman.auth.dto.role.RolePageDTO;
+import com.coderman.auth.dto.role.RoleSaveDTO;
+import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.model.role.RoleExample;
@@ -27,6 +31,7 @@ import com.coderman.auth.vo.role.RoleAuthCheckVO;
 import com.coderman.auth.vo.role.RoleAuthInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 import com.coderman.service.anntation.LogError;
+import com.coderman.service.anntation.LogErrorParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,10 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,59 +72,83 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public ResultVO<PageVO<List<RoleVO>>> page(Integer currentPage, Integer pageSize, RoleVO queryVO) {
-        PageHelper.startPage(currentPage, pageSize);
-        List<RoleVO> userVOList = this.roleDAO.page(queryVO);
+    @LogError(value = "角色列表")
+    public ResultVO<PageVO<List<RoleVO>>> page(@LogErrorParam RolePageDTO rolePageDTO) {
 
+        Integer currentPage = rolePageDTO.getCurrentPage();
+        Integer pageSize = rolePageDTO.getPageSize();
+        String roleName = rolePageDTO.getRoleName();
 
-        PageInfo<RoleVO> pageInfo = new PageInfo<>(userVOList);
-        List<RoleVO> list = pageInfo.getList();
+        Map<String, Object> conditionMap = new HashMap<>(1);
 
-        return ResultUtil.getSuccessPage(RoleVO.class, new PageVO<>(pageInfo.getTotal(), list,currentPage,pageSize));
+        if (Objects.isNull(currentPage)) {
+            currentPage = 1;
+        }
+
+        if (Objects.isNull(pageSize)) {
+            pageSize = 20;
+        }
+
+        if (StringUtils.isNotBlank(roleName)) {
+
+            conditionMap.put("roleName", roleName);
+        }
+
+        PageUtil.getConditionMap(conditionMap,currentPage,pageSize);
+
+        List<RoleVO> roleVOS = new ArrayList<>();
+
+        Long count = this.roleDAO.countPage(conditionMap);
+
+        if (count > 0) {
+
+            roleVOS = this.roleDAO.page(conditionMap);
+        }
+
+        return ResultUtil.getSuccessPage(RoleVO.class, new PageVO<>(count, roleVOS, currentPage, pageSize));
     }
 
     @Override
     @Transactional
-    public ResultVO<Void> save(RoleVO roleVO) {
+    public ResultVO<Void> save(RoleSaveDTO roleSaveDTO) {
 
-        String roleName = roleVO.getRoleName();
-        String roleDesc = roleVO.getRoleDesc();
+        String roleName = roleSaveDTO.getRoleName();
+        String roleDesc = roleSaveDTO.getRoleDesc();
+        Date currentDate = new Date();
 
         if (StringUtils.isBlank(roleName)) {
-            return ResultUtil.getWarn("角色名称不能为空!");
+
+            return ResultUtil.getWarn("角色名称不能为空！");
         }
 
         if (StringUtils.isBlank(roleDesc)) {
-            return ResultUtil.getWarn("角色描述不能为空!");
+
+            return ResultUtil.getWarn("角色描述不能为空！");
         }
 
-
         if (StringUtils.length(roleName) > 15) {
-            return ResultUtil.getWarn("角色名称最多15个字符!");
+
+            return ResultUtil.getWarn("角色名称最多15个字符！");
         }
 
         if (StringUtils.length(roleDesc) > 20) {
-            return ResultUtil.getWarn("角色描述最多20个字符!");
+
+            return ResultUtil.getWarn("角色描述最多20个字符！");
         }
 
         // 角色名称唯一性校验
-        RoleExample example = new RoleExample();
-        example.createCriteria().andRoleNameEqualTo(roleName);
-        long count = this.roleDAO.countByExample(example);
+        RoleModel roleModel = this.roleDAO.selectByRoleName(roleName);
 
-        if (count > 0) {
+        if (Objects.nonNull(roleModel)) {
 
-            throw new BusinessException("存在重复的角色:" + roleName);
+            return ResultUtil.getFail("存在重复的角色:" + roleName);
         }
-
-        Date now = new Date();
 
         RoleModel insert = new RoleModel();
         insert.setRoleName(roleName);
         insert.setRoleDesc(roleDesc);
-        insert.setCreateTime(now);
-        insert.setUpdateTime(now);
-
+        insert.setCreateTime(currentDate);
+        insert.setUpdateTime(currentDate);
 
         this.roleDAO.insertSelective(insert);
 
@@ -154,38 +180,39 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
-    public ResultVO<Void> update(RoleVO roleVO) {
+    @LogError(value = "更新角色")
+    public ResultVO<Void> update(@LogErrorParam RoleUpdateDTO roleUpdateDTO) {
 
-        Integer roleId = roleVO.getRoleId();
-        String roleName = roleVO.getRoleName();
-        String roleDesc = roleVO.getRoleDesc();
-
+        Integer roleId = roleUpdateDTO.getRoleId();
+        String roleName = roleUpdateDTO.getRoleName();
+        String roleDesc = roleUpdateDTO.getRoleDesc();
 
         if (StringUtils.length(roleName) > 15) {
-            throw new BusinessException("角色名称最多15个字符!");
-        }
 
-        if (StringUtils.length(roleDesc) > 20) {
-            throw new BusinessException("角色描述最多20个字符!");
+            return ResultUtil.getWarn("角色名称最多15个字符！");
         }
 
         if (StringUtils.isBlank(roleName)) {
-            throw new BusinessException("角色名称不能为空!");
+
+            return ResultUtil.getWarn("角色名称不能为空！");
+        }
+
+        if (StringUtils.length(roleDesc) > 20) {
+
+            return ResultUtil.getWarn("角色描述最多20个字符！");
         }
 
         if (StringUtils.isBlank(roleDesc)) {
-            throw new BusinessException("角色描述不能为空!");
+
+            return ResultUtil.getWarn("角色描述不能为空！");
         }
 
         // 角色名称唯一性校验
-        RoleExample example = new RoleExample();
-        example.createCriteria().andRoleNameEqualTo(roleName).andRoleIdNotEqualTo(roleId);
-        long count = this.roleDAO.countByExample(example);
+        RoleModel roleModel = this.roleDAO.selectByRoleName(roleName);
 
-        if (count > 0) {
+        if (Objects.nonNull(roleModel) && !Objects.equals(roleModel.getRoleId(),roleId)) {
 
-            throw new BusinessException("存在重复的角色:" + roleName);
+            return ResultUtil.getWarn("存在重复的角色:" + roleName);
         }
 
         // 更新角色
@@ -194,24 +221,26 @@ public class RoleServiceImpl implements RoleService {
         update.setRoleName(roleName);
         update.setRoleDesc(roleDesc);
         update.setUpdateTime(new Date());
-
         this.roleDAO.updateByPrimaryKeySelective(update);
 
         return ResultUtil.getSuccess();
     }
 
     @Override
-    public ResultVO<RoleVO> select(Integer roleId) {
+    @LogError(value = "查询角色信息")
+    public ResultVO<RoleVO> selectRoleById(Integer roleId) {
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
+
         if (null == roleModel) {
-            throw new BusinessException("角色不存在!");
+
+            return ResultUtil.getWarn("角色不存在！");
         }
 
         RoleVO roleVO = new RoleVO();
-        BeanUtils.copyProperties(roleModel, roleVO);
-
-        // 查询角色有哪些用户
+        roleVO.setRoleDesc(roleModel.getRoleDesc());
+        roleVO.setRoleId(roleModel.getRoleId());
+        roleVO.setRoleName(roleModel.getRoleName());
         return ResultUtil.getSuccess(RoleVO.class, roleVO);
     }
 

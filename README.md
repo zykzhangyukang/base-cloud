@@ -15,6 +15,7 @@
 -Dspring.cloud.nacos.config.file-extension=yaml
 -Dspring.cloud.nacos.config.namespace=b50c7b27-3ad4-4ce2-8157-4b1b8b1e8222
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yaml
+-Dspring.main.allow-bean-definition-overriding=true
 ```
 
 
@@ -30,6 +31,7 @@
 -Dspring.cloud.nacos.config.server-addr=127.0.0.1:8848
 -Dspring.cloud.nacos.config.file-extension=yaml
 -Dspring.cloud.nacos.config.namespace=b50c7b27-3ad4-4ce2-8157-4b1b8b1e8222
+-Dspring.main.allow-bean-definition-overriding=true
 ```
 
 #### auth
@@ -46,4 +48,5 @@
 -Dspring.cloud.nacos.config.file-extension=yaml
 -Dspring.cloud.nacos.config.namespace=b50c7b27-3ad4-4ce2-8157-4b1b8b1e8222
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yml
+-Dspring.main.allow-bean-definition-overriding=true
 ```

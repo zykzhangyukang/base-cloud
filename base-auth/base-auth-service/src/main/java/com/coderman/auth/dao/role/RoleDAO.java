@@ -7,6 +7,7 @@ import com.coderman.mybatis.dao.BaseDAO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RoleDAO extends BaseDAO<RoleModel, RoleExample> {
 
@@ -14,10 +15,17 @@ public interface RoleDAO extends BaseDAO<RoleModel, RoleExample> {
     /**
      * 角色列表
      *
-     * @param queryVO
      * @return
      */
-    List<RoleVO> page(@Param(value = "queryVO") RoleVO queryVO);
+    List<RoleVO> page(Map<String,Object> conditionMap);
+
+    /**
+     * 分页条数
+     *
+     * @param conditionMap
+     * @return
+     */
+    Long countPage(Map<String, Object> conditionMap);
 
 
     /**
@@ -26,6 +34,15 @@ public interface RoleDAO extends BaseDAO<RoleModel, RoleExample> {
      * @return
      */
     List<String> selectUserByRoleId(@Param(value = "roleId") Integer roleId);
+
+
+    /**
+     * 根据角色名查询角色
+     *
+     * @param roleName 角色名称
+     * @return
+     */
+    RoleModel selectByRoleName(@Param(value = "roleName") String roleName);
 
     /**
      * 查看用户拥有的角色

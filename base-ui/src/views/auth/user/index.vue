@@ -15,7 +15,7 @@
                 <a-form-item label="真实姓名" name='realName'>
                     <a-input v-model:value="searchParams.realName" :style="{width:'180px'}" placeholder="真实姓名输入框"></a-input>
                 </a-form-item>
-                <a-form-item label="所属部门">
+                <a-form-item label="用户状态">
                     <a-select v-model:value="searchParams.userStatus" :style="{width:'180px'}" placeholder="用户状态">
                         <a-select-option v-for="item in userStatusG" :value="item.code" :key="item.code">{{userStatusGName[item.code]}}</a-select-option>
                     </a-select>

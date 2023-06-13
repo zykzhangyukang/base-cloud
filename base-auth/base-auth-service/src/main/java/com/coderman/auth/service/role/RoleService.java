@@ -3,6 +3,9 @@ package com.coderman.auth.service.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.role.RolePageDTO;
+import com.coderman.auth.dto.role.RoleSaveDTO;
+import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
 import com.coderman.auth.vo.role.RoleAuthInitVO;
@@ -20,19 +23,17 @@ public interface RoleService {
     /**
      * 角色列表
      *
-     * @param currentPage
-     * @param pageSize
      * @return
      */
-    ResultVO<PageVO<List<RoleVO>>> page(Integer currentPage, Integer pageSize, RoleVO queryVO);
+    ResultVO<PageVO<List<RoleVO>>> page(RolePageDTO rolePageDTO);
 
     /**
      * 角色新增
      *
-     * @param roleVO
+     * @param roleSaveDTO
      * @return
      */
-    ResultVO<Void> save(RoleVO roleVO);
+    ResultVO<Void> save(RoleSaveDTO roleSaveDTO);
 
 
     /**
@@ -46,10 +47,10 @@ public interface RoleService {
     /**
      * 更新角色
      *
-     * @param roleVO
+     * @param roleUpdateDTO
      * @return
      */
-    ResultVO<Void> update(RoleVO roleVO);
+    ResultVO<Void> update(RoleUpdateDTO roleUpdateDTO);
 
 
     /**
@@ -58,7 +59,7 @@ public interface RoleService {
      * @param roleId
      * @return
      */
-    ResultVO<RoleVO> select(Integer roleId);
+    ResultVO<RoleVO> selectRoleById(Integer roleId);
 
 
     /**

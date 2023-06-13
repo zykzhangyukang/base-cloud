@@ -222,20 +222,41 @@
        where ur.role_id = #{roleId}
   </select>
 
+  <select id="selectByRoleName" resultMap="BaseResultMap">
+     select
+     <include refid="Base_Column_List"></include>
+    from auth_role
+    where role_name = #{roleName}
+  </select>
+
   <select id="page" resultMap="pageResultMap">
     select
     r.role_id, r.role_name, r.role_desc, r.create_time, r.update_time
     from auth_role r
     left join auth_user_role ur on r.role_id  = ur.role_id
     left join auth_user u on u.user_id  = ur.user_id
-    <where>
-      <if test="queryVO.roleName!=null and queryVO.roleName!=''">
-        and r.role_name like concat('%',#{queryVO.roleName},'%')
-      </if>
-    </where>
+    <include refid="pageWhere"/>
     group by r.role_id, r.role_name, r.role_desc, r.create_time, r.update_time
     order by r.create_time desc
+    limit #{offset}, #{size}
   </select>
+
+  <select id="countPage" resultType="long">
+      select
+      count(1)
+      from auth_role r
+      left join auth_user_role ur on r.role_id  = ur.role_id
+      left join auth_user u on u.user_id  = ur.user_id
+      <include refid="pageWhere"/>
+  </select>
+
+  <sql id="pageWhere">
+    <where>
+        <if test="roleName!=null and roleName!=''">
+          and r.role_name like concat('%',#{roleName},'%')
+        </if>
+    </where>
+  </sql>
 
   <select id="selectUserRoleList" resultMap="BaseResultMap">
     select role_id,role_name,role_desc,create_time,update_time

@@ -50,6 +50,7 @@ public class AuthDatasourceConfig extends BasicTransactionConfig {
     }
 
     @Bean(value = "authTransactionManager")
+    @Primary
     public DataSourceTransactionManager authTransactionManager(@Qualifier(value = "authDatasource") DataSource dataSource) {
 
         return new DataSourceTransactionManager(dataSource);

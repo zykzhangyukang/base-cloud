@@ -1,6 +1,63 @@
 import http from '../utils/request'
 
 /**
+ * 更新角色信息
+ */
+export const authRoleUpdate = (data) => {
+    return http({
+        url: `/auth/role/update`,
+        method: 'put',
+        data
+    })
+}
+
+/**
+ * 根据id获取角色信息
+ */
+export const authRoleSelectById = (id) => {
+    return http({
+        url: `/auth/role/${id}`,
+        method: 'get',
+    })
+}
+
+/**
+ * 删除角色
+ */
+export const authRoleDelete = id => {
+    return http({
+        url: `/auth/role/delete/${id}`,
+        method: 'delete',
+    })
+}
+
+/**
+ * 新增角色
+ */
+export const authRoleSave = data => {
+    return http({
+        url: `/auth/role/save`,
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 角色列表
+ */
+export const authRolePage = data => {
+    return http({
+        url: `/auth/role/page`,
+        method: 'post',
+        data: data
+    })
+}
+
+
+
+/************************************ 用户 *********************************/
+
+/**
  * 根据id获取用户信息
  */
 export const authUserUpdatePwd = (data) => {
@@ -13,7 +70,7 @@ export const authUserUpdatePwd = (data) => {
 
 
 /**
- * 根据id获取用户信息
+ *更新角色信息
  */
 export const authUserUpdate = (data) => {
     return http({

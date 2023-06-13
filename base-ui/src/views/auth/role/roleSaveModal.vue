@@ -1,57 +1,62 @@
 <template>
     <a-modal v-model:visible="visible"
-             :confirm-loading="confirmLoading"
-             title="设置密码"
+             title="新增角色"
              @ok="handleOk"
              @cancel="handleClose"
+             :confirm-loading="confirmLoading"
              cancelText="取消"
              okText="提交"
              ref="form"
     >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="登录密码">
-                <a-input v-model:value="form.password"  />
+            <a-form-item label="角色名称">
+                <a-input v-model:value="form.roleName" />
+            </a-form-item>
+            <a-form-item label="角色描述" >
+                <a-textarea v-model:value="form.roleDesc" />
             </a-form-item>
         </a-form>
     </a-modal>
 </template>
 
 <script>
-    import {authUserUpdatePwd} from "@/api/auth";
+    import {authRoleSave} from "@/api/auth";
 
     export default {
-        name: "userUpdatePwd.vue",
+        name: "roleSaveModel.vue",
         data() {
             return {
+                confirmLoading:  false,
                 deptList: [],
-                confirmLoading: false,
                 visible: false,
                 labelCol: { span: 4 },
                 wrapperCol: { span: 18 },
                 form:{
-                    password: '',
-                    userId: null,
+                    roleName: '',
+                    roleDesc: '',
                 },
             }
         },
+        computed:{
+        },
         methods:{
-            open(userId){
-                this.visible = true;
-                this.form.userId = userId;
-            },
             handleOk() {
-                this.confirmLoading  = true;
-                authUserUpdatePwd(this.form).then(res=>{
-                    this.$message.success("设置密码成功");
+                this.confirmLoading = true;
+                authRoleSave(this.form).then(res => {
+                    this.$message.success("新增角色成功！");
                     this.handleClose();
+                    this.$emit('success')
                 }).finally(e=>{
-                    this.confirmLoading = false;
+                    this.confirmLoading =false;
                 })
             },
             handleClose(){
                 this.visible = false
                 this.form = this.$options.data().form;
             },
+            open(){
+                this.visible = true;
+            }
         }
     }
 </script>

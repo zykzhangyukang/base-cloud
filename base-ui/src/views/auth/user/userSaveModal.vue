@@ -3,6 +3,7 @@
              title="新增用户"
              @ok="handleOk"
              @cancel="handleClose"
+             :confirm-loading="confirmLoading"
              cancelText="取消"
              okText="提交"
              ref="form"
@@ -39,6 +40,7 @@
         data() {
             return {
                 deptList: [],
+                confirmLoading: false,
                 visible: false,
                 labelCol: { span: 4 },
                 wrapperCol: { span: 18 },
@@ -60,10 +62,13 @@
         },
         methods:{
             handleOk() {
+                this.confirmLoading = true;
                 authUserSave(this.form).then(res => {
                     this.$message.success("新增用户成功");
                     this.handleClose();
                     this.$emit('success')
+                }).finally(e=>{
+                    this.confirmLoading = false;
                 })
             },
             handleClose(){

@@ -2,7 +2,7 @@
 const EndWebpackPlugin = require('./plugins/webpack.end.js');
 module.exports = {
   devServer: {
-    port: 9998,
+    port: 9991,
     open: false,
     proxy: {
       '/api': {
