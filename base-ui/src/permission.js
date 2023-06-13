@@ -52,8 +52,8 @@ router.beforeEach(async(to, from, next) => {
         router.$addRoutes(routesMap);
 
         // 常量数据获取
-        let constList = await authConstAll();
-        store.setConstList(constList);
+        let {result: list} = await authConstAll();
+        store.setConstList(list);
 
         next({ ...to, replace: true });
       }

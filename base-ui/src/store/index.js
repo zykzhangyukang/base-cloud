@@ -8,7 +8,7 @@ export default {
       token:'',
       info: {}
     },
-    constList: [],
+    const: [],
   }),
   setMenuItem(item, key, value) {
     item[key] = value;
@@ -34,10 +34,9 @@ export default {
     }
   },
   setConstList(list){
-    if(list){
-      this.state.constList = list;
-    }else {
-      this.state.constList = [];
-    }
+    const _store = this.state;
+    Object.keys(list).forEach(key => {
+      _store.const[key] = list[key]
+    });
   }
 }

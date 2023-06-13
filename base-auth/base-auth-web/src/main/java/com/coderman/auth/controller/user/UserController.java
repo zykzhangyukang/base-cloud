@@ -37,10 +37,6 @@ public class UserController {
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户登录")
     @PostMapping(value = "/login")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "username", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING,value = "用户名"),
-            @ApiImplicitParam(name = "password", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING,value = "密码"),
-    })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserLoginRespVO",value = {"realName", "deptCode", "username", "token","deptName"})
@@ -210,15 +206,15 @@ public class UserController {
         return this.userService.save(userSaveDTO);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "删除用户")
-    @GetMapping(value = "/delete")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE, value = "删除用户")
+    @DeleteMapping(value = "/delete/{userId}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
+            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> delete(@RequestParam(value = "userId") Integer userId) {
+    public ResultVO<Void> delete(@PathVariable(value = "userId") Integer userId) {
         return this.userService.delete(userId);
     }
 

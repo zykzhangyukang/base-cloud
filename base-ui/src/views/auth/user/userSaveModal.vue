@@ -22,8 +22,7 @@
             </a-form-item>
             <a-form-item label="状态">
                 <a-radio-group v-model:value="form.userStatus">
-                    <a-radio :value="1">启用</a-radio>
-                    <a-radio :value="2">禁用</a-radio>
+                    <a-radio v-for="item in userStatusG" :value="item.code" :key="item.code">{{userStatusGName[item.code]}}</a-radio>
                 </a-radio-group>
             </a-form-item>
         </a-form>
@@ -32,11 +31,12 @@
 
 <script>
     import {authUserSave} from "@/api/auth"
+    import {authDomain, formatConst, getConst} from "@/utils/constant";
     export default {
         name: "userSaveModal.vue",
         data() {
             return {
-                visible: true,
+                visible: false,
                 labelCol: { span: 4 },
                 wrapperCol: { span: 18 },
                 form:{
@@ -45,6 +45,14 @@
                     userStatus: 1,
                     deptCode: ''
                 },
+            }
+        },
+        computed:{
+            userStatusG(){
+                return getConst("user_status_group", authDomain)
+            },
+            userStatusGName(){
+                return formatConst(this.userStatusG);
             }
         },
         methods:{
@@ -57,7 +65,6 @@
             handleClose(){
                 this.visible = false
                 this.form = this.$options.data().form
-                // this.$refs.form.clearValidate()
             },
             open(){
                 this.visible = true;

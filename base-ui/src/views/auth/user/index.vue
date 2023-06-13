@@ -23,7 +23,7 @@
                 </a-form-item>
             </a-form>
             <a-table
-                    size='middle'
+                    size='small'
                     rowKey='userId'
                     bordered
                     :pagination='false'
@@ -34,15 +34,37 @@
             >
 
                 <template #userStatus="{ text }">
-                    <a-tag :color="text===1 ? 'green' : 'red'">
-                        {{ text === 1? '启用': '禁用'}}
+                    <a-tag  :color="text===1 ? 'green' : 'red'">
+                        {{ userStatusGName[text] }}
                     </a-tag>
                 </template>
 
                 <template #action="{ record }">
                     <span>
                         <a-button size="small" type="link" @click="handleEdit(record.userId)">编辑</a-button>
-                        <a-button size="small" type="link" @click="handleDelete(record.userId)">删除</a-button>
+                         <a-popconfirm
+                                 title="您确定要删除该用户吗?"
+                                 ok-text="确定"
+                                 cancel-text="取消"
+                                 @confirm="handleDelete(record.userId)">
+                             <a-button size="small" type="link">删除</a-button>
+                          </a-popconfirm>
+                        <a-dropdown>
+                            <a class="ant-dropdown-link" @click.prevent>
+                              设置
+                              <DownOutlined />
+                            </a>
+                            <template #overlay>
+                              <a-menu>
+                                <a-menu-item>
+                                  <a href="javascript:;">启用</a>
+                                </a-menu-item>
+                                <a-menu-item>
+                                  <a href="javascript:;">禁用</a>
+                                </a-menu-item>
+                              </a-menu>
+                            </template>
+                          </a-dropdown>
                     </span>
                 </template>
             </a-table>
@@ -65,12 +87,15 @@
 </template>
 
 <script>
-    import {authUserPage} from "@/api/auth"
+    import {authUserDelete, authUserPage} from "@/api/auth"
     import userSaveModal from '@/views/auth/user/userSaveModal'
+    import {authDomain, formatConst, getConst} from "@/utils/constant";
+    import { DownOutlined } from '@ant-design/icons-vue';
     export default {
         name: "User.vue",
         components: {
-            userSaveModal
+            userSaveModal,
+            DownOutlined,
         },
         data() {
             return {
@@ -124,20 +149,29 @@
                     {
                         title: '操作',
                         key: 'action',
+                        width: '250px',
                         slots: { customRender: 'action' },
                     },
                 ],
             }
         },
         computed:{
-
+            userStatusG(){
+                return getConst("user_status_group", authDomain)
+            },
+            userStatusGName(){
+                return formatConst(this.userStatusG);
+            }
         },
         methods:{
             handleEdit(id){
 
             },
             handleDelete(id){
-
+                authUserDelete(id).then(e=>{
+                    this.$message.success("删除用户成功！");
+                    this.queryData();
+                })
             },
             handleAdd(){
                 this.$refs['userSaveModal'].open();

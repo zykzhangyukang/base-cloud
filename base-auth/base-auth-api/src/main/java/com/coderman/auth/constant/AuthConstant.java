@@ -23,7 +23,7 @@ public interface AuthConstant {
      */
     String USER_STATUS_GROUP = "user_status_group";
 
-    @ConstList(group = USER_STATUS_GROUP, name = "禁用")
+    @ConstList(group = USER_STATUS_GROUP, name = "锁定")
     Integer USER_STATUS_DISABLE = 0;
 
     @ConstList(group = USER_STATUS_GROUP, name = "启用")

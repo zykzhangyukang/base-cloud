@@ -414,12 +414,12 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserModel dbUserModel = this.userDAO.selectByPrimaryKey(userId);
         if (dbUserModel == null) {
 
-            return ResultUtil.getFail("用户信息不存在");
+            return ResultUtil.getFail("用户信息不存在！");
         }
 
         if (dbUserModel.getUserStatus().equals(AuthConstant.USER_STATUS_ENABLE)) {
 
-            return ResultUtil.getFail("启用状态的用户不能删除");
+            return ResultUtil.getFail("启用状态的用户不能删除！");
         }
 
         // 删除用户-角色关联
