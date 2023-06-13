@@ -2,11 +2,13 @@ package com.coderman.auth.service.resc.impl;
 
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.exception.BusinessException;
+import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.resc.RescDAO;
+import com.coderman.auth.dto.resc.RescPageDTO;
 import com.coderman.auth.model.func.FuncRescExample;
 import com.coderman.auth.model.resc.RescExample;
 import com.coderman.auth.model.resc.RescModel;
@@ -38,13 +40,55 @@ public class RescServiceImpl implements RescService {
     private FuncRescDAO funcRescDAO;
 
     @Override
-    public ResultVO<PageVO<List<RescVO>>> page(Integer currentPage, Integer pageSize, RescVO queryVO) {
+    public ResultVO<PageVO<List<RescVO>>> page(RescPageDTO rescPageDTO) {
 
-        PageHelper.startPage(currentPage, pageSize);
-        List<RescVO> rescVOList = this.rescDAO.page(queryVO);
+        Integer currentPage = rescPageDTO.getCurrentPage();
+        Integer pageSize = rescPageDTO.getPageSize();
+        String rescUrl = rescPageDTO.getRescUrl();
+        String rescName = rescPageDTO.getRescName();
+        String rescDomain = rescPageDTO.getRescDomain();
+        String methodType = rescPageDTO.getMethodType();
 
-        PageInfo<RescVO> pageInfo = new PageInfo<>(rescVOList);
-        PageVO<List<RescVO>> pageVO = new PageVO<>(pageInfo.getTotal(), pageInfo.getList(),currentPage,pageSize);
+        Map<String,Object> conditionMap = new HashMap<>(6);
+
+        if (Objects.isNull(currentPage)) {
+
+            currentPage = 1 ;
+        }
+
+        if (Objects.isNull(pageSize)) {
+
+            pageSize = 20;
+        }
+
+        if (StringUtils.isNotBlank(rescUrl)) {
+            conditionMap.put("rescUrl", rescUrl);
+        }
+
+        if (StringUtils.isNotBlank(rescName)) {
+            conditionMap.put("rescName", rescName);
+        }
+
+        if (StringUtils.isNotBlank(rescDomain)) {
+            conditionMap.put("rescDomain", rescDomain);
+        }
+
+        if (StringUtils.isNotBlank(methodType)) {
+            conditionMap.put("methodType", methodType);
+        }
+
+        PageUtil.getConditionMap(conditionMap,currentPage,pageSize);
+
+        Long count = this.rescDAO.countPage(conditionMap);
+
+        List<RescVO> rescVOList = new ArrayList<>();
+
+        if (count > 0) {
+
+            rescVOList = this.rescDAO.page(conditionMap);
+        }
+
+        PageVO<List<RescVO>> pageVO = new PageVO<>(count, rescVOList ,currentPage,pageSize);
         return ResultUtil.getSuccessPage(RescVO.class, pageVO);
     }
 

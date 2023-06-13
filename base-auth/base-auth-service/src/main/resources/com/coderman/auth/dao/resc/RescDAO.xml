@@ -247,22 +247,33 @@
     select
     <include refid="Base_Column_List" />
     from auth_resc
+    <include refid="pageWhere"></include>
+    order by create_time desc
+    limit #{offset},#{size}
+  </select>
+
+  <select id="countPage" resultType="long">
+     select count(1)
+     from auth_resc
+     <include refid="pageWhere"></include>
+  </select>
+
+  <sql id="pageWhere">
     <where>
-      <if test="queryVO.rescUrl!=null and queryVO.rescUrl!=''">
-        and resc_url like concat('%',#{queryVO.rescUrl},'%')
+      <if test="rescUrl!=null and rescUrl!=''">
+        and resc_url like concat('%',#{rescUrl},'%')
       </if>
-      <if test="queryVO.rescName!=null and queryVO.rescName!=''">
-        and resc_name like concat('%',#{queryVO.rescName},'%')
+      <if test="rescName!=null and rescName!=''">
+        and resc_name like concat('%',#{rescName},'%')
       </if>
-      <if test="queryVO.rescDomain!=null and queryVO.rescDomain!=''">
-        and resc_domain  = #{queryVO.rescDomain}
+      <if test="rescDomain!=null and rescDomain!=''">
+        and resc_domain  = #{rescDomain}
       </if>
-      <if test="queryVO.methodType!=null and queryVO.methodType!=''">
-        and method_type  = #{queryVO.methodType}
+      <if test="methodType!=null and methodType!=''">
+        and method_type  = #{methodType}
       </if>
     </where>
-    order by create_time desc
-  </select>
+  </sql>
 
   <select id="selectByKeyword" resultMap="BaseResultMap">
     select

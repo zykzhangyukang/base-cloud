@@ -3,6 +3,7 @@ package com.coderman.auth.service.resc;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.resc.RescPageDTO;
 import com.coderman.auth.vo.resc.RescVO;
 
 import java.util.List;
@@ -19,12 +20,9 @@ public interface RescService {
 
     /**
      * 资源列表
-     * @param currentPage
-     * @param pageSize
-     * @param queryVO
      * @return
      */
-    ResultVO<PageVO<List<RescVO>>> page(Integer currentPage, Integer pageSize, RescVO queryVO);
+    ResultVO<PageVO<List<RescVO>>> page(RescPageDTO rescPageDTO);
 
     /**
      * 保存资源

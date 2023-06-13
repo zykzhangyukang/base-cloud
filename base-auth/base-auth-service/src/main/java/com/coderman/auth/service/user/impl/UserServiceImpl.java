@@ -431,9 +431,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         // 删除用户-角色关联
-        UserRoleExample example = new UserRoleExample();
-        example.createCriteria().andUserIdEqualTo(userId);
-        this.userRoleDAO.deleteByExample(example);
+        this.userRoleDAO.deleteByUserId(userId);
 
         // 删除用户
         this.userDAO.deleteByPrimaryKey(userId);

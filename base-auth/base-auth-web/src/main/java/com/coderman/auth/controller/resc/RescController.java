@@ -2,6 +2,7 @@ package com.coderman.auth.controller.resc;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.resc.RescPageDTO;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
@@ -32,22 +33,15 @@ public class RescController {
     private RescService rescService;
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "资源列表")
-    @GetMapping(value = "/page")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "currentPage", paramType = SwaggerConstant.PARAM_FORM, value = "当前页", dataType = SwaggerConstant.DATA_INT, required = true),
-            @ApiImplicitParam(name = "pageSize", paramType = SwaggerConstant.PARAM_FORM, value = "每页大小", dataType = SwaggerConstant.DATA_INT, required = true),
-            @ApiImplicitParam(name = "rescUrl", paramType = SwaggerConstant.PARAM_FORM, value = "资源url", dataType = SwaggerConstant.DATA_STRING),
-            @ApiImplicitParam(name = "methodType", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "请求方式")
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "资源列表")
+    @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO", value = {"dataList", "pageRow", "totalRow", "currPage", "totalPage"}),
             @ApiReturnParam(name = "RescVO", value = {"rescName", "rescUrl", "rescDomain", "createTime", "updateTime", "methodType"})
     })
-    public ResultVO<PageVO<List<RescVO>>> page(@RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
-                                               @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize, @ApiIgnore RescVO queryVO) {
-        return this.rescService.page(currentPage, pageSize, queryVO);
+    public ResultVO<PageVO<List<RescVO>>> page(@RequestBody RescPageDTO rescPageDTO) {
+        return this.rescService.page(rescPageDTO);
     }
 
 

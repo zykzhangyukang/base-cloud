@@ -7,6 +7,7 @@ import com.coderman.mybatis.dao.BaseDAO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RescDAO extends BaseDAO<RescModel, RescExample> {
 
@@ -14,10 +15,17 @@ public interface RescDAO extends BaseDAO<RescModel, RescExample> {
     /**
      * 用户列表
      *
-     * @param queryVO
      * @return
      */
-    List<RescVO> page(@Param(value = "queryVO") RescVO queryVO);
+    List<RescVO> page(Map<String, Object> conditionMap);
+
+    /**
+     * 分页条数
+     *
+     * @param conditionMap
+     * @return
+     */
+    Long countPage(Map<String, Object> conditionMap);
 
 
     /**
@@ -35,5 +43,4 @@ public interface RescDAO extends BaseDAO<RescModel, RescExample> {
      * @return
      */
     List<RescVO> selectRescListByUsername(@Param(value = "username") String username);
-
 }
