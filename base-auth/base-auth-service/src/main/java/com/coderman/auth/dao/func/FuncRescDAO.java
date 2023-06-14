@@ -16,4 +16,13 @@ public interface FuncRescDAO extends BaseDAO<FuncRescModel, FuncRescExample> {
      * @param rescIdList
      */
     void insertBatchByFuncId(@Param(value = "funcId") Integer funcId, @Param(value = "rescIdList") List<Integer> rescIdList);
+
+
+    /**
+     * 查询数量通过资源id
+     *
+     * @param rescId
+     * @return
+     */
+    Long countByRescId(@Param(value = "rescId") Integer rescId);
 }

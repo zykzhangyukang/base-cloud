@@ -11,6 +11,12 @@ import java.util.Map;
 
 public interface RescDAO extends BaseDAO<RescModel, RescExample> {
 
+    /**
+     * 根据url查询资源信息
+     *
+     * @return
+     */
+    RescVO selectByRescUrl(@Param(value = "rescUrl") String rescUrl);
 
     /**
      * 用户列表

@@ -9,11 +9,15 @@ import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.resc.RescDAO;
 import com.coderman.auth.dto.resc.RescPageDTO;
+import com.coderman.auth.dto.resc.RescSaveDTO;
+import com.coderman.auth.dto.resc.RescUpdateDTO;
 import com.coderman.auth.model.func.FuncRescExample;
 import com.coderman.auth.model.resc.RescExample;
 import com.coderman.auth.model.resc.RescModel;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.vo.resc.RescVO;
+import com.coderman.service.anntation.LogError;
+import com.coderman.service.anntation.LogErrorParam;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +44,8 @@ public class RescServiceImpl implements RescService {
     private FuncRescDAO funcRescDAO;
 
     @Override
-    public ResultVO<PageVO<List<RescVO>>> page(RescPageDTO rescPageDTO) {
+    @LogError(value = "资源列表")
+    public ResultVO<PageVO<List<RescVO>>> page(@LogErrorParam RescPageDTO rescPageDTO) {
 
         Integer currentPage = rescPageDTO.getCurrentPage();
         Integer pageSize = rescPageDTO.getPageSize();
@@ -49,11 +54,11 @@ public class RescServiceImpl implements RescService {
         String rescDomain = rescPageDTO.getRescDomain();
         String methodType = rescPageDTO.getMethodType();
 
-        Map<String,Object> conditionMap = new HashMap<>(6);
+        Map<String, Object> conditionMap = new HashMap<>(6);
 
         if (Objects.isNull(currentPage)) {
 
-            currentPage = 1 ;
+            currentPage = 1;
         }
 
         if (Objects.isNull(pageSize)) {
@@ -77,7 +82,7 @@ public class RescServiceImpl implements RescService {
             conditionMap.put("methodType", methodType);
         }
 
-        PageUtil.getConditionMap(conditionMap,currentPage,pageSize);
+        PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
 
         Long count = this.rescDAO.countPage(conditionMap);
 
@@ -88,45 +93,47 @@ public class RescServiceImpl implements RescService {
             rescVOList = this.rescDAO.page(conditionMap);
         }
 
-        PageVO<List<RescVO>> pageVO = new PageVO<>(count, rescVOList ,currentPage,pageSize);
+        PageVO<List<RescVO>> pageVO = new PageVO<>(count, rescVOList, currentPage, pageSize);
         return ResultUtil.getSuccessPage(RescVO.class, pageVO);
     }
 
     @Override
-    @Transactional
-    public ResultVO<Void> save(RescVO rescVO) {
+    @LogError(value = "新增资源 ")
+    public ResultVO<Void> save(@LogErrorParam RescSaveDTO rescSaveDTO) {
 
-        String rescName = rescVO.getRescName();
-        String rescUrl = rescVO.getRescUrl();
-        String rescDomain = rescVO.getRescDomain();
-        String methodType = rescVO.getMethodType();
+        String rescName = rescSaveDTO.getRescName();
+        String rescUrl = rescSaveDTO.getRescUrl();
+        String rescDomain = rescSaveDTO.getRescDomain();
+        String methodType = rescSaveDTO.getMethodType();
 
-        if(StringUtils.isBlank(rescName) || StringUtils.length(rescName) > 20){
-            return ResultUtil.getWarn("资源名称不能为空,且在20个字符以内.");
+        if (StringUtils.isBlank(rescName) || StringUtils.length(rescName) > 20) {
+
+            return ResultUtil.getWarn("资源名称不能为空,且在20个字符以内！");
         }
 
-        if(StringUtils.isBlank(rescUrl) || StringUtils.length(rescUrl) > 50){
-            return ResultUtil.getWarn("资源url不能为空,且在50个字符以内.");
+        if (StringUtils.isBlank(rescUrl) || StringUtils.length(rescUrl) > 50) {
+
+            return ResultUtil.getWarn("资源url不能为空,且在50个字符以内！");
         }
 
-        if(StringUtils.isBlank(rescDomain)){
-            return ResultUtil.getWarn("所属项目不能为空");
+        if (StringUtils.isBlank(rescDomain)) {
+
+            return ResultUtil.getWarn("所属项目不能为空！");
         }
 
-        if(StringUtils.isBlank(methodType)){
-            return ResultUtil.getWarn("请求方式不能为空");
+        if (StringUtils.isBlank(methodType)) {
+
+            return ResultUtil.getWarn("请求方式不能为空！");
         }
 
         // 资源url唯一性校验
-        RescExample example = new RescExample();
-        example.createCriteria().andRescUrlEqualTo(rescVO.getRescUrl());
-        long count = this.rescDAO.countByExample(example);
-        if(count>0){
+        RescVO rescVO = this.rescDAO.selectByRescUrl(rescUrl);
+        if (Objects.nonNull(rescVO)) {
 
-            throw new BusinessException("资源: [ "+rescUrl+" ],已经存在!");
+            return ResultUtil.getWarn("资源: [ " + rescUrl + " ],已经存在！");
         }
 
-        RescModel insert  = new RescModel();
+        RescModel insert = new RescModel();
         insert.setCreateTime(new Date());
         insert.setUpdateTime(new Date());
         insert.setRescDomain(rescDomain);
@@ -139,38 +146,45 @@ public class RescServiceImpl implements RescService {
     }
 
     @Override
-    public ResultVO<Void> update(RescVO rescVO) {
+    @LogError(value = "更新资源")
+    public ResultVO<Void> update(@LogErrorParam RescUpdateDTO rescUpdateDTO) {
 
-        String rescName = rescVO.getRescName();
-        Integer rescId = rescVO.getRescId();
-        String rescUrl = rescVO.getRescUrl();
-        String rescDomain = rescVO.getRescDomain();
-        String methodType = rescVO.getMethodType();
+        String rescName = rescUpdateDTO.getRescName();
+        Integer rescId = rescUpdateDTO.getRescId();
+        String rescUrl = rescUpdateDTO.getRescUrl();
+        String rescDomain = rescUpdateDTO.getRescDomain();
+        String methodType = rescUpdateDTO.getMethodType();
 
+        if (Objects.isNull(rescId)) {
 
-        if(StringUtils.isBlank(rescDomain)){
-            return ResultUtil.getWarn("所属项目不能为空");
+            return ResultUtil.getWarn("资源id不能为空！");
         }
 
-        if(StringUtils.isBlank(rescName) || StringUtils.length(rescName) > 20){
-            return ResultUtil.getWarn("资源名称不能为空,且在20个字符以内.");
+        if (StringUtils.isBlank(rescDomain)) {
+
+            return ResultUtil.getWarn("所属项目不能为空！");
         }
 
-        if(StringUtils.isBlank(rescUrl) || StringUtils.length(rescUrl) > 50){
-            return ResultUtil.getWarn("资源url不能为空,且在50个字符以内.");
+        if (StringUtils.isBlank(rescName) || StringUtils.length(rescName) > 20) {
+
+            return ResultUtil.getWarn("资源名称不能为空,且在20个字符以内！");
         }
 
-        if(StringUtils.isBlank(methodType)){
-            return ResultUtil.getWarn("请求方式不能为空");
+        if (StringUtils.isBlank(rescUrl) || StringUtils.length(rescUrl) > 50) {
+
+            return ResultUtil.getWarn("资源url不能为空,且在50个字符以内！");
         }
 
-        RescExample example = new RescExample();
-        example.createCriteria().andRescUrlEqualTo(rescUrl).andRescIdNotEqualTo(rescId);
-        long count = this.rescDAO.countByExample(example);
+        if (StringUtils.isBlank(methodType)) {
 
-        if(count>0){
+            return ResultUtil.getWarn("请求方式不能为空！");
+        }
 
-            return ResultUtil.getFail("资源: [ "+rescUrl+" ],已经存在!");
+        RescVO rescVO = this.rescDAO.selectByRescUrl(rescUrl);
+
+        if (Objects.nonNull(rescVO) && !rescId.equals(rescVO.getRescId())) {
+
+            return ResultUtil.getFail("资源: [ " + rescUrl + " ],已经存在！");
         }
 
         RescModel update = new RescModel();
@@ -186,17 +200,20 @@ public class RescServiceImpl implements RescService {
     }
 
     @Override
-    @Transactional
+    @LogError(value = "删除资源")
     public ResultVO<Void> delete(Integer rescId) {
 
+        if (Objects.isNull(rescId)) {
+
+            return ResultUtil.getWarn("资源id不能为空！");
+        }
 
         // 校验该资源是否绑定了功能.
-        FuncRescExample example = new FuncRescExample();
-        example.createCriteria().andRescIdEqualTo(rescId);
-        long count = this.funcRescDAO.countByExample(example);
+        Long count = this.funcRescDAO.countByRescId(rescId);
 
-        if(count>0){
-            throw new BusinessException("该资源已经绑定功能,请解绑后进行删除.");
+        if (count > 0) {
+
+            return ResultUtil.getWarn("该资源已经绑定功能,请解绑后进行删除！");
         }
 
         this.rescDAO.deleteByPrimaryKey(rescId);
@@ -206,10 +223,28 @@ public class RescServiceImpl implements RescService {
 
 
     @Override
-    public ResultVO<RescVO> select(Integer rescId) {
+    @LogError(value = "查询资源信息")
+    public ResultVO<RescVO> selectById(Integer rescId) {
+
+        if (Objects.isNull(rescId)) {
+
+            return ResultUtil.getWarn("资源id不能为空！");
+        }
+
         RescModel resourceModel = this.rescDAO.selectByPrimaryKey(rescId);
+
+        if (Objects.isNull(resourceModel)) {
+
+            return ResultUtil.getWarn("资源不存在！");
+        }
+
         RescVO rescVO = new RescVO();
-        BeanUtils.copyProperties(resourceModel, rescVO);
+        rescVO.setRescId(resourceModel.getRescId());
+        rescVO.setRescName(resourceModel.getRescName());
+        rescVO.setRescUrl(resourceModel.getRescUrl());
+        rescVO.setRescDomain(resourceModel.getRescDomain());
+        rescVO.setMethodType(resourceModel.getMethodType());
+
         return ResultUtil.getSuccess(RescVO.class, rescVO);
     }
 
@@ -228,11 +263,11 @@ public class RescServiceImpl implements RescService {
     @Override
     public ResultVO<Map<String, Set<Integer>>> getSystemAllRescMap(String project) {
 
-        Map<String, Set<Integer>> map =  new HashMap<>();
+        Map<String, Set<Integer>> map = new HashMap<>();
 
         RescExample example = new RescExample();
 
-        if(StringUtils.isNotBlank(project)){
+        if (StringUtils.isNotBlank(project)) {
             example.createCriteria().andRescDomainEqualTo(project);
         }
 
@@ -242,21 +277,21 @@ public class RescServiceImpl implements RescService {
         for (RescModel resc : resourceModels) {
 
 
-            if(map.containsKey(resc.getRescUrl())){
+            if (map.containsKey(resc.getRescUrl())) {
 
                 rescIds = map.get(resc.getRescUrl());
-            }else {
+            } else {
 
                 rescIds = new HashSet<>();
             }
 
 
             rescIds.add(resc.getRescId());
-            map.put(resc.getRescUrl(),rescIds);
+            map.put(resc.getRescUrl(), rescIds);
 
         }
 
-        ResultVO<Map<String, Set<Integer>>> resultVO =  new ResultVO<>();
+        ResultVO<Map<String, Set<Integer>>> resultVO = new ResultVO<>();
         resultVO.setCode(ResultConstant.RESULT_CODE_200);
         resultVO.setResult(map);
 

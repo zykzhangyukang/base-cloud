@@ -20,7 +20,7 @@
                 <a-form-item label="资源URL" name='rescUrl'>
                     <a-input v-model:value="searchParams.rescUrl" :style="{width:'280px'}" placeholder="资源URL输入框"></a-input>
                 </a-form-item>
-                <a-form-item label="请求方法类型" name="methodType">
+                <a-form-item label="方法类型" name="methodType">
                     <a-select v-model:value="searchParams.methodType" :style="{width:'180px'}" placeholder="请求方法类型">
                         <a-select-option v-for="item in methodTypeG" :value="item.code" :key="item.code">{{methodTypeGName[item.code]}}</a-select-option>
                     </a-select>
@@ -74,18 +74,26 @@
                     @showSizeChange="pageSizeChange">
             </a-pagination>
 
+            <!-- 新增资源 -->
+            <resc-save-modal ref="rescSaveModal" @success="queryData"></resc-save-modal>
+            <!-- 更新资源 -->
+            <resc-update-modal ref="rescUpdateModal" @success="queryData"></resc-update-modal>
         </a-card>
     </a-layout>
 </template>
 
 <script>
 
-    import {authRescPage} from "@/api/auth";
+    import {authRescDelete, authRescPage} from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
+    import rescSaveModal from "@/views/auth/resc/rescSaveModal";
+    import rescUpdateModal from "@/views/auth/resc/rescUpdateModal";
 
     export default {
         name: "Resc..vue",
         components: {
+            rescSaveModal,
+            rescUpdateModal
         },
         data() {
             return {
@@ -142,7 +150,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: '200px',
+                        width: '150px',
                         slots: { customRender: 'action' },
                     },
                 ],
@@ -164,8 +172,13 @@
         },
         methods:{
             handleUpdate(id){
+                this.$refs['rescUpdateModal'].open(id);
             },
             handleDelete(id){
+                authRescDelete(id).then(e=>{
+                    this.$message.success("删除资源成功！");
+                    this.queryData();
+                })
             },
             handleAdd(){
                 this.$refs['rescSaveModal'].open();

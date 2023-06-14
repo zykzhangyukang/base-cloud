@@ -35,7 +35,6 @@ http.interceptors.response.use(
 
         } else if (response.data.code === 401) {
 
-
             localStorage.clear();
 
             router.push('/login').then(() => {
@@ -52,40 +51,53 @@ http.interceptors.response.use(
             message.warn(response.data.msg);
 
         } else {
-
             message.error(response.data.msg ? response.data.msg : '接口其他错误');
         }
-
 
         return Promise.reject(response.data);
     },
     (error) => {
 
-        if (error.response.data.statusCode === 400) {
+        if (!error.response) {
 
             message.error({
-                content: '请求错误',
+                content: '连接服务器失败！',
                 type: 'error',
-                duration: 5 * 1000
+                duration: 3 * 1000
             })
 
         } else {
 
-            console.log('err' + error) // for debug
-            if (error.toString().search('timeout') > -1) {
-                message.error('请求超时，请重试或联系管理员');
-            }
-            if (error.toString().search('Network Error') > -1) {
-                message.error('请连接网络');
-            } else {
-                // 其他未知错误不提示
+            if (error.response.data.statusCode === 400) {
+
                 message.error({
-                    content: error.message,
+                    content: '请求错误！',
                     type: 'error',
                     duration: 5 * 1000
                 })
+
+            } else {
+
+                console.log('err' + error) // for debug
+
+                if (error.toString().search('timeout') > -1) {
+                    message.error('请求超时，请重试或联系管理员！');
+                }
+
+                if (error.toString().search('Network Error') > -1) {
+                    message.error('请连接网络！');
+                } else {
+                    // 其他未知错误不提示
+                    message.error({
+                        content: error.message,
+                        type: 'error',
+                        duration: 5 * 1000
+                    })
+                }
             }
         }
+
+
         return Promise.reject(error)
     }
 )

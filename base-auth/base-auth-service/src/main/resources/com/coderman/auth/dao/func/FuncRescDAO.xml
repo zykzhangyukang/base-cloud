@@ -187,4 +187,10 @@
       (#{funcId,jdbcType=INTEGER}, #{item,jdbcType=INTEGER})
     </foreach>
   </insert>
+
+  <select id="countByRescId" resultType="long">
+    select count(1)
+    from auth_func_resc where resc_id  = #{rescId}
+  </select>
+
 </mapper>

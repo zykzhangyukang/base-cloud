@@ -241,9 +241,12 @@
     where resc_id = #{rescId,jdbcType=INTEGER}
   </update>
 
+  <resultMap id="rescVoResultMap" type="com.coderman.auth.vo.resc.RescVO" extends="BaseResultMap">
+
+  </resultMap>
 
   <!-- 用户列表 -->
-  <select id="page" resultMap="BaseResultMap" resultType="com.coderman.auth.vo.resc.RescVO">
+  <select id="page" resultMap="rescVoResultMap" >
     select
     <include refid="Base_Column_List" />
     from auth_resc
@@ -287,12 +290,12 @@
   </select>
 
 
-  <select id="selectRescListByUsername" resultType="com.coderman.auth.vo.resc.RescVO">
+  <select id="selectRescListByUsername" resultMap="rescVoResultMap">
       SELECT
        DISTINCT
-          r2.resc_id as rescId,
-          r2.resc_url as rescUrl,
-          r2.method_type as methodType
+          r2.resc_id,
+          r2.resc_url,
+          r2.method_type
       FROM
           auth_user u
           INNER JOIN auth_user_role ur ON u.user_id = ur.user_id
@@ -303,5 +306,12 @@
           INNER JOIN auth_resc r2 ON r2.resc_id = fr.resc_id
       WHERE
           u.username = #{username}
+  </select>
+
+  <select id="selectByRescUrl" resultMap="rescVoResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from auth_resc
+    where resc_url = #{rescUrl}
   </select>
 </mapper>

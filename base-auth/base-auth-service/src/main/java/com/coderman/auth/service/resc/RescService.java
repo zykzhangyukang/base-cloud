@@ -4,6 +4,8 @@ package com.coderman.auth.service.resc;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.resc.RescPageDTO;
+import com.coderman.auth.dto.resc.RescSaveDTO;
+import com.coderman.auth.dto.resc.RescUpdateDTO;
 import com.coderman.auth.vo.resc.RescVO;
 
 import java.util.List;
@@ -27,18 +29,18 @@ public interface RescService {
     /**
      * 保存资源
      *
-     * @param rescVO
+     * @param rescSaveDTO
      * @return
      */
-    ResultVO<Void> save(RescVO rescVO);
+    ResultVO<Void> save(RescSaveDTO rescSaveDTO);
 
 
     /**
      * 更新资源
-     * @param rescVO
+     * @param rescUpdateDTO
      * @return
      */
-    ResultVO<Void> update(RescVO rescVO);
+    ResultVO<Void> update(RescUpdateDTO rescUpdateDTO);
 
 
     /**
@@ -55,7 +57,7 @@ public interface RescService {
      * @param rescId
      * @return
      */
-    ResultVO<RescVO> select(Integer rescId);
+    ResultVO<RescVO> selectById(Integer rescId);
 
 
     /**

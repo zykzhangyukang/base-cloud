@@ -3,6 +3,50 @@ import http from '../utils/request'
 /************************************ 资源 *********************************/
 
 /**
+ * 根据id获取资源信息
+ */
+export const authRescSelectById = (id) => {
+    return http({
+        url: `/auth/resc/${id}`,
+        method: 'get',
+    })
+}
+
+/**
+ * 更新资源
+ */
+export const authRescUpdate = (data) => {
+    return http({
+        url: `/auth/resc/update`,
+        method: 'put',
+        data
+    })
+}
+
+
+/**
+ * 删除资源
+ */
+export const authRescDelete = id => {
+    return http({
+        url: `/auth/resc/delete/${id}`,
+        method: 'delete',
+    })
+}
+
+/**
+ * 新增资源
+ */
+export const authRescSave = data => {
+    return http({
+        url: `/auth/resc/save`,
+        method: 'post',
+        data
+    })
+}
+
+
+/**
  * 资源列表
  */
 export const authRescPage = data => {
