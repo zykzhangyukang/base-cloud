@@ -4,6 +4,7 @@ import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.func.FuncPageDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
+import com.coderman.auth.dto.func.FuncUpdateDTO;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
@@ -78,7 +79,7 @@ public class FuncController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"dataList",  "pageRow", "totalRow", "currPage", "totalPage"}),
-            @ApiReturnParam(name = "FuncVO",value = {"parentFuncName","funcSort","dirHide","userVOList","rescVOList","funcName", "funcKey", "createTime","funcType","funcIcon",
+            @ApiReturnParam(name = "FuncVO",value = {"funcSort","funcDirStatus","userVOList","rescVOList","funcName", "funcKey", "createTime","funcType","funcIcon",
                     "updateTime", "childrenList", "funcId", "parentId","rescIdList"})
     })
     public ResultVO<PageVO<List<FuncVO>>> page(@RequestBody FuncPageDTO funcPageDTO){
@@ -97,22 +98,13 @@ public class FuncController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "更新功能")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true),
-            @ApiImplicitParam(name = "funcName",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_STRING,value = "功能名称",required = true),
-            @ApiImplicitParam(name = "funcKey",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_STRING,value = "功能key",required = true),
-            @ApiImplicitParam(name = "funcType",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能类型",required = true),
-            @ApiImplicitParam(name = "funcSort",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能排序",required = true),
-            @ApiImplicitParam(name = "dirShow",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能排序"),
-            @ApiImplicitParam(name = "rescIdList",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_OBJECT,value = "资源id"),
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "更新功能")
+    @PutMapping(value = "/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    @PostMapping(value = "/update")
-    public ResultVO<Void> update(@RequestBody @ApiIgnore FuncVO funcVO) {
-        return this.funcService.update(funcVO);
+    public ResultVO<Void> update(@RequestBody FuncUpdateDTO funcUpdateDTO) {
+        return this.funcService.update(funcUpdateDTO);
     }
 
 
@@ -135,11 +127,11 @@ public class FuncController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "FuncVO",value = {"parentFuncName","funcSort","dirHide","userVOList","rescVOList","rescIdList",
-                    "funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcType"})
+            @ApiReturnParam(name = "FuncVO",value = {"funcSort","funcDirStatus","userVOList","rescVOList","rescIdList",
+                    "funcName","funcIcon", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcType"})
     })
-    public ResultVO<FuncVO> selectUserById(@PathVariable(value = "funcId") Integer funcId) {
-        return this.funcService.selectUserById(funcId);
+    public ResultVO<FuncVO> selectById(@PathVariable(value = "funcId") Integer funcId) {
+        return this.funcService.selectById(funcId);
     }
 
 

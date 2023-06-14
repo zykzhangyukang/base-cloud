@@ -70,13 +70,12 @@ public class UserController {
         return this.userService.logout(token);
     }
 
-
+    @PostMapping(value = "/info")
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "获取用户菜单与权限")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","roles","funcKeys","menus"}),
     })
-    @PostMapping(value = "/info")
     public ResultVO<UserPermissionVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME,required = false) String token){
         return this.userService.info(token);
     }

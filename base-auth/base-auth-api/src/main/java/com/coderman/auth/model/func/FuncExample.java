@@ -505,63 +505,73 @@ public class FuncExample {
             return (Criteria) this;
         }
 
-        public Criteria andDirHideIsNull() {
-            addCriterion("dir_hide is null");
+        public Criteria andFuncDirStatusIsNull() {
+            addCriterion("func_dir_status is null");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideIsNotNull() {
-            addCriterion("dir_hide is not null");
+        public Criteria andFuncDirStatusIsNotNull() {
+            addCriterion("func_dir_status is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideEqualTo(Boolean value) {
-            addCriterion("dir_hide =", value, "dirHide");
+        public Criteria andFuncDirStatusEqualTo(String value) {
+            addCriterion("func_dir_status =", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideNotEqualTo(Boolean value) {
-            addCriterion("dir_hide <>", value, "dirHide");
+        public Criteria andFuncDirStatusNotEqualTo(String value) {
+            addCriterion("func_dir_status <>", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideGreaterThan(Boolean value) {
-            addCriterion("dir_hide >", value, "dirHide");
+        public Criteria andFuncDirStatusGreaterThan(String value) {
+            addCriterion("func_dir_status >", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideGreaterThanOrEqualTo(Boolean value) {
-            addCriterion("dir_hide >=", value, "dirHide");
+        public Criteria andFuncDirStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("func_dir_status >=", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideLessThan(Boolean value) {
-            addCriterion("dir_hide <", value, "dirHide");
+        public Criteria andFuncDirStatusLessThan(String value) {
+            addCriterion("func_dir_status <", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideLessThanOrEqualTo(Boolean value) {
-            addCriterion("dir_hide <=", value, "dirHide");
+        public Criteria andFuncDirStatusLessThanOrEqualTo(String value) {
+            addCriterion("func_dir_status <=", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideIn(List<Boolean> values) {
-            addCriterion("dir_hide in", values, "dirHide");
+        public Criteria andFuncDirStatusLike(String value) {
+            addCriterion("func_dir_status like", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideNotIn(List<Boolean> values) {
-            addCriterion("dir_hide not in", values, "dirHide");
+        public Criteria andFuncDirStatusNotLike(String value) {
+            addCriterion("func_dir_status not like", value, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideBetween(Boolean value1, Boolean value2) {
-            addCriterion("dir_hide between", value1, value2, "dirHide");
+        public Criteria andFuncDirStatusIn(List<String> values) {
+            addCriterion("func_dir_status in", values, "funcDirStatus");
             return (Criteria) this;
         }
 
-        public Criteria andDirHideNotBetween(Boolean value1, Boolean value2) {
-            addCriterion("dir_hide not between", value1, value2, "dirHide");
+        public Criteria andFuncDirStatusNotIn(List<String> values) {
+            addCriterion("func_dir_status not in", values, "funcDirStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncDirStatusBetween(String value1, String value2) {
+            addCriterion("func_dir_status between", value1, value2, "funcDirStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncDirStatusNotBetween(String value1, String value2) {
+            addCriterion("func_dir_status not between", value1, value2, "funcDirStatus");
             return (Criteria) this;
         }
 

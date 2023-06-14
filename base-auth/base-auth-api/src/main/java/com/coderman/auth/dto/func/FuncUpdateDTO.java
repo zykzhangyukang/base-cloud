@@ -28,10 +28,5 @@ public class FuncUpdateDTO extends BaseModel {
     private Integer funcSort;
 
     @ApiModelProperty("是否隐藏")
-    private Boolean dirHide;
-
-    @ApiModelProperty("父级功能id")
-    private Integer parentId;
-
-
+    private String funcDirStatus;
 }

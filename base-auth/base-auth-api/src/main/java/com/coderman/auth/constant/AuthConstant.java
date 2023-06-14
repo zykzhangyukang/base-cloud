@@ -79,11 +79,11 @@ public interface AuthConstant {
     /**
      * 是否隐藏菜单
      */
-    String FUNC_HIDE_GROUP = "func_hide_group";
+    String FUNC_DIR_STATUS_GROUP = "func_dir_status_group";
 
-    @ConstList(group = FUNC_HIDE_GROUP, name = "隐藏")
-    Boolean FUNC_DIR_HIDE_YES = true;
+    @ConstList(group = FUNC_DIR_STATUS_GROUP, name = "隐藏")
+    String FUNC_DIR_STATUS_HIDE = "hide";
 
-    @ConstList(group = FUNC_HIDE_GROUP, name = "显示")
-    Boolean FUNC_DIR_HIDE_NO =  false;
+    @ConstList(group = FUNC_DIR_STATUS_GROUP, name = "显示")
+    String FUNC_DIR_STATUS_SHOW =  "show";
 }

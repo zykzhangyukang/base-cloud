@@ -4,27 +4,27 @@ const Sync =() =>  import(/* webpackChunkName: 'login' */'../views/sync');
 const routes = [
     {
         path: '/auth',
-        name: 'Auth',
+        name: 'auth',
         component: Auth,
         children: [
             {
                 path: 'user',
-                name: 'AuthUser',
+                name: 'authUser',
                 component: () => import('../views/auth/user/index'),
             },
             {
                 path: 'role',
-                name: 'AuthRole',
+                name: 'authRole',
                 component: () => import('../views/auth/role/index')
             },
             {
                 path: 'resc',
-                name: 'AuthResc',
+                name: 'authResc',
                 component: () => import('../views/auth/resc/index')
             },
             {
                 path: 'func',
-                name: 'AuthFunc',
+                name: 'authFunc',
                 component: () => import('../views/auth/func/index')
             }
         ]
@@ -36,22 +36,22 @@ const routes = [
         children: [
             {
                 path: 'plan',
-                name: 'SyncPlan',
+                name: 'syncPlan',
                 component: () => import('../views/sync/plan/index'),
             },
             {
                 path: 'result',
-                name: 'SyncResult',
+                name: 'syncResult',
                 component: () => import('../views/sync/result/index')
             },
             {
                 path: 'msg',
-                name: 'SyncMsg',
+                name: 'syncMsg',
                 component: () => import('../views/sync/msg/index')
             },
             {
                 path: 'callback',
-                name: 'SyncCallback',
+                name: 'syncCallback',
                 component: () => import('../views/sync/callback/index')
             }
         ]

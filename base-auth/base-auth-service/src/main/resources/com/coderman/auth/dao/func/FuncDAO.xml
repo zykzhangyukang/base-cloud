@@ -8,7 +8,7 @@
     <result column="func_type" jdbcType="VARCHAR" property="funcType" />
     <result column="func_icon" jdbcType="VARCHAR" property="funcIcon" />
     <result column="func_sort" jdbcType="INTEGER" property="funcSort" />
-    <result column="dir_hide" jdbcType="BIT" property="dirHide" />
+    <result column="func_dir_status" jdbcType="VARCHAR" property="funcDirStatus" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    func_id, func_name, func_key, func_type, func_icon, func_sort, dir_hide, parent_id, 
+    func_id, func_name, func_key, func_type, func_icon, func_sort, func_dir_status, parent_id, 
     create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.coderman.auth.model.func.FuncExample" resultMap="BaseResultMap">
@@ -108,11 +108,11 @@
   <insert id="insert" parameterType="com.coderman.auth.model.func.FuncModel">
     insert into auth_func (func_id, func_name, func_key, 
       func_type, func_icon, func_sort, 
-      dir_hide, parent_id, create_time, 
+      func_dir_status, parent_id, create_time, 
       update_time)
     values (#{funcId,jdbcType=INTEGER}, #{funcName,jdbcType=VARCHAR}, #{funcKey,jdbcType=VARCHAR}, 
       #{funcType,jdbcType=VARCHAR}, #{funcIcon,jdbcType=VARCHAR}, #{funcSort,jdbcType=INTEGER}, 
-      #{dirHide,jdbcType=BIT}, #{parentId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{funcDirStatus,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.coderman.auth.model.func.FuncModel">
@@ -136,8 +136,8 @@
       <if test="funcSort != null">
         func_sort,
       </if>
-      <if test="dirHide != null">
-        dir_hide,
+      <if test="funcDirStatus != null">
+        func_dir_status,
       </if>
       <if test="parentId != null">
         parent_id,
@@ -168,8 +168,8 @@
       <if test="funcSort != null">
         #{funcSort,jdbcType=INTEGER},
       </if>
-      <if test="dirHide != null">
-        #{dirHide,jdbcType=BIT},
+      <if test="funcDirStatus != null">
+        #{funcDirStatus,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=INTEGER},
@@ -209,8 +209,8 @@
       <if test="record.funcSort != null">
         func_sort = #{record.funcSort,jdbcType=INTEGER},
       </if>
-      <if test="record.dirHide != null">
-        dir_hide = #{record.dirHide,jdbcType=BIT},
+      <if test="record.funcDirStatus != null">
+        func_dir_status = #{record.funcDirStatus,jdbcType=VARCHAR},
       </if>
       <if test="record.parentId != null">
         parent_id = #{record.parentId,jdbcType=INTEGER},
@@ -234,7 +234,7 @@
       func_type = #{record.funcType,jdbcType=VARCHAR},
       func_icon = #{record.funcIcon,jdbcType=VARCHAR},
       func_sort = #{record.funcSort,jdbcType=INTEGER},
-      dir_hide = #{record.dirHide,jdbcType=BIT},
+      func_dir_status = #{record.funcDirStatus,jdbcType=VARCHAR},
       parent_id = #{record.parentId,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -260,8 +260,8 @@
       <if test="funcSort != null">
         func_sort = #{funcSort,jdbcType=INTEGER},
       </if>
-      <if test="dirHide != null">
-        dir_hide = #{dirHide,jdbcType=BIT},
+      <if test="funcDirStatus != null">
+        func_dir_status = #{funcDirStatus,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         parent_id = #{parentId,jdbcType=INTEGER},
@@ -282,7 +282,7 @@
       func_type = #{funcType,jdbcType=VARCHAR},
       func_icon = #{funcIcon,jdbcType=VARCHAR},
       func_sort = #{funcSort,jdbcType=INTEGER},
-      dir_hide = #{dirHide,jdbcType=BIT},
+      func_dir_status = #{funcDirStatus,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
@@ -292,7 +292,6 @@
 
 
   <resultMap  id="pageResultMap"  extends="BaseResultMap" type="com.coderman.auth.vo.func.FuncVO">
-    <result column="parent_func_name" property="parentFuncName" />
     <collection column="func_id" ofType="com.coderman.auth.vo.user.UserVO" property="userVOList" select="com.coderman.auth.dao.func.FuncDAO.selectUserListByFuncId" />
     <collection column="func_id" ofType="com.coderman.auth.vo.resc.RescVO" property="rescVOList" select="com.coderman.auth.dao.func.FuncDAO.selectResListByFuncId" />
   </resultMap>
@@ -310,19 +309,35 @@
   </select>
 
   <select id="selectResListByFuncId" resultType="com.coderman.auth.vo.resc.RescVO">
-    select r.resc_name as rescName,r.resc_url as rescUrl,r.resc_domain as rescDomain,r.resc_id as rescId,r.method_type as methodType
-    from auth_func_resc fr
-    inner join auth_resc r on fr.resc_id = r.resc_id
-    where fr.func_id =  #{funcId}
+    SELECT
+      r.resc_name AS rescName,
+      r.resc_url AS rescUrl,
+      r.resc_domain AS rescDomain,
+      r.resc_id AS rescId,
+      r.method_type AS methodType
+  FROM
+      auth_func_resc fr
+      INNER JOIN auth_resc r ON fr.resc_id = r.resc_id
+  WHERE
+      fr.func_id = #{funcId}
   </select>
 
 
 
   <select id="page" resultMap="pageResultMap">
-    select
-       f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time,fp.func_name as parent_func_name,f.func_type,f.func_icon,f.func_sort,f.dir_hide
-    from auth_func f
-    left join auth_func fp on f.parent_id  = fp.func_id
+    SELECT
+    f.func_id,
+    f.func_name,
+    f.func_key,
+    f.parent_id,
+    f.create_time,
+    f.update_time,
+    f.func_type,
+    f.func_icon,
+    f.func_sort,
+    f.func_dir_status
+    FROM
+    auth_func f
     <include refid="pageWhere"></include>
     group by  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time
     limit #{offset},#{size}
@@ -400,8 +415,8 @@
       <if test="funcSort != null">
         func_sort,
       </if>
-      <if test="dirHide != null">
-        dir_hide,
+      <if test="funcDirStatus != null">
+        func_dir_status,
       </if>
       <if test="parentId != null">
         parent_id,
@@ -432,8 +447,8 @@
       <if test="funcSort != null">
         #{funcSort,jdbcType=INTEGER},
       </if>
-      <if test="dirHide != null">
-        #{dirHide,jdbcType=BIT},
+      <if test="funcDirStatus != null">
+        #{funcDirStatus,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=INTEGER},
@@ -453,7 +468,8 @@
     <result column="func_key" property="funcKey" />
     <result column="func_type" property="funcType" />
     <result column="func_sort" property="funcSort" />
-    <result column="dir_hide" property="dirHide" />
+    <result column="func_dir_status" property="funcDirStatus" />
+    <result column="func_icon" property="funcIcon"/>
     <collection column="func_id" ofType="com.coderman.auth.vo.resc.RescVO" property="rescVOList" select="com.coderman.auth.dao.func.FuncDAO.selectResListByFuncId" />
   </resultMap>
 
@@ -484,7 +500,8 @@
       f.func_key,
       f.func_icon,
       f.parent_id,
-      f.func_sort
+      f.func_sort,
+      f.func_dir_status
       from auth_user u
       inner join auth_user_role ur on u.user_id = ur.user_id
       inner join auth_role r on ur.role_id = r.role_id
@@ -507,8 +524,21 @@
   </select>
 
   <select id="selectFuncInfo" resultMap="funcInfoResultMap">
-    select  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time,f.func_type,f.func_sort,f.dir_hide
-    from auth_func f where f.func_id = #{funcId}
+    SELECT
+        f.func_id,
+        f.func_name,
+        f.func_key,
+        f.func_icon,
+        f.parent_id,
+        f.create_time,
+        f.update_time,
+        f.func_type,
+        f.func_sort,
+        f.func_dir_status
+    FROM
+        auth_func f
+    WHERE
+        f.func_id = #{funcId}
   </select>
 
 

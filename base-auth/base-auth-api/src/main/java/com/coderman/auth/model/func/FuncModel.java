@@ -30,7 +30,7 @@ public class FuncModel extends BaseModel {
     private Integer funcSort;
 
     @ApiModelProperty(value = "是否隐藏")
-    private Boolean dirHide;
+    private String funcDirStatus;
 
     @ApiModelProperty(value = "父级功能id")
     private Integer parentId;

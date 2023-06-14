@@ -18,10 +18,10 @@
                                 :style="{'marginBottom':'10px'}"
                                 layout='inline'
                         >
-                            <a-form-item label="功能名称" name='funcName'>
+                            <a-form-item label="功能名称">
                                 <a-input v-model:value="searchParams.funcName" :style="{width:'200px'}" placeholder="功能名称输入框"></a-input>
                             </a-form-item>
-                            <a-form-item label="功能URL" name='funcUrl'>
+                            <a-form-item label="功能Key">
                                 <a-input v-model:value="searchParams.funcKey" :style="{width:'200px'}" placeholder="功能Key输入框"></a-input>
                             </a-form-item>
                             <a-form-item label="功能类型">

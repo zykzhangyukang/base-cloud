@@ -5,6 +5,7 @@ import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.func.FuncPageDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
+import com.coderman.auth.dto.func.FuncUpdateDTO;
 import com.coderman.auth.vo.func.FuncQueryVO;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
@@ -45,10 +46,10 @@ public interface FuncService {
 
     /**
      * 更新功能
-     * @param funcVO
+     * @param funcUpdateDTO
      * @return
      */
-    ResultVO<Void> update(FuncVO funcVO);
+    ResultVO<Void> update(FuncUpdateDTO funcUpdateDTO);
 
 
     /**
@@ -64,7 +65,7 @@ public interface FuncService {
      * @param funcId
      * @return
      */
-    ResultVO<FuncVO> selectUserById(Integer funcId);
+    ResultVO<FuncVO> selectById(Integer funcId);
 
     /**
      * 功能解绑用户

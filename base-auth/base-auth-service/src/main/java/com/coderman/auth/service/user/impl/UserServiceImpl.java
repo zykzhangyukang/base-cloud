@@ -178,21 +178,21 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (StringUtils.isBlank(token)) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空！");
         }
 
         AuthUserVO authUserVO = this.getUserByToken(token).getResult();
 
         if (null == authUserVO) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
         }
 
         UserVO userVO = this.selectUserByName(authUserVO.getUsername()).getResult();
 
         if (null == userVO) {
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
         }
 
         UserPermissionVO userPermissionVO = new UserPermissionVO();

@@ -23,10 +23,13 @@
                     <a-select-option v-for="item in funcTypeG"  :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="是否隐藏">
-                <a-select v-model:value="form.dirHide"   >
-                    <a-select-option v-for="item in funcDirHideG"  :value="item.code" :key="item.code">{{funcDirHideGName[item.code]}}</a-select-option>
+            <a-form-item label="是否隐藏" v-if="form.funcType === 'dir'">
+                <a-select v-model:value="form.funcDirStatus"   >
+                    <a-select-option v-for="item in funcDirStatusG"  :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
                 </a-select>
+            </a-form-item>
+            <a-form-item label="功能图标" v-if="form.funcType === 'dir'">
+                <a-input v-model:value="form.funcIcon" />
             </a-form-item>
             <a-form-item label="功能排序">
                 <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
@@ -53,10 +56,11 @@
                 wrapperCol: { span: 18 },
                 form:{
                     funcName: '',
+                    funcIcon: '',
                     funcType: '',
                     parentId: null,
                     funcSort: 0,
-                    dirHide: null,
+                    funcDirStatus: 'show',
                 },
             }
         },
@@ -67,11 +71,11 @@
             funcTypeGName(){
                 return constant.formatConst(this.funcTypeG)
             },
-            funcDirHideG(){
-                return constant.getConst("func_hide_group",authDomain)
+            funcDirStatusG(){
+                return constant.getConst("func_dir_status_group",authDomain)
             },
-            funcDirHideGName(){
-                return constant.formatConst(this.funcDirHideG)
+            funcDirStatusGName(){
+                return constant.formatConst(this.funcDirStatusG)
             },
         },
         methods:{
