@@ -3,7 +3,10 @@ package com.coderman.auth.service.func;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.vo.func.FuncQueryVO;
+import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
 import com.coderman.auth.vo.func.MenuVO;
 
@@ -22,26 +25,22 @@ public interface FuncService {
      *
      * @return
      */
-    ResultVO<FuncVO> listTree();
+    ResultVO<List<FuncTreeVO>> listTree();
 
 
 
     /**
      * 功能列表
-     * @param currentPage
-     * @param pageSize
-     * @param queryVO
      * @return
      */
-    ResultVO<PageVO<List<FuncVO>>> page(Integer currentPage, Integer pageSize, FuncQueryVO queryVO);
+    ResultVO<PageVO<List<FuncVO>>> page(FuncPageDTO funcPageDTO);
 
 
     /**
      * 保存功能
-     * @param funcVO
      * @return
      */
-    ResultVO<Void> save(FuncVO funcVO);
+    ResultVO<Void> save(FuncSaveDTO funcSaveDTO);
 
 
     /**

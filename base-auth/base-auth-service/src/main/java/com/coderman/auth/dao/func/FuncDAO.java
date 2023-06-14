@@ -3,6 +3,7 @@ package com.coderman.auth.dao.func;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.vo.func.FuncQueryVO;
+import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
 import com.coderman.auth.vo.func.MenuVO;
 import com.coderman.auth.vo.resc.RescVO;
@@ -11,16 +12,39 @@ import com.coderman.mybatis.dao.BaseDAO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
 
     /**
-     * 功能列表
-     *
-     * @param queryVO
+     * 通过功能key查询功能
+     * @param funcKey
      * @return
      */
-    List<FuncVO> page(@Param(value = "queryVO") FuncQueryVO queryVO);
+    FuncModel selectByFuncKey(@Param(value = "funcKey") String funcKey);
+
+
+    /**
+     * 查询所有功能
+     *
+     * @return
+     */
+    List<FuncTreeVO> selectAllFuncTreeVO();
+
+    /**
+     * 功能列表
+     *
+     * @return
+     */
+    List<FuncVO> page(Map<String, Object> conditionMap);
+
+
+    /**
+     * 分页总条数
+     * @param conditionMap
+     * @return
+     */
+    Long countPage(Map<String, Object> conditionMap);
 
     /**
      * 根据功能id获取用户

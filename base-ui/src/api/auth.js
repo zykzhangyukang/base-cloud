@@ -1,5 +1,51 @@
 import http from '../utils/request'
 
+/************************************ 功能 *********************************/
+
+/**
+ * 删除功能
+ */
+export const authFuncDelete = id => {
+    return http({
+        url: `/auth/func/delete/${id}`,
+        method: 'delete',
+    })
+}
+
+/**
+ * 新增功能
+ */
+export const authFucSave = data => {
+    return http({
+        url: `/auth/func/save`,
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 功能列表
+ */
+export const authFuncPage = data => {
+    return http({
+        url: `/auth/func/page`,
+        method: 'post',
+        data: data
+    })
+}
+
+/**
+ * 功能列表
+ */
+export const authFuncTree = data => {
+    return http({
+        url: `/auth/func/tree`,
+        method: 'get',
+        data: data
+    })
+}
+
+
 /************************************ 资源 *********************************/
 
 /**

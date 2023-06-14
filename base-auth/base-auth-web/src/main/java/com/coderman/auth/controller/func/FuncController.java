@@ -2,8 +2,10 @@ package com.coderman.auth.controller.func;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.service.func.FuncService;
-import com.coderman.auth.vo.func.FuncQueryVO;
+import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
@@ -32,13 +34,13 @@ public class FuncController {
     private FuncService funcService;
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取功能树")
-    @GetMapping(value = "/list/tree")
+    @GetMapping(value = "/tree")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "FuncVO",value = {"funcTreeVOList","funcVOList"}),
             @ApiReturnParam(name = "FuncTreeVO",value = {"funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId"})
     })
-    public ResultVO<FuncVO> listTree(){
+    public ResultVO<List<FuncTreeVO>> listTree(){
 
         return this.funcService.listTree();
     }
@@ -71,44 +73,27 @@ public class FuncController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "功能列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "currentPage",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "当前页",required = true),
-            @ApiImplicitParam(name = "pageSize",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "每页显示大小",required = true),
-            @ApiImplicitParam(name = "funcKey",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "功能key"),
-            @ApiImplicitParam(name = "funcName",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "功能名称"),
-            @ApiImplicitParam(name = "rescUrl",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_STRING,value = "功能url")
-    })
-    @GetMapping(value = "/page")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "功能列表")
+    @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"dataList",  "pageRow", "totalRow", "currPage", "totalPage"}),
             @ApiReturnParam(name = "FuncVO",value = {"parentFuncName","funcSort","dirHide","userVOList","rescVOList","funcName", "funcKey", "createTime","funcType","funcIcon",
                     "updateTime", "childrenList", "funcId", "parentId","rescIdList"})
     })
-    public ResultVO<PageVO<List<FuncVO>>> page(@RequestParam(value = "currentPage") Integer currentPage,
-                                               @RequestParam(value = "pageSize") Integer pageSize, @ApiIgnore FuncQueryVO queryVO){
+    public ResultVO<PageVO<List<FuncVO>>> page(@RequestBody FuncPageDTO funcPageDTO){
 
-        return this.funcService.page(currentPage,pageSize,queryVO);
+        return this.funcService.page(funcPageDTO);
     }
 
 
+    @PostMapping(value = "/save")
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "保存功能")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "funcName",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_STRING,value = "功能名称",required = true),
-            @ApiImplicitParam(name = "funcKey",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_STRING,value = "功能key",required = true),
-            @ApiImplicitParam(name = "parentId",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "父级Id",required = true),
-            @ApiImplicitParam(name = "funcType",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能类型",required = true),
-            @ApiImplicitParam(name = "funcSort",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能排序",required = true),
-            @ApiImplicitParam(name = "dirShow",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_INT,value = "功能排序"),
-            @ApiImplicitParam(name = "rescIdList",paramType = SwaggerConstant.PARAM_BODY,dataType = SwaggerConstant.DATA_OBJECT,value = "资源id"),
-    })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    @PostMapping(value = "/save")
-    public ResultVO<Void> save(@RequestBody @ApiIgnore FuncVO funcVO) {
-        return this.funcService.save(funcVO);
+    public ResultVO<Void> save(@RequestBody FuncSaveDTO funcSaveDTO) {
+        return this.funcService.save(funcSaveDTO);
     }
 
 
@@ -131,15 +116,15 @@ public class FuncController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "删除资源")
-    @GetMapping(value = "/delete")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "删除资源")
+    @DeleteMapping(value = "/delete/{funcId}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
+            @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> delete(@RequestParam(value = "funcId") Integer funcId) {
+    public ResultVO<Void> delete(@PathVariable(value = "funcId") Integer funcId) {
         return this.funcService.delete(funcId);
     }
 

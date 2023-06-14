@@ -305,9 +305,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         // 获取所有功能
-        ResultVO<FuncVO> funcVOResultVO = this.funcService.listTree();
-        List<FuncTreeVO> treeVOList = funcVOResultVO.getResult().getFuncTreeVOList();
-        List<FuncTreeVO> funcVOList = funcVOResultVO.getResult().getFuncVOList();
+        List<FuncTreeVO> treeVOList = this.funcService.listTree().getResult();
 
         // 查询该角色拥有的功能
         RoleFuncExample example = new RoleFuncExample();
@@ -316,12 +314,12 @@ public class RoleServiceImpl implements RoleService {
 
 
         // 功能key
-        List<String> keyList = funcVOList.stream().filter(e -> hasFuncIdList.contains(e.getFuncId())).map(FuncTreeVO::getFuncKey).collect(Collectors.toList());
+        //List<String> keyList = funcVOList.stream().filter(e -> hasFuncIdList.contains(e.getFuncId())).map(FuncTreeVO::getFuncKey).collect(Collectors.toList());
 
         roleAuthInitVO.setRoleId(roleModel.getRoleId());
         roleAuthInitVO.setRoleName(roleModel.getRoleName());
         roleAuthInitVO.setAllTreeList(treeVOList);
-        roleAuthInitVO.setFuncKeyList(keyList);
+        //roleAuthInitVO.setFuncKeyList(keyList);
 
         // 回显问题: vue-ant-design
         return ResultUtil.getSuccess(RoleAuthInitVO.class,roleAuthInitVO);

@@ -1,0 +1,103 @@
+<template>
+    <a-modal v-model:visible="visible"
+             title="新增功能"
+             @ok="handleOk"
+             @cancel="handleClose"
+             :confirm-loading="confirmLoading"
+             cancelText="取消"
+             okText="提交"
+             ref="form"
+    >
+        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-form-item label="父级功能">
+                <a-input v-model:value="parentFunc.title"  disabled />
+            </a-form-item>
+            <a-form-item label="功能名称">
+                <a-input v-model:value="form.funcName"/>
+            </a-form-item>
+            <a-form-item label="功能Key">
+                <a-input v-model:value="form.funcKey" />
+            </a-form-item>
+            <a-form-item label="功能类型">
+                <a-select v-model:value="form.funcType"   >
+                    <a-select-option v-for="item in funcTypeG"  :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item label="是否隐藏" v-if="form.funcType === 'dir'">
+                <a-select v-model:value="form.dirHide" >
+                    <a-select-option v-for="item in funcDirHideG"  :value="item.code" :key="item.code">{{funcDirHideGName[item.code]}}</a-select-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item label="功能排序">
+                <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
+            </a-form-item>
+        </a-form>
+    </a-modal>
+</template>
+
+<script>
+
+    import constant, {authDomain} from "@/utils/constant";
+    import {authFucSave} from "@/api/auth";
+
+    export default {
+        name: "funcSaveModel.vue",
+        components:{
+        },
+        data() {
+            return {
+                parentFunc:{},
+                confirmLoading:  false,
+                visible: false,
+                labelCol: { span: 4 },
+                wrapperCol: { span: 18 },
+                form:{
+                    funcName: '',
+                    funcType: '',
+                    parentId: null,
+                    funcSort: 0,
+                    dirHide: 0,
+                },
+            }
+        },
+        computed:{
+            funcTypeG(){
+                return constant.getConst("func_type_group",authDomain)
+            },
+            funcTypeGName(){
+                return constant.formatConst(this.funcTypeG)
+            },
+            funcDirHideG(){
+                return constant.getConst("func_hide_group",authDomain)
+            },
+            funcDirHideGName(){
+                return constant.formatConst(this.funcDirHideG)
+            },
+        },
+        methods:{
+            handleOk() {
+                this.confirmLoading = true;
+                authFucSave(this.form).then(res => {
+                    this.$message.success("新增功能成功");
+                    this.handleClose();
+                    this.$emit('success')
+                }).finally(e=>{
+                    this.confirmLoading = false;
+                })
+            },
+            handleClose(){
+                this.visible = false
+                this.form = this.$options.data().form;
+            },
+            open(parentFunc){
+                this.visible = true;
+                this.parentFunc = parentFunc;
+                this.form.parentId = parentFunc.funcId;
+            }
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

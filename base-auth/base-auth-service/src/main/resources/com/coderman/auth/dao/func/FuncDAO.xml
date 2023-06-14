@@ -291,10 +291,13 @@
 
 
 
-  <resultMap extends="BaseResultMap" id="pageResultMap" type="com.coderman.auth.vo.func.FuncVO">
+  <resultMap  id="pageResultMap"  extends="BaseResultMap" type="com.coderman.auth.vo.func.FuncVO">
     <result column="parent_func_name" property="parentFuncName" />
     <collection column="func_id" ofType="com.coderman.auth.vo.user.UserVO" property="userVOList" select="com.coderman.auth.dao.func.FuncDAO.selectUserListByFuncId" />
     <collection column="func_id" ofType="com.coderman.auth.vo.resc.RescVO" property="rescVOList" select="com.coderman.auth.dao.func.FuncDAO.selectResListByFuncId" />
+  </resultMap>
+
+  <resultMap  id="funcTreeVOResultMap"  extends="BaseResultMap" type="com.coderman.auth.vo.func.FuncTreeVO">
   </resultMap>
 
   <select id="selectUserListByFuncId" resultMap="com.coderman.auth.dao.user.UserDAO.pageBaseResultMap">
@@ -320,33 +323,60 @@
        f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time,fp.func_name as parent_func_name,f.func_type,f.func_icon,f.func_sort,f.dir_hide
     from auth_func f
     left join auth_func fp on f.parent_id  = fp.func_id
+    <include refid="pageWhere"></include>
+    group by  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time
+    limit #{offset},#{size}
+  </select>
+
+  <select id="countPage" resultType="long">
+    select count(1)
+    from auth_func f
+    left join auth_func fp on f.parent_id  = fp.func_id
+    <include refid="pageWhere"></include>
+  </select>
+  
+  <sql id="pageWhere">
     <where>
-      <if test="queryVO.funcName!=null and queryVO.funcName!=''">
-        and f.func_name like concat('%',#{queryVO.funcName},'%')
+      <if test="funcName!=null and funcName!=''">
+        and f.func_name like concat('%',#{funcName},'%')
       </if>
-      <if test="queryVO.funcKey!=null and queryVO.funcKey!=''">
-        and f.func_key like concat('%',#{queryVO.funcKey},'%')
+      <if test="funcKey!=null and funcKey!=''">
+        and f.func_key like concat('%',#{funcKey},'%')
       </if>
-      <if test="queryVO.funcType!=null and queryVO.funcType!=''">
-        and f.func_type = #{queryVO.funcType}
+      <if test="funcType!=null and funcType!=''">
+        and f.func_type = #{funcType}
       </if>
-      <if test="queryVO.parentId!=null">
-        and (f.parent_id = #{queryVO.parentId} or f.func_id = #{queryVO.parentId})
+      <if test="parentId!=null">
+        and (f.parent_id = #{parentId} or f.func_id = #{parentId})
       </if>
-      <if test="queryVO.rescUrl!=null and queryVO.rescUrl!=''">
+      <if test="rescUrl!=null and rescUrl!=''">
         and f.func_id in (
-                    select
-                    f.func_id
-                    from
-                    auth_func f
-                    inner join auth_func_resc fr on f.func_id = fr.func_id
-                    inner join auth_resc r on fr.resc_id = r.resc_id
-                    where
-                    r.resc_url like concat('%',#{queryVO.rescUrl},'%')
+        select
+        f.func_id
+        from
+        auth_func f
+        inner join auth_func_resc fr on f.func_id = fr.func_id
+        inner join auth_resc r on fr.resc_id = r.resc_id
+        where
+        r.resc_url like concat('%',#{rescUrl},'%')
         )
       </if>
     </where>
-    group by  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time
+  </sql>
+
+  <select id="selectAllFuncTreeVO"  resultMap="funcTreeVOResultMap">
+     select
+      func_id,
+      func_name,
+      func_key,
+      parent_id
+      from auth_func
+  </select>
+
+  <select id="selectByFuncKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from auth_func where func_key = #{funcKey}
   </select>
 
   <insert id="insertSelectiveReturnKey" keyColumn="func_id" keyProperty="funcId" parameterType="com.coderman.auth.model.func.FuncModel" useGeneratedKeys="true">

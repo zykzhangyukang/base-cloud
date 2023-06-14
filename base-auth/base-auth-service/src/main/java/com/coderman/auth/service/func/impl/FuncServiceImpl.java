@@ -2,6 +2,7 @@ package com.coderman.auth.service.func.impl;
 
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.exception.BusinessException;
+import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
@@ -10,6 +11,8 @@ import com.coderman.auth.dao.func.FuncDAO;
 import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
+import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.model.func.FuncRescExample;
@@ -33,10 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -63,20 +63,12 @@ public class FuncServiceImpl implements FuncService {
 
     @Override
     @LogError(value = "获取功能树")
-    public ResultVO<FuncVO> listTree() {
+    public ResultVO<List<FuncTreeVO>> listTree() {
 
         FuncVO funcVO = new FuncVO();
 
         // 获取所有功能转成VO
-        FuncExample example = new FuncExample();
-        example.setOrderByClause("func_sort asc");
-        List<FuncModel> funcModels = this.funcDAO.selectByExample(example);
-
-        List<FuncTreeVO> funcTreeVOList = funcModels.stream().map(funcModel -> {
-            FuncTreeVO funcTreeVO = new FuncTreeVO();
-            BeanUtils.copyProperties(funcModel, funcTreeVO);
-            return funcTreeVO;
-        }).collect(Collectors.toList());
+        List<FuncTreeVO> funcTreeVOList = this.funcDAO.selectAllFuncTreeVO();
 
         // 转成Map结构
         Map<Integer, FuncTreeVO> funcVOMap = funcTreeVOList.stream().collect(Collectors.toMap(FuncTreeVO::getFuncId, e -> e));
@@ -85,52 +77,99 @@ public class FuncServiceImpl implements FuncService {
                 funcVOMap.get(treeVo.getParentId()).getChildrenList().add(treeVo);
             }
         }
-
-        // 获取所有父级节点
         List<FuncTreeVO> rootFunVoList = funcTreeVOList.stream().filter(e -> !funcVOMap.containsKey(e.getParentId())).collect(Collectors.toList());
         funcVO.setFuncTreeVOList(rootFunVoList);
-        funcVO.setFuncVOList(funcTreeVOList);
-        return ResultUtil.getSuccess(FuncVO.class, funcVO);
+        return ResultUtil.getSuccessList(FuncTreeVO.class, rootFunVoList);
     }
 
 
     @Override
     @LogError(value = "功能列表")
-    public ResultVO<PageVO<List<FuncVO>>> page(Integer currentPage, Integer pageSize, FuncQueryVO queryVO) {
+    public ResultVO<PageVO<List<FuncVO>>> page(@LogErrorParam FuncPageDTO funcPageDTO) {
 
-        PageHelper.startPage(currentPage, pageSize);
-        List<FuncVO> funcVOList = this.funcDAO.page(queryVO);
+        Map<String, Object> conditionMap = new HashMap<>(5);
+        String funcName = funcPageDTO.getFuncName();
+        String funcKey = funcPageDTO.getFuncKey();
+        String funcType = funcPageDTO.getFuncType();
+        Integer parentId = funcPageDTO.getParentId();
+        String rescUrl = funcPageDTO.getRescUrl();
 
+        Integer currentPage = funcPageDTO.getCurrentPage();
+        Integer pageSize = funcPageDTO.getPageSize();
 
-        PageInfo<FuncVO> pageInfo = new PageInfo<>(funcVOList);
-        List<FuncVO> list = pageInfo.getList();
-        return ResultUtil.getSuccessPage(FuncVO.class, new PageVO<>(pageInfo.getTotal(), list, currentPage, pageSize));
+        if (Objects.isNull(currentPage)) {
+
+            currentPage = 1;
+        }
+
+        if (Objects.isNull(pageSize)) {
+
+            pageSize = 20;
+        }
+
+        if (StringUtils.isNotBlank(funcName)) {
+            conditionMap.put("funcName", funcName);
+        }
+
+        if (StringUtils.isNotBlank(funcName)) {
+            conditionMap.put("funcName", funcName);
+        }
+
+        if (StringUtils.isNotBlank(funcType)) {
+            conditionMap.put("funcType", funcType);
+        }
+
+        if (StringUtils.isNotBlank(funcKey)) {
+            conditionMap.put("funcKey", funcKey);
+        }
+
+        if (StringUtils.isNotBlank(rescUrl)) {
+            conditionMap.put("rescUrl", rescUrl);
+        }
+
+        if (Objects.nonNull(parentId)) {
+
+            conditionMap.put("parentId", parentId);
+        }
+
+        PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
+
+        Long count = this.funcDAO.countPage(conditionMap);
+
+        List<FuncVO> funcVOList = new ArrayList<>();
+
+        if (count > 0) {
+
+            funcVOList = this.funcDAO.page(conditionMap);
+        }
+
+        return ResultUtil.getSuccessPage(FuncVO.class, new PageVO<>(count, funcVOList, currentPage, pageSize));
     }
 
     @Override
     @LogError(value = "保存功能")
-    public ResultVO<Void> save(FuncVO funcVO) {
+    public ResultVO<Void> save(@LogErrorParam FuncSaveDTO funcSaveDTO) {
 
-        Integer parentId = funcVO.getParentId();
-        String funcName = funcVO.getFuncName();
-        String funcKey = funcVO.getFuncKey();
-        String funcType = funcVO.getFuncType();
-        Integer funcSort = funcVO.getFuncSort();
-        Boolean dirHide = funcVO.getDirHide();
+        Integer parentId = funcSaveDTO.getParentId();
+        String funcName = funcSaveDTO.getFuncName();
+        String funcKey = funcSaveDTO.getFuncKey();
+        String funcType = funcSaveDTO.getFuncType();
+        Integer funcSort = funcSaveDTO.getFuncSort();
+        Boolean dirHide = funcSaveDTO.getDirHide();
 
         if (parentId == null) {
 
-            return ResultUtil.getWarn("父级功能不能为空");
+            return ResultUtil.getWarn("父级功能不能为空！");
         }
 
         if (StringUtils.isBlank(funcName) || StringUtils.length(funcName) > 15) {
 
-            return ResultUtil.getWarn("功能名称不能为空，且在15个字符之内");
+            return ResultUtil.getWarn("功能名称不能为空，且在15个字符之内！");
         }
 
         if (StringUtils.isBlank(funcKey) || StringUtils.length(funcKey) > 30) {
 
-            return ResultUtil.getWarn("功能key不能为空,且在30个字符之内");
+            return ResultUtil.getWarn("功能key不能为空,且在30个字符之内！");
         }
 
         if (StringUtils.isBlank(funcType)) {
@@ -139,21 +178,20 @@ public class FuncServiceImpl implements FuncService {
         }
 
         if (funcSort == null || funcSort < 0 || funcSort > 100) {
-            return ResultUtil.getWarn("功能排序不能为空，请输入0-100之间的整数");
+
+            return ResultUtil.getWarn("功能排序不能为空，请输入0-100之间的整数！");
         }
 
-        if (AuthConstant.func_type_dir.equals(funcType) && null == dirHide) {
-            return ResultUtil.getWarn("请选择目录是显示还是隐藏");
+        if (AuthConstant.FUNC_TYPE_DIR.equals(funcType) && null == dirHide) {
+
+            return ResultUtil.getWarn("请选择目录是显示还是隐藏！");
         }
 
-        // 功能key唯一性校验
-        FuncExample example = new FuncExample();
-        example.createCriteria().andFuncKeyEqualTo(funcKey);
-        long count = this.funcDAO.countByExample(example);
+        FuncModel funcModel = this.funcDAO.selectByFuncKey(funcKey);
 
-        if (count > 0) {
+        if (Objects.nonNull(funcModel)) {
 
-            throw new BusinessException("存在重复功能key");
+            return ResultUtil.getWarn("存在重复功能key！");
         }
 
         FuncModel insert = new FuncModel();
@@ -168,13 +206,11 @@ public class FuncServiceImpl implements FuncService {
 
         this.funcDAO.insertSelectiveReturnKey(insert);
 
-
         // 保存功能-资源关联
-        if (!CollectionUtils.isEmpty(funcVO.getRescIdList())) {
-
-            this.funcRescDAO.insertBatchByFuncId(insert.getFuncId(), funcVO.getRescIdList());
-        }
-
+//        if (!CollectionUtils.isEmpty(funcVO.getRescIdList())) {
+//
+//            this.funcRescDAO.insertBatchByFuncId(insert.getFuncId(), funcVO.getRescIdList());
+//        }
 
         return ResultUtil.getSuccess();
     }
@@ -192,42 +228,40 @@ public class FuncServiceImpl implements FuncService {
 
         FuncModel funcModel = this.funcDAO.selectByPrimaryKey(funcId);
         if (null == funcModel) {
-            throw new BusinessException("功能id不能为空");
+
+            return ResultUtil.getWarn("功能id不能为空！");
         }
 
         if (StringUtils.isBlank(funcKey) || StringUtils.length(funcKey) > 30) {
 
-            return ResultUtil.getWarn("功能key不能为空,且在30个字符之内");
+            return ResultUtil.getWarn("功能key不能为空,且在30个字符之内！");
         }
 
         if (StringUtils.isBlank(funcName) || StringUtils.length(funcName) > 15) {
 
-            return ResultUtil.getWarn("功能名称不能为空，且在15个字符之内");
+            return ResultUtil.getWarn("功能名称不能为空，且在15个字符之内！");
         }
-
 
         if (funcSort == null || funcSort < 0 || funcSort > 100) {
-            return ResultUtil.getWarn("功能排序不能为空，请输入0-100之间的整数");
-        }
 
+            return ResultUtil.getWarn("功能排序不能为空，请输入0-100之间的整数！");
+        }
 
         if (StringUtils.isBlank(funcType)) {
 
             return ResultUtil.getWarn("功能类型不能为空！");
         }
 
+        if (AuthConstant.FUNC_TYPE_DIR.equals(funcType) && null == dirHide) {
 
-        if (AuthConstant.func_type_dir.equals(funcType) && null == dirHide) {
             return ResultUtil.getWarn("请选择目录是显示还是隐藏");
         }
 
-
         // 功能key唯一性校验
-        FuncExample example = new FuncExample();
-        example.createCriteria().andFuncKeyEqualTo(funcKey).andFuncIdNotEqualTo(funcId);
-        Long count = this.funcDAO.countByExample(example);
+        FuncModel dbFuncModel = this.funcDAO.selectByFuncKey(funcKey);
 
-        if (count > 0) {
+        if (Objects.nonNull(dbFuncModel) && !funcId.equals(dbFuncModel.getFuncId())) {
+
             throw new BusinessException("存在重复的功能key");
         }
 
@@ -241,12 +275,10 @@ public class FuncServiceImpl implements FuncService {
         update.setDirHide(dirHide);
         this.funcDAO.updateByPrimaryKeySelective(update);
 
-
         // 删除原来的功能-资源绑定
         FuncRescExample funcRescExample = new FuncRescExample();
         funcRescExample.createCriteria().andFuncIdEqualTo(funcId);
         this.funcRescDAO.deleteByExample(funcRescExample);
-
 
         // 批量增加现在的功能-资源绑定
         if (!CollectionUtils.isEmpty(funcVO.getRescIdList())) {
@@ -273,7 +305,6 @@ public class FuncServiceImpl implements FuncService {
         if (funcResCount > 0) {
             return ResultUtil.getWarn("功能已经绑定了资源,请先清空资源!");
         }
-
 
         // 校验是否有用户绑定了该功能
         RoleFuncExample roleFuncModelExample = new RoleFuncExample();
@@ -359,16 +390,15 @@ public class FuncServiceImpl implements FuncService {
 
         FuncModel rootNode = this.funcDAO.selectByPrimaryKey(rootFuncId);
 
-        if (StringUtils.equals(rootNode.getFuncType(), AuthConstant.func_type_dir)) {
+        if (StringUtils.equals(rootNode.getFuncType(), AuthConstant.FUNC_TYPE_DIR)) {
 
             return ResultUtil.getWarn("目录功能不支持解绑用户");
         }
 
-        if (AuthConstant.func_root_parent_id.equals(rootNode.getParentId())) {
+        if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(rootNode.getParentId())) {
 
             return ResultUtil.getWarn("不允许解绑最顶级的功能!");
         }
-
 
         funcIdList.add(rootFuncId);
         FuncExample example = new FuncExample();
@@ -397,12 +427,12 @@ public class FuncServiceImpl implements FuncService {
             return ResultUtil.getWarn("功能不存在");
         }
 
-        if (StringUtils.equals(funcVO.getFuncType(), AuthConstant.func_type_dir)) {
+        if (StringUtils.equals(funcVO.getFuncType(), AuthConstant.FUNC_TYPE_DIR)) {
 
             return ResultUtil.getWarn("目录功能不支持解绑资源");
         }
 
-        if (AuthConstant.func_root_parent_id.equals(funcVO.getParentId())) {
+        if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(funcVO.getParentId())) {
 
             return ResultUtil.getWarn("顶级的功能不允许解绑资源!");
         }
