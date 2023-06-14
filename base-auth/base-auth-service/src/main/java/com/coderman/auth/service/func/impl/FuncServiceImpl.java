@@ -337,16 +337,26 @@ public class FuncServiceImpl implements FuncService {
 
     @Override
     @LogError(value = "获取功能")
-    public ResultVO<FuncVO> select(@LogErrorParam Integer funcId) {
+    public ResultVO<FuncVO> selectUserById(@LogErrorParam Integer funcId) {
+
+        if (Objects.isNull(funcId)) {
+
+            return ResultUtil.getWarn("功能id不能为空！");
+        }
 
         FuncVO funcVO = this.funcDAO.selectFuncInfo(funcId);
         if (null == funcVO) {
-            throw new BusinessException("功能不存在");
+
+            return ResultUtil.getWarn("功能不存在！");
         }
 
         List<RescVO> rescVOList = funcVO.getRescVOList();
         if (!CollectionUtils.isEmpty(rescVOList)) {
-            funcVO.setRescIdList(rescVOList.stream().map(RescVO::getRescId).collect(Collectors.toList()));
+
+            // 资源ids
+            List<Integer> rescIdList = rescVOList.stream().map(RescVO::getRescId)
+                    .collect(Collectors.toList());
+            funcVO.setRescIdList(rescIdList);
         }
 
         return ResultUtil.getSuccess(FuncVO.class, funcVO);

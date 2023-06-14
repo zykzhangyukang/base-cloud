@@ -82,8 +82,8 @@ public interface AuthConstant {
     String FUNC_HIDE_GROUP = "func_hide_group";
 
     @ConstList(group = FUNC_HIDE_GROUP, name = "隐藏")
-    Integer FUNC_DIR_HIDE_YES = 1;
+    Boolean FUNC_DIR_HIDE_YES = true;
 
     @ConstList(group = FUNC_HIDE_GROUP, name = "显示")
-    Integer FUNC_DIR_HIDE_NO =  0;
+    Boolean FUNC_DIR_HIDE_NO =  false;
 }

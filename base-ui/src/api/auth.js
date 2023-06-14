@@ -2,6 +2,30 @@ import http from '../utils/request'
 
 /************************************ 功能 *********************************/
 
+
+/**
+ * 根据id获取资源信息
+ */
+export const authFuncSelectById = (id) => {
+    return http({
+        url: `/auth/func/${id}`,
+        method: 'get',
+    })
+}
+
+
+/**
+ *更新功能信息
+ */
+export const authFuncUpdate = (data) => {
+    return http({
+        url: `/auth/func/update`,
+        method: 'put',
+        data
+    })
+}
+
+
 /**
  * 删除功能
  */

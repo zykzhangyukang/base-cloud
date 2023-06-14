@@ -129,17 +129,17 @@ public class FuncController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取资源")
-    @GetMapping(value = "/select")
+    @GetMapping(value = "/{funcId}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "资源Id",required = true)
+            @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "资源Id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "FuncVO",value = {"parentFuncName","funcSort","dirHide","userVOList","rescVOList","rescIdList",
                     "funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcType"})
     })
-    public ResultVO<FuncVO> select(@RequestParam(value = "funcId") Integer funcId) {
-        return this.funcService.select(funcId);
+    public ResultVO<FuncVO> selectUserById(@PathVariable(value = "funcId") Integer funcId) {
+        return this.funcService.selectUserById(funcId);
     }
 
 

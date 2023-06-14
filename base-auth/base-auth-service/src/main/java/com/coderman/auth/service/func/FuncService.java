@@ -64,7 +64,7 @@ public interface FuncService {
      * @param funcId
      * @return
      */
-    ResultVO<FuncVO> select(Integer funcId);
+    ResultVO<FuncVO> selectUserById(Integer funcId);
 
     /**
      * 功能解绑用户

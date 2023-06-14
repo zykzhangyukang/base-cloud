@@ -76,6 +76,8 @@
 
                         <!-- 新增功能 -->
                         <func-save-modal ref="funcSaveModal" @success="refreshData"></func-save-modal>
+                        <!-- 更新功能 -->
+                        <func-update-modal ref="funcUpdateModal" @success="refreshData"></func-update-modal>
                     </a-card>
                 </a-col>
             </a-row>
@@ -86,12 +88,14 @@
     import constant, {authDomain} from "@/utils/constant";
     import leftFuncTree from "@/views/auth/func/leftFuncTree";
     import funcSaveModal from "@/views/auth/func/funcSaveModal";
+    import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
 
     export default {
         name: "Func.vue",
         components:{
             leftFuncTree,
-            funcSaveModal
+            funcSaveModal,
+            funcUpdateModal
         },
         data(){
             return {
