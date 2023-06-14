@@ -7,7 +7,7 @@
                     </div>
                 </a-col>
                 <a-col :span="21">
-                    <a-card>
+                    <a-card style=" height: 85vh;">
                         <div :style="{'textAlign':'right'}">
                             <a-button type="danger" @click="handleAdd" :disabled="searchParams.parentId === null">
                                 添加
