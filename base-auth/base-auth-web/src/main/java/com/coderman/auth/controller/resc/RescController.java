@@ -66,7 +66,7 @@ public class RescController {
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "搜索资源")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "keyword", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "关键字", required = false)
+            @ApiImplicitParam(name = "keyword", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_STRING, value = "关键字")
     })
     @GetMapping(value = "/search")
     @ApiReturnParams({

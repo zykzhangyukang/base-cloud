@@ -64,7 +64,7 @@
                                              @confirm="handleDelete(record.funcId)">
                                          <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
                                       </a-popconfirm>
-                                       <a-button size="small" class="btn-text-small" type="link" @click="handleUpdate(record.funcId)">绑定</a-button>
+                                       <a-button size="small" class="btn-text-small" type="link" @click="handleBindResc(record.funcId)">绑定</a-button>
                                 </span>
                             </template>
                         </a-table>
@@ -84,6 +84,8 @@
                         <func-save-modal ref="funcSaveModal" @success="refreshData"></func-save-modal>
                         <!-- 更新功能 -->
                         <func-update-modal ref="funcUpdateModal" @success="refreshData"></func-update-modal>
+                        <!-- 绑定资源 -->
+                        <func-bind-resc-modal ref="funcBindRescModal" @success="queryData"></func-bind-resc-modal>
                     </a-card>
                 </a-col>
             </a-row>
@@ -95,13 +97,15 @@
     import leftFuncTree from "@/views/auth/func/leftFuncTree";
     import funcSaveModal from "@/views/auth/func/funcSaveModal";
     import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
+    import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
 
     export default {
         name: "Func.vue",
         components:{
             leftFuncTree,
             funcSaveModal,
-            funcUpdateModal
+            funcUpdateModal,
+            funcBindRescModal
         },
         data(){
             return {
@@ -192,6 +196,9 @@
             },
             handleUpdate(id){
                 this.$refs['funcUpdateModal'].open(id);
+            },
+            handleBindResc(id){
+                this.$refs['funcBindRescModal'].open(id);
             },
             handleDelete(id){
                 authFuncDelete(id).then(e=>{

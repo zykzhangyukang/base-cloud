@@ -75,6 +75,17 @@ export const authFuncTree = data => {
 /**
  * 根据id获取资源信息
  */
+export const authRescSearchByKeyword = (keyword) => {
+    return http({
+        url: `/auth/resc/search?keyword=${keyword}`,
+        method: 'get',
+    })
+}
+
+
+/**
+ * 根据id获取资源信息
+ */
 export const authRescSelectById = (id) => {
     return http({
         url: `/auth/resc/${id}`,
