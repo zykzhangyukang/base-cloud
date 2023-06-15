@@ -59,16 +59,20 @@
                             </template>
                             <template #action="{ record }">
                                 <span>
-                                    <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.funcId)">编辑</a-button>
-                                     <a-popconfirm
-                                             title="您确定要删除该功能吗?"
-                                             ok-text="确定"
-                                             cancel-text="取消"
-                                             @confirm="handleDelete(record.funcId)">
-                                         <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
+                                    <a-divider type="vertical"/>
+                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)">编辑</a>
+                                        <a-divider type="vertical"/>
+                                          <a-popconfirm
+                                                  title="您确定要删除该功能吗?"
+                                                  ok-text="确定"
+                                                  cancel-text="取消"
+                                                  @confirm="handleDelete(record.funcId)">
+                                        <a href="#" class="btn-text-small">删除</a>
                                       </a-popconfirm>
-                                       <a-button size="small" class="btn-text-small" type="link" @click="handleBindResc(record.funcId)">绑定</a-button>
-                                       <a-button size="small" class="btn-text-small" type="link" @click="handleLookResc(record.funcId)">查看</a-button>
+                                     <a-divider type="vertical"/>
+                                    <a href="#" class="btn-text-small" @click="handleLookResc(record.funcId)">查看资源</a>
+                                    <a-divider type="vertical"/>
+                                    <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">设置资源</a>
                                 </span>
                             </template>
                         </a-table>
@@ -167,7 +171,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: '200px',
+                        width: '300px',
                         slots: { customRender: 'action' },
                     },
                 ],
