@@ -25,4 +25,12 @@ public interface FuncRescDAO extends BaseDAO<FuncRescModel, FuncRescExample> {
      * @return
      */
     Long countByRescId(@Param(value = "rescId") Integer rescId);
+
+
+    /**
+     * 查询数量通过功能id
+     * @param funcId
+     * @return
+     */
+    Long countByFuncId(@Param(value = "funcId") Integer funcId);
 }

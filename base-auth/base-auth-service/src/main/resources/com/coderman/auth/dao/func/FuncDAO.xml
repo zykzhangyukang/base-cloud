@@ -361,6 +361,9 @@
       <if test="funcType!=null and funcType!=''">
         and f.func_type = #{funcType}
       </if>
+      <if test="funcDirStatus!=null and funcDirStatus!=''">
+        and f.func_dir_status = #{funcDirStatus}
+      </if>
       <if test="parentId!=null">
         and (f.parent_id = #{parentId} or f.func_id = #{parentId})
       </if>
@@ -392,6 +395,12 @@
     select
     <include refid="Base_Column_List"></include>
     from auth_func where func_key = #{funcKey}
+  </select>
+
+  <select id="countChildrenByParentId" resultType="long">
+    select count(1)
+    from auth_func
+    where parent_id = #{parentId}
   </select>
 
   <insert id="insertSelectiveReturnKey" keyColumn="func_id" keyProperty="funcId" parameterType="com.coderman.auth.model.func.FuncModel" useGeneratedKeys="true">

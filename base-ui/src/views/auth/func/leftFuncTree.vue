@@ -69,7 +69,6 @@
                this.selectedKeys = [];
             },
             select(e){
-                console.log(e)
                 this.selectedKeys = e;
                 const funcKey = e[0];
                 let item = null;

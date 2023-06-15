@@ -91,6 +91,7 @@ public class FuncServiceImpl implements FuncService {
         String funcKey = funcPageDTO.getFuncKey();
         String funcType = funcPageDTO.getFuncType();
         Integer parentId = funcPageDTO.getParentId();
+        String funcDirStatus = funcPageDTO.getFuncDirStatus();
         String rescUrl = funcPageDTO.getRescUrl();
 
         Integer currentPage = funcPageDTO.getCurrentPage();
@@ -116,6 +117,10 @@ public class FuncServiceImpl implements FuncService {
 
         if (StringUtils.isNotBlank(funcType)) {
             conditionMap.put("funcType", funcType);
+        }
+
+        if (StringUtils.isNotBlank(funcDirStatus)) {
+            conditionMap.put("funcDirStatus", funcDirStatus);
         }
 
         if (StringUtils.isNotBlank(funcKey)) {
@@ -296,17 +301,29 @@ public class FuncServiceImpl implements FuncService {
     @LogError(value = "删除功能")
     public ResultVO<Void> delete(Integer funcId) {
 
+        if (Objects.isNull(funcId)) {
+
+            return ResultUtil.getWarn("功能id不能为空！");
+        }
+
         FuncModel funcModel = this.funcDAO.selectByPrimaryKey(funcId);
         if (null == funcModel) {
-            throw new BusinessException("功能不存在");
+
+            return ResultUtil.getWarn("功能不存在！");
+        }
+
+        // 校验功能是否存在子功能
+        Long childrenCount = this.funcDAO.countChildrenByParentId(funcId);
+        if (childrenCount > 0) {
+
+            return ResultUtil.getWarn("功能存在子功能,无法删除！");
         }
 
         // 校验是否有功能-资源关联
-        FuncRescExample example = new FuncRescExample();
-        example.createCriteria().andFuncIdEqualTo(funcId);
-        long funcResCount = this.funcRescDAO.countByExample(example);
-        if (funcResCount > 0) {
-            return ResultUtil.getWarn("功能已经绑定了资源,请先清空资源！");
+        Long rescCount = this.funcRescDAO.countByFuncId(funcId);
+        if (rescCount > 0) {
+
+            return ResultUtil.getWarn("请先清空绑定的资源！");
         }
 
         // 校验是否有用户绑定了该功能
@@ -323,14 +340,6 @@ public class FuncServiceImpl implements FuncService {
             if (userRoleModels.size() > 0) {
                 return ResultUtil.getWarn("功能已经授权给了用户,请先解绑用户！");
             }
-        }
-
-        // 校验功能是否存在子功能
-        FuncExample funcModelExample = new FuncExample();
-        funcModelExample.createCriteria().andParentIdEqualTo(funcId);
-        long childrenCount = this.funcDAO.countByExample(funcModelExample);
-        if (childrenCount > 0) {
-            return ResultUtil.getWarn("功能存在子功能,无法删除！");
         }
 
         // 删除功能

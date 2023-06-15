@@ -29,6 +29,11 @@
                                     <a-select-option v-for="item in funcTypeG" :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
                                 </a-select>
                             </a-form-item>
+                            <a-form-item label="是否隐藏">
+                                <a-select v-model:value="searchParams.funcDirStatus" :style="{width:'180px'}" placeholder="是否隐藏">
+                                    <a-select-option v-for="item in funcDirStatusG" :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
+                                </a-select>
+                            </a-form-item>
                             <a-form-item>
                                 <a-button type="primary" @click="pageSearchChange">搜索</a-button>
                             </a-form-item>
@@ -51,14 +56,15 @@
                             </template>
                             <template #action="{ record }">
                                 <span>
-                                    <a-button size="small" type="link" @click="handleUpdate(record.funcId)">编辑</a-button>
+                                    <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.funcId)">编辑</a-button>
                                      <a-popconfirm
                                              title="您确定要删除该功能吗?"
                                              ok-text="确定"
                                              cancel-text="取消"
                                              @confirm="handleDelete(record.funcId)">
-                                         <a-button size="small" type="link">删除</a-button>
+                                         <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
                                       </a-popconfirm>
+                                       <a-button size="small" class="btn-text-small" type="link" @click="handleUpdate(record.funcId)">绑定</a-button>
                                 </span>
                             </template>
                         </a-table>
@@ -106,7 +112,8 @@
                     funcName: '',
                     funcKey: '',
                     parentId: null,
-                    funcType: ''
+                    funcType: '',
+                    funcDirStatus: '',
                 },
                 parentFunc: {},
                 total: 0,
@@ -147,7 +154,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: '150px',
+                        width: '200px',
                         slots: { customRender: 'action' },
                     },
                 ],
@@ -159,6 +166,12 @@
             },
             funcTypeGName(){
                 return constant.formatConst(this.funcTypeG)
+            },
+            funcDirStatusG(){
+                return constant.getConst("func_dir_status_group",authDomain)
+            },
+            funcDirStatusGName(){
+                return constant.formatConst(this.funcDirStatusG)
             },
         },
         methods:{

@@ -46,18 +46,17 @@
 
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small" type="link" @click="handleUpdate(record.userId)">编辑</a-button>
+                        <a-button size="small" type="link"  class="btn-text-small"  @click="handleUpdate(record.userId)">编辑</a-button>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.userId)">
-                             <a-button size="small" type="link">删除</a-button>
+                             <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
                           </a-popconfirm>
                         <a-dropdown :trigger="['click']">
-                            <a class="ant-dropdown-link" @click.prevent >
+                            <a class="ant-dropdown-link btn-text-small" @click.prevent >
                               设置
-                              <DownOutlined />
                             </a>
                             <template #overlay>
                               <a-menu>
@@ -111,14 +110,13 @@
     import userAssignRole from "@/views/auth/user/userAssignRole";
     import updatePwd from "@/views/auth/user/updatePwd";
     import {authDomain, formatConst, getConst} from "@/utils/constant";
-    import { DownOutlined,ExclamationCircleOutlined } from '@ant-design/icons-vue';
+    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
     import { Modal } from 'ant-design-vue';
     import { createVNode, defineComponent } from 'vue';
     export default {
         name: "User.vue",
         components: {
             userSaveModal,
-            DownOutlined,
             userUpdateModal,
             updatePwd,
             userAssignRole

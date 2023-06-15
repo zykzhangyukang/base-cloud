@@ -27,6 +27,9 @@ public class FuncPageDTO extends BaseModel {
     @ApiModelProperty("功能类型(目录/功能)")
     private String funcType;
 
+    @ApiModelProperty(value = "菜单显示状态")
+    private String funcDirStatus;
+
     @ApiModelProperty("父级功能id")
     private Integer parentId;
 }

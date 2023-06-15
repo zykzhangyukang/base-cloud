@@ -16,6 +16,13 @@ import java.util.Map;
 public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
 
     /**
+     * 查询
+     * @param parentId
+     * @return
+     */
+    Long countChildrenByParentId(@Param(value = "parentId") Integer parentId);
+
+    /**
      * 通过功能key查询功能
      * @param funcKey
      * @return

@@ -193,4 +193,9 @@
     from auth_func_resc where resc_id  = #{rescId}
   </select>
 
+  <select id="countByFuncId" resultType="long">
+    select count(1)
+    from auth_func_resc where func_id  = #{funcId}
+  </select>
+
 </mapper>

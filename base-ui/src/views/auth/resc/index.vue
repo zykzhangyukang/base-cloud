@@ -50,13 +50,13 @@
                 </template>
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small" type="link" @click="handleUpdate(record.rescId)">编辑</a-button>
+                        <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.rescId)">编辑</a-button>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.rescId)">
-                             <a-button size="small" type="link">删除</a-button>
+                             <a-button  class="btn-text-small"  size="small" type="link">删除</a-button>
                           </a-popconfirm>
                     </span>
                 </template>

@@ -31,13 +31,13 @@
             >
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small" type="link" @click="handleUpdate(record.roleId)">编辑</a-button>
+                        <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.roleId)">编辑</a-button>
                          <a-popconfirm
                                  title="您确定要删除该角色吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.roleId)">
-                             <a-button size="small" type="link">删除</a-button>
+                             <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
                           </a-popconfirm>
                     </span>
                 </template>
