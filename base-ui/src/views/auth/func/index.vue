@@ -19,18 +19,21 @@
                                 layout='inline'
                         >
                             <a-form-item label="功能名称">
-                                <a-input v-model:value="searchParams.funcName" :style="{width:'200px'}" placeholder="功能名称输入框"></a-input>
+                                <a-input v-model:value="searchParams.funcName" :style="{width:'150px'}" placeholder="功能名称输入框"></a-input>
                             </a-form-item>
                             <a-form-item label="功能Key">
-                                <a-input v-model:value="searchParams.funcKey" :style="{width:'200px'}" placeholder="功能Key输入框"></a-input>
+                                <a-input v-model:value="searchParams.funcKey" :style="{width:'150px'}" placeholder="功能Key输入框"></a-input>
+                            </a-form-item>
+                            <a-form-item label="资源URL">
+                                <a-input v-model:value="searchParams.rescUrl" :style="{width:'150px'}" placeholder="资源URL输入框"></a-input>
                             </a-form-item>
                             <a-form-item label="功能类型">
-                                <a-select v-model:value="searchParams.funcType" :style="{width:'180px'}" placeholder="功能类型">
+                                <a-select v-model:value="searchParams.funcType" :style="{width:'150px'}" placeholder="功能类型">
                                     <a-select-option v-for="item in funcTypeG" :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
                                 </a-select>
                             </a-form-item>
                             <a-form-item label="是否隐藏">
-                                <a-select v-model:value="searchParams.funcDirStatus" :style="{width:'180px'}" placeholder="是否隐藏">
+                                <a-select v-model:value="searchParams.funcDirStatus" :style="{width:'150px'}" placeholder="是否隐藏">
                                     <a-select-option v-for="item in funcDirStatusG" :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
                                 </a-select>
                             </a-form-item>
@@ -65,6 +68,7 @@
                                          <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
                                       </a-popconfirm>
                                        <a-button size="small" class="btn-text-small" type="link" @click="handleBindResc(record.funcId)">绑定</a-button>
+                                       <a-button size="small" class="btn-text-small" type="link" @click="handleLookResc(record.funcId)">查看</a-button>
                                 </span>
                             </template>
                         </a-table>
@@ -86,6 +90,8 @@
                         <func-update-modal ref="funcUpdateModal" @success="refreshData"></func-update-modal>
                         <!-- 绑定资源 -->
                         <func-bind-resc-modal ref="funcBindRescModal" @success="queryData"></func-bind-resc-modal>
+                        <!-- 查看资源 -->
+                        <func-resc-look-modal ref="funcRescLookModal"></func-resc-look-modal>
                     </a-card>
                 </a-col>
             </a-row>
@@ -98,6 +104,7 @@
     import funcSaveModal from "@/views/auth/func/funcSaveModal";
     import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
     import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
+    import funcRescLookModal from "@/views/auth/func/funcRescLookModal";
 
     export default {
         name: "Func.vue",
@@ -105,7 +112,8 @@
             leftFuncTree,
             funcSaveModal,
             funcUpdateModal,
-            funcBindRescModal
+            funcBindRescModal,
+            funcRescLookModal
         },
         data(){
             return {
@@ -117,6 +125,7 @@
                     funcKey: '',
                     parentId: null,
                     funcType: '',
+                    rescUrl: '',
                     funcDirStatus: '',
                 },
                 parentFunc: {},
@@ -196,6 +205,9 @@
             },
             handleUpdate(id){
                 this.$refs['funcUpdateModal'].open(id);
+            },
+            handleLookResc(id){
+                this.$refs['funcRescLookModal'].open(id);
             },
             handleBindResc(id){
                 this.$refs['funcBindRescModal'].open(id);
