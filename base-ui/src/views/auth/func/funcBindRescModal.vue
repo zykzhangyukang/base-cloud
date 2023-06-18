@@ -13,17 +13,17 @@
 
         <!-- 搜索部分 -->
         <a-select
+                allowClear
                 class="mb15"
-                v-model:value="searchValues"
+                v-model:value="form.rescVOList"
                 mode="multiple"
                 :autoClearSearchValue="true"
                 label-in-value
                 style="width: 100%"
                 placeholder="搜索绑定资源"
                 :filter-option="false"
-                :not-found-content="searchLoading ? undefined : null"
-                :options="searchList"
-                @change="handleChange"
+                :not-found-content="searchLoading ? undefined : '暂无数据'"
+                :options="options"
                 @search="handleSearchResc"
         >
             <template v-if="searchLoading" #notFoundContent>
@@ -35,24 +35,24 @@
 </template>
 <script>
 
-    import {authFuncSelectById, authRescSearchByKeyword} from "@/api/auth";
-    import { debounce } from 'lodash-es';
+    import {authFuncSelectById, authFuncUpdateRescBind, authRescSearchByKeyword} from "@/api/auth";
     export default {
         name: "funcBindRescModal.vue",
         data() {
             return {
                 confirmLoading: false,
                 visible: false,
-                searchLoading: true,
-                searchValues: [],
-                searchList: [],
+                searchLoading: false,
+                form: {
+                    funcId: null,
+                    rescVOList: [],
+                },
+                options: [],
             }
         },
         methods: {
-            handleChange(val){
-                console.log(this.searchValues)
-            },
             handleSearchResc(val){
+                this.searchLoading = true;
                 authRescSearchByKeyword(val).then(res=>{
                     const arr = [];
                     if(res.result && res.result.length > 0){
@@ -62,16 +62,27 @@
                                 label: item.rescUrl + "【"+item.rescName+"】"
                             })
                         })
-                        this.searchList = arr
                     }
+                    this.options = arr
+                }).finally(e=>{
+                    this.searchLoading = false;
                 })
             },
             handleOk() {
-
+                this.confirmLoading = true;
+                authFuncUpdateRescBind(this.form).then(res => {
+                    this.$message.success("新增功能成功");
+                    this.handleClose();
+                    this.$emit('success')
+                }).finally(e=>{
+                    this.confirmLoading = false;
+                })
             },
             handleClose() {
                 this.visible = false
                 this.form = this.$options.data().form;
+                this.searchList = [];
+                this.searchValues = [];
             },
             open(funcId) {
                 authFuncSelectById(funcId).then(res=>{
@@ -85,9 +96,10 @@
                             })
                         })
                     }
-                    this.searchList = arr;
-                    this.searchValues = arr;
+                    this.options = arr;
+                    this.form.rescVOList = arr;
                     this.visible = true;
+                    this.form.funcId  = funcId;
                 })
             }
         }

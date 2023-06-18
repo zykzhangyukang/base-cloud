@@ -4,6 +4,18 @@ import http from '../utils/request'
 
 
 /**
+ *更新功能信息
+ */
+export const authFuncUpdateRescBind = (data) => {
+    return http({
+        url: `/auth/func/update/resc/bind`,
+        method: 'put',
+        data
+    })
+}
+
+
+/**
  * 根据id获取资源信息
  */
 export const authFuncSelectById = (id) => {

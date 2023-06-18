@@ -33,4 +33,11 @@ public interface FuncRescDAO extends BaseDAO<FuncRescModel, FuncRescExample> {
      * @return
      */
     Long countByFuncId(@Param(value = "funcId") Integer funcId);
+
+    /**
+     * 根据功能id删除
+     *
+     * @param funcId
+     */
+    void deleteByFuncId(@Param(value = "funcId") Integer funcId);
 }

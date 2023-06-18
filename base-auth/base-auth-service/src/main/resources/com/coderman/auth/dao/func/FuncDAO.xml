@@ -340,6 +340,7 @@
     auth_func f
     <include refid="pageWhere"></include>
     group by  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time
+    order by f.func_sort
     limit #{offset},#{size}
   </select>
 
@@ -387,6 +388,7 @@
       func_id,
       func_name,
       func_key,
+      func_sort,
       parent_id
       from auth_func
   </select>

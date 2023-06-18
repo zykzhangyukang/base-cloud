@@ -47,16 +47,16 @@ public interface AuthConstant {
      */
     String METHOD_TYPE = "method_type";
 
-    @ConstList(group = METHOD_TYPE, name = "GET请求")
+    @ConstList(group = METHOD_TYPE, name = "GET")
     String METHOD_TYPE_GET = "get";
 
-    @ConstList(group = METHOD_TYPE, name = "POST请求")
+    @ConstList(group = METHOD_TYPE, name = "POST")
     String METHOD_TYPE_POST = "post";
 
-    @ConstList(group = METHOD_TYPE, name = "DELETE请求")
+    @ConstList(group = METHOD_TYPE, name = "DELETE")
     String METHOD_TYPE_DELETE = "delete";
 
-    @ConstList(group = METHOD_TYPE, name = "PUT请求")
+    @ConstList(group = METHOD_TYPE, name = "PUT")
     String METHOD_TYPE_PUT = "put";
 
 

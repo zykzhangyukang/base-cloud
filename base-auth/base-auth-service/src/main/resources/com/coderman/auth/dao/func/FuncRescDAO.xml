@@ -198,4 +198,9 @@
     from auth_func_resc where func_id  = #{funcId}
   </select>
 
+  <delete id="deleteByFuncId">
+    delete from auth_func_resc
+    where func_id = #{funcId}
+  </delete>
+
 </mapper>

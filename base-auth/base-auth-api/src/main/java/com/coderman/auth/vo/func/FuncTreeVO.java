@@ -1,13 +1,11 @@
 package com.coderman.auth.vo.func;
 
 import com.coderman.api.model.BaseModel;
-import com.coderman.auth.model.func.FuncModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +30,9 @@ public class FuncTreeVO extends BaseModel {
     @ApiModelProperty(value = "功能key")
     private String funcKey;
 
+    @ApiModelProperty(value = "功能排序")
+    private Integer funcSort;
+
     @ApiModelProperty(value = "父级id")
     private Integer parentId;
 
@@ -39,5 +40,5 @@ public class FuncTreeVO extends BaseModel {
      * 子功能
      */
     @JsonProperty(value = "children")
-    private List<FuncTreeVO> childrenList =  new ArrayList<>();
+    private List<FuncTreeVO> childrenList;
 }

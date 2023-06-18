@@ -31,7 +31,7 @@ http.interceptors.response.use(
 
         } else if (response.data.code === 403) {
 
-            message.error('您没有访问该资源的权限');
+            message.error('您没有访问该资源的权限！');
 
         } else if (response.data.code === 401) {
 
@@ -39,19 +39,19 @@ http.interceptors.response.use(
 
             router.push('/login').then(() => {
 
-                message.error('用户会话已过期');
+                message.error('用户会话已过期！');
             })
 
         } else if (response.data.code === 404) {
 
-            message.error('您请求的资源不存在');
+            message.error('您请求的资源不存在！');
 
         } else if (response.data.code === 405) {
 
             message.warn(response.data.msg);
 
         } else {
-            message.error(response.data.msg ? response.data.msg : '接口其他错误');
+            message.error(response.data.msg ? response.data.msg : '接口其他错误！');
         }
 
         return Promise.reject(response.data);

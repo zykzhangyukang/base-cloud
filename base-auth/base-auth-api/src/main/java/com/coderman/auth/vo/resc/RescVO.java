@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 /**
  * @author coderman
  * @Title: 资源vo
- * @Description: TOD
  * @date 2022/3/199:06
  */
 @Data

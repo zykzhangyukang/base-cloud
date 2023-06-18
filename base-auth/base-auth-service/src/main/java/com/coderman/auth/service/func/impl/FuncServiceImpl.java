@@ -11,12 +11,11 @@ import com.coderman.auth.dao.func.FuncDAO;
 import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
-import com.coderman.auth.dto.func.FuncPageDTO;
-import com.coderman.auth.dto.func.FuncSaveDTO;
-import com.coderman.auth.dto.func.FuncUpdateDTO;
+import com.coderman.auth.dto.func.*;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.model.func.FuncRescExample;
+import com.coderman.auth.model.resc.RescModel;
 import com.coderman.auth.model.role.RoleFuncExample;
 import com.coderman.auth.model.role.RoleFuncModel;
 import com.coderman.auth.model.user.UserRoleExample;
@@ -25,11 +24,12 @@ import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
 import com.coderman.auth.vo.func.MenuVO;
+import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -69,9 +69,17 @@ public class FuncServiceImpl implements FuncService {
 
         for (FuncTreeVO treeVo : voList) {
 
-            if (funcVOMap.containsKey(treeVo.getParentId())) {
+            Integer parentId = treeVo.getParentId();
 
-                funcVOMap.get(treeVo.getParentId()).getChildrenList().add(treeVo);
+            if (funcVOMap.containsKey(parentId)) {
+
+                FuncTreeVO funcTreeVO = funcVOMap.get(parentId);
+                List<FuncTreeVO> childrenList = Optional.ofNullable(funcTreeVO.getChildrenList()).orElse(new ArrayList<>());
+                funcTreeVO.setChildrenList(childrenList);
+
+                // 添加子节点并进行排序
+                childrenList.add(treeVo);
+                childrenList.sort(Comparator.comparing(FuncTreeVO::getFuncSort));
             }
         }
 
@@ -105,10 +113,6 @@ public class FuncServiceImpl implements FuncService {
         if (Objects.isNull(pageSize)) {
 
             pageSize = 20;
-        }
-
-        if (StringUtils.isNotBlank(funcName)) {
-            conditionMap.put("funcName", funcName);
         }
 
         if (StringUtils.isNotBlank(funcName)) {
@@ -472,10 +476,17 @@ public class FuncServiceImpl implements FuncService {
 
             menuVO.setHidden(AuthConstant.FUNC_DIR_STATUS_HIDE.equals(menuVO.getFuncDirStatus()));
 
-            if (funcVOMap.containsKey(menuVO.getParentId())) {
-                funcVOMap.get(menuVO.getParentId())
-                        .getChildren()
-                        .add(menuVO);
+            Integer parentId = menuVO.getParentId();
+
+            if (funcVOMap.containsKey(parentId)) {
+
+                MenuVO menuNode = funcVOMap.get(parentId);
+                List<MenuVO> childrenList = Optional.ofNullable(menuNode.getChildren()).orElse(new ArrayList<>());
+                menuNode.setChildren(childrenList);
+
+                // 添加子节点并进行排序
+                childrenList.add(menuVO);
+                childrenList.sort(Comparator.comparingInt(MenuVO::getFuncSort));
             }
         }
 
@@ -490,6 +501,31 @@ public class FuncServiceImpl implements FuncService {
     public ResultVO<List<String>> selectFuncKeyListByUserId(@LogErrorParam Integer userId) {
         List<String> funcKeys = this.funcDAO.selectFuncKeyListByUserId(userId);
         return ResultUtil.getSuccessList(String.class, funcKeys);
+    }
+
+    @Override
+    @LogError(value = "功能设置资源")
+    public ResultVO<Void> updateResourceBind(@LogErrorParam FuncUpdateRescBindDTO rescBindDTO) {
+
+        List<FuncUpdateRescBindDTO.RescBindItem> rescVOList = rescBindDTO.getRescVOList();
+        Integer funcId = rescBindDTO.getFuncId();
+
+        if(Objects.isNull(funcId)){
+
+            return ResultUtil.getWarn("资源id不能为空！");
+        }
+
+        this.funcRescDAO.deleteByFuncId(funcId);
+
+        if(CollectionUtils.isNotEmpty(rescVOList)){
+
+            List<Integer> rescIdList = rescVOList.stream().map(FuncUpdateRescBindDTO.RescBindItem::getKey).distinct()
+                    .collect(Collectors.toList());
+
+            this.funcRescDAO.insertBatchByFuncId(funcId,rescIdList);
+        }
+
+        return ResultUtil.getSuccess();
     }
 }
 

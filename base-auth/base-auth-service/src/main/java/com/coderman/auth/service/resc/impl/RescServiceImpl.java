@@ -213,7 +213,7 @@ public class RescServiceImpl implements RescService {
 
         if (count > 0) {
 
-            return ResultUtil.getWarn("该资源已经绑定功能,请解绑后进行删除！");
+            return ResultUtil.getWarn("资源已被功能引用，无法删除！");
         }
 
         this.rescDAO.deleteByPrimaryKey(rescId);

@@ -6,7 +6,6 @@ import com.coderman.auth.vo.user.UserVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,5 +27,5 @@ public class FuncVO extends FuncModel {
     /**
      * 资源信息
      */
-    private List<RescVO> rescVOList =  new ArrayList<>();
+    private List<RescVO> rescVOList;
 }

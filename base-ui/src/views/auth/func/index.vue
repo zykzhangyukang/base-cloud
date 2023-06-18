@@ -55,24 +55,34 @@
                                 :scroll="{ y: 580 }"
                         >
                             <template #funcType="{ text }">
+                              <span>
+                                  <FolderOpenOutlined  v-if="text === 'dir'"/>
+                                  <ToolOutlined v-else />
+                              </span>
                                 {{ funcTypeGName[text] }}
+                            </template>
+                            <template #rescVOList="{ record }">
+                                   <span>
+                                         <a  v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-small color303030" @click="handleLookResc(record.funcId)">
+                                             {{record.rescVOList.map(item=>{return item.rescUrl}).join(",") }}
+                                         </a>
+                                        <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
+                                    </span>
                             </template>
                             <template #action="{ record }">
                                 <span>
                                     <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)">编辑</a>
+                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)"><EditOutlined />编辑</a>
                                         <a-divider type="vertical"/>
                                           <a-popconfirm
                                                   title="您确定要删除该功能吗?"
                                                   ok-text="确定"
                                                   cancel-text="取消"
                                                   @confirm="handleDelete(record.funcId)">
-                                        <a href="#" class="btn-text-small">删除</a>
+                                        <a href="#" class="btn-text-small"><DeleteOutlined />删除</a>
                                       </a-popconfirm>
                                      <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleLookResc(record.funcId)">查看资源</a>
-                                    <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">设置资源</a>
+                                    <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)"><SettingOutlined />资源</a>
                                 </span>
                             </template>
                         </a-table>
@@ -89,9 +99,9 @@
                         </a-pagination>
 
                         <!-- 新增功能 -->
-                        <func-save-modal ref="funcSaveModal" @success="refreshData"></func-save-modal>
+                        <func-save-modal ref="funcSaveModal" @success="queryData"></func-save-modal>
                         <!-- 更新功能 -->
-                        <func-update-modal ref="funcUpdateModal" @success="refreshData"></func-update-modal>
+                        <func-update-modal ref="funcUpdateModal" @success="queryData"></func-update-modal>
                         <!-- 绑定资源 -->
                         <func-bind-resc-modal ref="funcBindRescModal" @success="queryData"></func-bind-resc-modal>
                         <!-- 查看资源 -->
@@ -103,6 +113,7 @@
 </template>
 <script>
     import {authFuncDelete, authFuncPage} from "@/api/auth";
+    import {FolderOpenOutlined,ToolOutlined,EditOutlined,DeleteOutlined,SettingOutlined } from '@ant-design/icons-vue';
     import constant, {authDomain} from "@/utils/constant";
     import leftFuncTree from "@/views/auth/func/leftFuncTree";
     import funcSaveModal from "@/views/auth/func/funcSaveModal";
@@ -117,7 +128,12 @@
             funcSaveModal,
             funcUpdateModal,
             funcBindRescModal,
-            funcRescLookModal
+            funcRescLookModal,
+            FolderOpenOutlined,
+            ToolOutlined,
+            EditOutlined,
+            DeleteOutlined,
+            SettingOutlined
         },
         data(){
             return {
@@ -145,34 +161,57 @@
                         title: '功能名称',
                         dataIndex: 'funcName',
                         key: 'funcName',
+                        align: 'center',
+                        ellipsis:  true,
                     },
                     {
                         title: '功能Key',
                         dataIndex: 'funcKey',
                         key: 'funcKey',
                         ellipsis:  true,
+                        align: 'center',
                     },
                     {
                         title: '功能类型',
                         dataIndex: 'funcType',
                         key: 'funcType',
+                        align: 'center',
                         slots: { customRender: 'funcType' },
+                    },
+                    {
+                        title: '资源列表',
+                        dataIndex: 'rescVOList',
+                        key: 'rescVOList',
+                        slots: { customRender: 'rescVOList' },
+                        align: 'center',
+                        ellipsis:  true,
+                    },
+                    {
+                        title: '排序',
+                        dataIndex: 'funcSort',
+                        align: 'center',
+                        key: 'funcSort',
                     },
                     {
                         title: '菜单图标',
                         dataIndex: 'funcIcon',
+                        align: 'center',
                         key: 'funcIcon',
+                        ellipsis:  true,
                     },
                     {
                         title: '更新时间',
                         dataIndex: 'updateTime',
+                        align: 'center',
                         key: 'updateTime',
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: '300px',
+                        width: '220px',
+                        align: 'center',
                         slots: { customRender: 'action' },
+                        fixed: 'right',
                     },
                 ],
             }
@@ -192,10 +231,6 @@
             },
         },
         methods:{
-            refreshData(){
-               this.queryData();
-                this.$refs['leftFuncTree'].reloadTree();
-            },
             handleSelectNode(item){
                let parentId = null;
                 if(item && item.funcId !==null){
@@ -219,7 +254,7 @@
             handleDelete(id){
                 authFuncDelete(id).then(e=>{
                     this.$message.success("删除功能成功！");
-                    this.refreshData();
+                    this.queryData();
                 })
             },
             handleAdd(){

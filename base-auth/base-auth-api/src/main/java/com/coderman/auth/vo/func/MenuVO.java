@@ -35,11 +35,14 @@ public class MenuVO extends BaseModel {
     @ApiModelProperty(value = "功能icon")
     private String funcIcon;
 
+    @ApiModelProperty(value = "功能排序")
+    private Integer funcSort;
+
     @ApiModelProperty(value = "菜单显示状态")
     private String funcDirStatus;
 
     @ApiModelProperty(value = "是否隐藏")
     private Boolean hidden;
 
-    List<MenuVO> children =  new ArrayList<>();
+    List<MenuVO> children;
 }

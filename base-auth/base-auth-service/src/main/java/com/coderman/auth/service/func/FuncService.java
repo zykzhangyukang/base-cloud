@@ -6,6 +6,7 @@ import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.func.FuncPageDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
+import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
 import com.coderman.auth.vo.func.FuncQueryVO;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
@@ -99,4 +100,13 @@ public interface FuncService {
      * @return
      */
     ResultVO<List<String>> selectFuncKeyListByUserId(Integer userId);
+
+
+    /**
+     * 功能设置资源
+     *
+     * @param rescBindDTO
+     * @return
+     */
+    ResultVO<Void> updateResourceBind(FuncUpdateRescBindDTO rescBindDTO);
 }
