@@ -36,6 +36,7 @@
 <script>
 
     import {authFuncSelectById, authFuncUpdateRescBind, authRescSearchByKeyword} from "@/api/auth";
+    import {debounce} from '@/utils/tool'
     export default {
         name: "funcBindRescModal.vue",
         data() {
@@ -52,6 +53,9 @@
         },
         methods: {
             handleSearchResc(val){
+                this.queryRescByKeywords(val);
+            },
+            queryRescByKeywords(val){
                 this.searchLoading = true;
                 authRescSearchByKeyword(val).then(res=>{
                     const arr = [];
@@ -71,7 +75,7 @@
             handleOk() {
                 this.confirmLoading = true;
                 authFuncUpdateRescBind(this.form).then(res => {
-                    this.$message.success("新增功能成功");
+                    this.$message.success("绑定资源成功");
                     this.handleClose();
                     this.$emit('success')
                 }).finally(e=>{
