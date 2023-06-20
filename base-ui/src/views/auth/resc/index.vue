@@ -50,13 +50,15 @@
                 </template>
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.rescId)">编辑</a-button>
+                         <a-divider type="vertical"/>
+                         <a href="#" class="btn-text-small" @click="handleUpdate(record.rescId)"><EditOutlined />编辑</a>
+                       <a-divider type="vertical"/>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.rescId)">
-                             <a-button  class="btn-text-small"  size="small" type="link">删除</a-button>
+                             <a  href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
                     </span>
                 </template>
@@ -88,12 +90,15 @@
     import constant, {authDomain} from "@/utils/constant";
     import rescSaveModal from "@/views/auth/resc/rescSaveModal";
     import rescUpdateModal from "@/views/auth/resc/rescUpdateModal";
+    import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
 
     export default {
         name: "Resc..vue",
         components: {
             rescSaveModal,
-            rescUpdateModal
+            rescUpdateModal,
+          DeleteOutlined,
+          EditOutlined
         },
         data() {
             return {

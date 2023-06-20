@@ -1,6 +1,7 @@
 <template>
     <a-card class="tree-card">
         <a-input-search size="small" style="margin-bottom: 8px" placeholder="查询" @change="onChange" />
+      <a-spin size="small" :spinning="treeLoading">
         <a-tree
                 show-line
                 :selectedKeys="selectedKeys"
@@ -19,6 +20,7 @@
                 <span v-else>{{ title }}</span>
             </template>
         </a-tree>
+      </a-spin>
     </a-card>
 </template>
 
@@ -50,12 +52,13 @@
         }
     };
     export default {
-        name: "leftFuncTree.vue",
+        name: "funcLeftTree.vue",
         data(){
             return {
                 dataList: [],
                 expandedKeys: [],
                 searchValue: '',
+                treeLoading: false,
                 autoExpandParent: true,
                 treeData: [],
                 selectedKeys:[]
@@ -85,11 +88,16 @@
                 this.autoExpandParent = false;
             },
             async queryFuncTree(){
+              this.treeLoading = true;
+              try {
                 const res = await authFuncTree();
                 const tree  = res.result;
                 this.treeData = tree;
                 this.expandedKeys  = ["root"];
                 return tree;
+              }finally {
+                this.treeLoading = false;
+              }
             },
             onChange(e) {
                 const value = e.target.value;

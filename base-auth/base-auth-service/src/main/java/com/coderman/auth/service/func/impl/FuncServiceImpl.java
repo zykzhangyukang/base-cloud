@@ -207,7 +207,6 @@ public class FuncServiceImpl implements FuncService {
         insert.setFuncKey(funcKey);
         insert.setFuncName(funcName);
         insert.setCreateTime(new Date());
-        insert.setUpdateTime(new Date());
         insert.setParentId(parentId);
         insert.setFuncType(funcType);
         insert.setFuncSort(funcSort);
@@ -215,12 +214,6 @@ public class FuncServiceImpl implements FuncService {
         insert.setFuncIcon(funcIcon);
 
         this.funcDAO.insertSelectiveReturnKey(insert);
-
-        // 保存功能-资源关联
-//        if (!CollectionUtils.isEmpty(funcVO.getRescIdList())) {
-//
-//            this.funcRescDAO.insertBatchByFuncId(insert.getFuncId(), funcVO.getRescIdList());
-//        }
 
         return ResultUtil.getSuccess();
     }
@@ -285,18 +278,8 @@ public class FuncServiceImpl implements FuncService {
         update.setFuncSort(funcSort);
         update.setFuncDirStatus(funcDirStatus);
         update.setFuncIcon(funcIcon);
+        update.setUpdateTime(new Date());
         this.funcDAO.updateByPrimaryKeySelective(update);
-
-        // 删除原来的功能-资源绑定
-        FuncRescExample funcRescExample = new FuncRescExample();
-        funcRescExample.createCriteria().andFuncIdEqualTo(funcId);
-        this.funcRescDAO.deleteByExample(funcRescExample);
-
-        // 批量增加现在的功能-资源绑定
-//        if (!CollectionUtils.isEmpty(funcVO.getRescIdList())) {
-//
-//            this.funcRescDAO.insertBatchByFuncId(funcId, funcVO.getRescIdList());
-//        }
 
         return ResultUtil.getSuccess();
     }
@@ -491,7 +474,9 @@ public class FuncServiceImpl implements FuncService {
         }
 
         // 获取所有父级节点
-        List<MenuVO> rootFunVoList = allMenus.stream().filter(e -> !funcVOMap.containsKey(e.getParentId())).collect(Collectors.toList());
+        List<MenuVO> rootFunVoList = allMenus.stream()
+                .sorted(Comparator.comparingInt(MenuVO::getFuncSort))
+                .filter(e -> !funcVOMap.containsKey(e.getParentId())).collect(Collectors.toList());
         return ResultUtil.getSuccessList(MenuVO.class, rootFunVoList);
     }
 

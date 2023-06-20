@@ -46,17 +46,20 @@
 
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small" type="link"  class="btn-text-small"  @click="handleUpdate(record.userId)">编辑</a-button>
+                      <a-divider type="vertical"/>
+                      <a href="#" class="btn-text-small"  @click="handleUpdate(record.userId)"><EditOutlined />编辑</a>
+                       <a-divider type="vertical"/>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.userId)">
-                             <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
+                               <a href="#" class="btn-text-small"  ><DeleteOutlined />删除</a>
                           </a-popconfirm>
+                        <a-divider type="vertical"/>
                         <a-dropdown :trigger="['click']">
                             <a class="ant-dropdown-link btn-text-small" @click.prevent >
-                              设置
+                              <SettingOutlined/>设置
                             </a>
                             <template #overlay>
                               <a-menu>
@@ -104,21 +107,25 @@
 </template>
 
 <script>
-    import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
-    import userSaveModal from '@/views/auth/user/userSaveModal'
-    import userUpdateModal from "@/views/auth/user/userUpdateModal";
-    import userAssignRole from "@/views/auth/user/userAssignRole";
-    import updatePwd from "@/views/auth/user/updatePwd";
-    import {authDomain, formatConst, getConst} from "@/utils/constant";
-    import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-    import { Modal } from 'ant-design-vue';
-    import { createVNode, defineComponent } from 'vue';
-    export default {
+import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
+import userSaveModal from '@/views/auth/user/userSaveModal'
+import userUpdateModal from "@/views/auth/user/userUpdateModal";
+import userAssignRole from "@/views/auth/user/userAssignRole";
+import updatePwd from "@/views/auth/user/updatePwd";
+import {authDomain, formatConst, getConst} from "@/utils/constant";
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, SettingOutlined} from '@ant-design/icons-vue';
+import {Modal} from 'ant-design-vue';
+import {createVNode} from 'vue';
+
+export default {
         name: "User.vue",
         components: {
             userSaveModal,
             userUpdateModal,
             updatePwd,
+             EditOutlined,
+            DeleteOutlined,
+            SettingOutlined,
             userAssignRole
         },
         data() {

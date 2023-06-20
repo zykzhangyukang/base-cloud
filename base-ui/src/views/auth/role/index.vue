@@ -31,14 +31,16 @@
             >
                 <template #action="{ record }">
                     <span>
-                        <a-button size="small"  class="btn-text-small"  type="link" @click="handleUpdate(record.roleId)">编辑</a-button>
-                         <a-popconfirm
-                                 title="您确定要删除该角色吗?"
-                                 ok-text="确定"
-                                 cancel-text="取消"
-                                 @confirm="handleDelete(record.roleId)">
-                             <a-button size="small"  class="btn-text-small"  type="link">删除</a-button>
-                          </a-popconfirm>
+                      <a-divider type="vertical"/>
+                      <a href="#" class="btn-text-small" @click="handleUpdate(record.roleId)"><EditOutlined />编辑</a>
+                      <a-divider type="vertical"/>
+                       <a-popconfirm
+                               title="您确定要删除该角色吗?"
+                               ok-text="确定"
+                               cancel-text="取消"
+                               @confirm="handleDelete(record.roleId)">
+                           <a href="#" class="btn-text-small"  type="link"><DeleteOutlined/>删除</a>
+                        </a-popconfirm>
                     </span>
                 </template>
             </a-table>
@@ -65,12 +67,15 @@
     import {authRoleDelete, authRolePage} from "@/api/auth";
     import roleSaveModal from "@/views/auth/role/roleSaveModal";
     import roleUpdateModal from "@/views/auth/role/roleUpdateModal";
+    import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
 
     export default {
         name: "role.vue",
         components: {
             roleUpdateModal,
-            roleSaveModal
+            roleSaveModal,
+          DeleteOutlined,
+          EditOutlined
         },
         data() {
             return {
@@ -111,7 +116,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: '250px',
+                        width: '200px',
                         slots: { customRender: 'action' },
                     },
                 ],

@@ -3,7 +3,7 @@
             <a-row :gutter="16">
                 <a-col :span="3">
                     <div class="left">
-                        <left-func-tree ref="leftFuncTree" @select-node="handleSelectNode"></left-func-tree>
+                        <func-left-tree ref="funcLeftTree" @select-node="handleSelectNode"></func-left-tree>
                     </div>
                 </a-col>
                 <a-col :span="21">
@@ -115,7 +115,7 @@
     import {authFuncDelete, authFuncPage} from "@/api/auth";
     import {FolderOpenOutlined,ToolOutlined,EditOutlined,DeleteOutlined,SettingOutlined } from '@ant-design/icons-vue';
     import constant, {authDomain} from "@/utils/constant";
-    import leftFuncTree from "@/views/auth/func/leftFuncTree";
+    import funcLeftTree from "@/views/auth/func/funcLeftTree";
     import funcSaveModal from "@/views/auth/func/funcSaveModal";
     import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
     import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
@@ -124,7 +124,7 @@
     export default {
         name: "Func.vue",
         components:{
-            leftFuncTree,
+          funcLeftTree,
             funcSaveModal,
             funcUpdateModal,
             funcBindRescModal,
@@ -277,7 +277,7 @@
                     ...this.$options.data().searchParams,
                     ...page
                 }
-                this.$refs['leftFuncTree'].resetSelect();
+                this.$refs['funcLeftTree'].resetSelect();
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;
