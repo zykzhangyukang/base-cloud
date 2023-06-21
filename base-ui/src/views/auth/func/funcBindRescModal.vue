@@ -35,7 +35,7 @@
 </template>
 <script>
 
-import {authFuncSelectById, authFuncUpdateRescBind, authRescSearchByKeyword} from "@/api/auth";
+import {authFuncSelectById, authFuncRescBindUpdate, authRescSearchByKeyword} from "@/api/auth";
 
 export default {
         name: "funcBindRescModal.vue",
@@ -74,7 +74,7 @@ export default {
             },
             handleOk() {
                 this.confirmLoading = true;
-                authFuncUpdateRescBind(this.form).then(res => {
+              authFuncRescBindUpdate(this.form).then(res => {
                     this.$message.success("绑定资源成功");
                     this.handleClose();
                     this.$emit('success')

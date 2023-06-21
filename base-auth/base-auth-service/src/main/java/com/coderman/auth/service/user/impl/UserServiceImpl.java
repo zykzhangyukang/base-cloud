@@ -33,6 +33,7 @@ import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
 import com.coderman.service.util.MD5Utils;
 import com.coderman.service.util.UUIDUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -112,7 +113,7 @@ public class UserServiceImpl extends BaseService implements UserService {
             }
 
             // 写会话到redis
-            String token = UUIDUtils.getPrimaryValue();
+            String token = RandomStringUtils.randomAlphanumeric(32);
             AuthUserVO authUserVO = new AuthUserVO();
             authUserVO.setUserId(dbUser.getUserId());
             authUserVO.setUsername(username);

@@ -5,6 +5,7 @@
 </template>
 <script>
 import * as Icon from '@ant-design/icons-vue';
+
 export default {
   name: 'MenuItem',
   components: {
@@ -25,7 +26,7 @@ export default {
       if(item.key){
         this.$router.push(item.key);
       }else {
-        this.$message.error("访问的页面不存在！");
+        this.$router.push('/error/404');
       }
     }
   },

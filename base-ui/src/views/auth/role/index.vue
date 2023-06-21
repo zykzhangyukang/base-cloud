@@ -41,6 +41,8 @@
                                @confirm="handleDelete(record.roleId)">
                            <a href="#" class="btn-text-small"  type="link"><DeleteOutlined/>删除</a>
                         </a-popconfirm>
+                       <a-divider type="vertical"/>
+                      <a href="#" class="btn-text-small"  ><LockOutlined />授权</a>
                     </span>
                 </template>
             </a-table>
@@ -67,7 +69,7 @@
     import {authRoleDelete, authRolePage} from "@/api/auth";
     import roleSaveModal from "@/views/auth/role/roleSaveModal";
     import roleUpdateModal from "@/views/auth/role/roleUpdateModal";
-    import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
+    import {DeleteOutlined, EditOutlined,LockOutlined} from '@ant-design/icons-vue';
 
     export default {
         name: "role.vue",
@@ -75,6 +77,7 @@
             roleUpdateModal,
             roleSaveModal,
           DeleteOutlined,
+          LockOutlined,
           EditOutlined
         },
         data() {

@@ -189,4 +189,12 @@
       #{item}
     </foreach>
   </insert>
+
+  <delete id="deleteByFuncIdIn">
+     delete from auth_role_func
+     where func_id  in
+     <foreach collection="funcIdList" item="item" open="(" close=")" separator=",">
+       #{item}
+     </foreach>
+  </delete>
 </mapper>

@@ -14,12 +14,20 @@ export const authFuncSelectById = (id) => {
 }
 
 
-
+/**
+ *  功能解绑用户
+ */
+export const autFuncUserBindDelete = (funcId) => {
+    return http({
+        url: `/auth/func/delete/${funcId}/user/bind`,
+        method: 'put',
+    })
+}
 
 /**
- *更新功能信息
+ * 功能解绑资源
  */
-export const deleteResourceBind = (funcId) => {
+export const authFuncRescBindDelete = (funcId) => {
     return http({
         url: `/auth/func/delete/${funcId}/resc/bind`,
         method: 'put',
@@ -30,7 +38,7 @@ export const deleteResourceBind = (funcId) => {
 /**
  *更新功能信息
  */
-export const authFuncUpdateRescBind = (data) => {
+export const authFuncRescBindUpdate = (data) => {
     return http({
         url: `/auth/func/update/resc/bind`,
         method: 'put',

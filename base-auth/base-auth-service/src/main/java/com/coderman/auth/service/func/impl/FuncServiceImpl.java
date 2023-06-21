@@ -361,20 +361,16 @@ public class FuncServiceImpl implements FuncService {
         List<Integer> funcIdList = new ArrayList<>();
         ResultVO<Void> resultVO = this.getDeepFuncIds(funcIdList, funcId);
 
-        if(!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())){
+        if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
 
             return resultVO;
         }
 
-        if (CollectionUtils.isEmpty(funcIdList)) {
-            return ResultUtil.getWarn("解绑的功能不存在!");
-        }
-
         // 所谓功能解绑用户,即删除所有该功能-角色的绑定
-        RoleFuncExample example = new RoleFuncExample();
-        example.createCriteria().andFuncIdIn(funcIdList);
-        this.roleFuncDAO.deleteByExample(example);
+        if (CollectionUtils.isNotEmpty(funcIdList)) {
 
+            this.roleFuncDAO.deleteByFuncIdIn(funcIdList);
+        }
 
         return ResultUtil.getSuccess();
     }
@@ -392,12 +388,12 @@ public class FuncServiceImpl implements FuncService {
 
         if (StringUtils.equals(rootNode.getFuncType(), AuthConstant.FUNC_TYPE_DIR)) {
 
-            return ResultUtil.getWarn("目录功能不支持解绑用户");
+            return ResultUtil.getWarn("目录功能不支持解绑用户！");
         }
 
         if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(rootNode.getParentId())) {
 
-            return ResultUtil.getWarn("不允许解绑最顶级的功能!");
+            return ResultUtil.getWarn("不允许解绑最顶级的功能！");
         }
 
         funcIdList.add(rootFuncId);

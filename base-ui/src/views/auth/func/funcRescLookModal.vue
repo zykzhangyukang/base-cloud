@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="查看资源"
+             title="资源列表"
              :width="700"
              :footer="null"
              @cancel="handleClose"

@@ -16,4 +16,11 @@ public interface RoleFuncDAO extends BaseDAO<RoleFuncModel,RoleFuncExample> {
      * @param funcKeyList
      */
     void batchInsertByRoleId(@Param(value = "roleId") Integer roleId,@Param(value = "funcKeyList") List<String> funcKeyList);
+
+
+    /**
+     * 删除功能角色关联功能id集合
+     * @param funcIdList
+     */
+    void deleteByFuncIdIn(@Param(value = "funcIdList") List<Integer> funcIdList);
 }

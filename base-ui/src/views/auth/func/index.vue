@@ -7,7 +7,7 @@
                     </div>
                 </a-col>
                 <a-col :span="21">
-                    <a-card style=" height: 85vh;">
+                    <a-card>
                         <div :style="{'textAlign':'right'}">
                             <a-button type="danger" @click="handleAdd" :disabled="searchParams.parentId === null">
                                 添加
@@ -89,10 +89,13 @@
                                         <template #overlay>
                                           <a-menu>
                                             <a-menu-item>
-                                                <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">修改资源</a>
+                                                <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">绑定资源</a>
                                             </a-menu-item>
                                             <a-menu-item>
                                                <a href="#" class="btn-text-small" @click="handleDeleteResourceBind(record.funcId)">清空资源</a>
+                                            </a-menu-item>
+                                              <a-menu-item>
+                                               <a href="#" class="btn-text-small" @click="handleDeleteUserBind(record.funcId)">清空用户</a>
                                             </a-menu-item>
                                           </a-menu>
                                         </template>
@@ -126,7 +129,7 @@
     </a-layout>
 </template>
 <script>
-import {authFuncDelete, authFuncPage, deleteResourceBind} from "@/api/auth";
+import {autFuncUserBindDelete, authFuncRescBindDelete, authFuncDelete, authFuncPage,} from "@/api/auth";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -283,8 +286,24 @@ export default {
               okText: "确定",
               icon: () => createVNode(ExclamationCircleOutlined),
               onOk() {
-                deleteResourceBind(funcId).then(res=>{
+                authFuncRescBindDelete(funcId).then(res=>{
                   _this.$message.success("清空绑定资源成功！");
+                  _this.queryData();
+                })
+              },
+              onCancel() {},
+            })
+          },
+          handleDeleteUserBind(funcId){
+            const _this = this;
+            Modal.confirm({
+              title:  '是否清空绑定的用户?',
+              cancelText: "取消",
+              okText: "确定",
+              icon: () => createVNode(ExclamationCircleOutlined),
+              onOk() {
+                autFuncUserBindDelete(funcId).then(res=>{
+                  _this.$message.success("清空绑定用户成功！");
                   _this.queryData();
                 })
               },
