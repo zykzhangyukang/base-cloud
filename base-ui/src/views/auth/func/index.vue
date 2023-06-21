@@ -69,6 +69,14 @@
                                         <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
                                     </span>
                             </template>
+                          <template #userVOList="{ record }">
+                                   <span>
+                                         <a  v-if="record.userVOList !==null && record.userVOList.length >0" class="btn-text-mini color303030" >
+                                             {{record.userVOList.map(item=>{return item.realName}).join(",") }}
+                                         </a>
+                                        <a v-else class="btn-text-small color303030">-</a>
+                                    </span>
+                          </template>
                             <template #action="{ record }">
                                 <span>
                                     <a-divider type="vertical"/>
@@ -212,6 +220,14 @@ export default {
                         align: 'center',
                         ellipsis:  true,
                     },
+                  {
+                    title: '用户列表',
+                    dataIndex: 'userVOList',
+                    key: 'userVOList',
+                    slots: { customRender: 'userVOList' },
+                    align: 'center',
+                    ellipsis:  true,
+                  },
                     {
                         title: '排序',
                         dataIndex: 'funcSort',
