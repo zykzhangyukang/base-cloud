@@ -50,6 +50,7 @@
                 })
             },
             handleClose(){
+                this.confirmLoading = false;
                 this.visible = false
                 this.form = this.$options.data().form;
             },

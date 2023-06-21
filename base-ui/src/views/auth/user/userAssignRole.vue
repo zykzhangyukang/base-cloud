@@ -53,6 +53,7 @@
             },
             handleClose(){
                 this.visible = false
+                this.confirmLoading = false;
                 this.form = this.$options.data().form;
             },
             handleChange(targetKeys, direction, moveKeys){

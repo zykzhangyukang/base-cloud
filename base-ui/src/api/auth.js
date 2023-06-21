@@ -4,18 +4,6 @@ import http from '../utils/request'
 
 
 /**
- *更新功能信息
- */
-export const authFuncUpdateRescBind = (data) => {
-    return http({
-        url: `/auth/func/update/resc/bind`,
-        method: 'put',
-        data
-    })
-}
-
-
-/**
  * 根据id获取资源信息
  */
 export const authFuncSelectById = (id) => {
@@ -25,6 +13,30 @@ export const authFuncSelectById = (id) => {
     })
 }
 
+
+
+
+/**
+ *更新功能信息
+ */
+export const deleteResourceBind = (funcId) => {
+    return http({
+        url: `/auth/func/delete/${funcId}/resc/bind`,
+        method: 'put',
+    })
+}
+
+
+/**
+ *更新功能信息
+ */
+export const authFuncUpdateRescBind = (data) => {
+    return http({
+        url: `/auth/func/update/resc/bind`,
+        method: 'put',
+        data
+    })
+}
 
 /**
  *更新功能信息

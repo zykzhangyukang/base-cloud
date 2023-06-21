@@ -82,7 +82,21 @@
                                         <a href="#" class="btn-text-small"><DeleteOutlined />删除</a>
                                       </a-popconfirm>
                                      <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)"><SettingOutlined />资源</a>
+                                    <a-dropdown :trigger="['click']">
+                                        <a class="ant-dropdown-link btn-text-small" @click.prevent >
+                                          <SettingOutlined/>设置
+                                        </a>
+                                        <template #overlay>
+                                          <a-menu>
+                                            <a-menu-item>
+                                                <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">修改资源</a>
+                                            </a-menu-item>
+                                            <a-menu-item>
+                                               <a href="#" class="btn-text-small" @click="handleDeleteResourceBind(record.funcId)">清空资源</a>
+                                            </a-menu-item>
+                                          </a-menu>
+                                        </template>
+                                      </a-dropdown>
                                 </span>
                             </template>
                         </a-table>
@@ -112,16 +126,25 @@
     </a-layout>
 </template>
 <script>
-    import {authFuncDelete, authFuncPage} from "@/api/auth";
-    import {FolderOpenOutlined,ToolOutlined,EditOutlined,DeleteOutlined,SettingOutlined } from '@ant-design/icons-vue';
-    import constant, {authDomain} from "@/utils/constant";
-    import funcLeftTree from "@/views/auth/func/funcLeftTree";
-    import funcSaveModal from "@/views/auth/func/funcSaveModal";
-    import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
-    import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
-    import funcRescLookModal from "@/views/auth/func/funcRescLookModal";
+import {authFuncDelete, authFuncPage, deleteResourceBind} from "@/api/auth";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  FolderOpenOutlined,
+  SettingOutlined,
+  ToolOutlined
+} from '@ant-design/icons-vue';
+import constant, {authDomain} from "@/utils/constant";
+import funcLeftTree from "@/views/auth/func/funcLeftTree";
+import funcSaveModal from "@/views/auth/func/funcSaveModal";
+import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
+import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
+import funcRescLookModal from "@/views/auth/func/funcRescLookModal";
+import {Modal} from "ant-design-vue";
+import {createVNode} from 'vue';
 
-    export default {
+export default {
         name: "Func.vue",
         components:{
           funcLeftTree,
@@ -204,11 +227,12 @@
                         dataIndex: 'updateTime',
                         align: 'center',
                         key: 'updateTime',
+                      ellipsis:  true,
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: '220px',
+                        width: '200px',
                         align: 'center',
                         slots: { customRender: 'action' },
                         fixed: 'right',
@@ -251,6 +275,22 @@
             handleBindResc(id){
                 this.$refs['funcBindRescModal'].open(id);
             },
+          handleDeleteResourceBind(funcId){
+            const _this = this;
+            Modal.confirm({
+              title:  '是否清空绑定的资源?',
+              cancelText: "取消",
+              okText: "确定",
+              icon: () => createVNode(ExclamationCircleOutlined),
+              onOk() {
+                deleteResourceBind(funcId).then(res=>{
+                  _this.$message.success("清空绑定资源成功！");
+                  _this.queryData();
+                })
+              },
+              onCancel() {},
+            })
+          },
             handleDelete(id){
                 authFuncDelete(id).then(e=>{
                     this.$message.success("删除功能成功！");

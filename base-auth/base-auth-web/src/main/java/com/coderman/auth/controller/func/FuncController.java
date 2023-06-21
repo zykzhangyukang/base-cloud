@@ -60,15 +60,15 @@ public class FuncController {
         return this.funcService.deleteUserBind(funcId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "功能解绑资源")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能解绑资源")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
-    @GetMapping(value = "/delete/resc/bind")
+    @PutMapping(value = "/delete/{funcId}/resc/bind")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> deleteResourceBind(@RequestParam(value = "funcId") Integer funcId){
+    public ResultVO<Void> deleteResourceBind(@PathVariable(value = "funcId") Integer funcId){
 
         return this.funcService.deleteResourceBind(funcId);
     }

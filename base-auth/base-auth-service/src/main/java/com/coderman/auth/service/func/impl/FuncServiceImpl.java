@@ -421,27 +421,19 @@ public class FuncServiceImpl implements FuncService {
     @LogError(value = "功能解绑资源")
     public ResultVO<Void> deleteResourceBind(@LogErrorParam Integer funcId) {
 
+        if(Objects.isNull(funcId)){
+
+            return ResultUtil.getWarn("功能id不能为空！");
+        }
+
         FuncVO funcVO = this.funcDAO.selectFuncInfo(funcId);
         if (null == funcVO) {
 
             return ResultUtil.getWarn("功能不存在");
         }
 
-        if (StringUtils.equals(funcVO.getFuncType(), AuthConstant.FUNC_TYPE_DIR)) {
-
-            return ResultUtil.getWarn("目录功能不支持解绑资源");
-        }
-
-        if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(funcVO.getParentId())) {
-
-            return ResultUtil.getWarn("顶级的功能不允许解绑资源!");
-        }
-
-
         // 所谓功能解绑资源,即删除所有该功能-资源的绑定
-        FuncRescExample example = new FuncRescExample();
-        example.createCriteria().andFuncIdEqualTo(funcId);
-        this.funcRescDAO.deleteByExample(example);
+        this.funcRescDAO.deleteByFuncId(funcId);
 
         return ResultUtil.getSuccess();
     }
@@ -513,40 +505,3 @@ public class FuncServiceImpl implements FuncService {
         return ResultUtil.getSuccess();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
