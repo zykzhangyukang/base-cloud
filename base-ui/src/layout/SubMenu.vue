@@ -5,7 +5,7 @@
     </template>
     <template v-for='(itemChild) of item.children'>
       <sub-menu 
-        v-if="itemChild.children && itemChild.children.length > 0 && itemChild.children.filter(v=>v.hidden).length!==itemChild.subs.length"
+        v-if="itemChild.children && itemChild.children.length > 0 && itemChild.children.filter(v=>v.hidden).length!==itemChild.children.length"
         :key='itemChild.funcKey'
         :item='itemChild'
       ></sub-menu>

@@ -19,19 +19,15 @@ export const routes = [
                 component: Index
             },
             {
-                path: '/error/500',
-                name: 'Home',
-                component: View500
-            },
-            {
-                path: '/error/404',
+                path: '/404',
                 name: '404',
                 component: View404
             },
             {
-                path: '*',    // 此处需特别注意至于最底部
-                redirect: '/error/404'
-            }
+                path: '/500',
+                name: 'Home',
+                component: View500
+            },
         ]
     },
     {

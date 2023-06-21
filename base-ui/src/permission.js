@@ -3,33 +3,28 @@ import ruleRoutes from './routers/ruleRoutes'
 import store from './store'
 import {authUserInfo,authConstAll} from './api/auth';
 
-// 后端返回的菜单来匹配对应的路由
-function recursionRouter(userRouter = [], allRouter = [],parentPath="") {
-  const realRouters = [];
-  allRouter.forEach((v, i) => {
-    userRouter.forEach((item, index) => {
-      if (v.name === item.funcKey) {
-        if (item.children && item.children.length > 0) {
-          v.children = recursionRouter(item.children, v.children,v.path);
-        }
-        let pth = v.path;
-        if(parentPath){
-          pth = parentPath+'/'+v.path;
-        }
-
-        store.setMenuItem(item, 'key', pth);
-        realRouters.push(v);
-      }
-    })
-  })
-  return realRouters;
-}
-
 
 //获取当前用户所有可以访问的路由权限
 const getRoutes = (menuTree) => {
-  return recursionRouter(menuTree,ruleRoutes,"")
+  let menuList =[];
+  getMenuList(menuTree,menuList);
+  return menuList;
 };
+
+const getMenuList = (menuTree,menuList) => {
+  for(let i = 0; i< menuTree.length; i++){
+    let route = ruleRoutes.find(r => r.name === menuTree[i].funcKey);
+    if (route) {
+      menuList.push(route);
+      store.setMenuItem(menuTree[i], 'key', route.path);
+    }
+    if(menuTree[i].children && menuTree[i].children.length>0){
+      getMenuList(menuTree[i].children,menuList);
+    }
+  }
+};
+
+
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
@@ -48,7 +43,7 @@ router.beforeEach(async(to, from, next) => {
         // 获取用户信息
         let res = await authUserInfo();
         store.setUserInfo(res.result);
-        let routesMap = getRoutes(res.result.menus)
+        let routesMap = getRoutes(res.result.menus);
         router.$addRoutes(routesMap);
 
         // 常量数据获取

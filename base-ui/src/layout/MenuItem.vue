@@ -26,7 +26,7 @@ export default {
       if(item.key){
         this.$router.push(item.key);
       }else {
-        this.$router.push('/error/404');
+        this.$router.push('/404');
       }
     }
   },

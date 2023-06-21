@@ -44,5 +44,6 @@ public class MenuVO extends BaseModel {
     @ApiModelProperty(value = "是否隐藏")
     private Boolean hidden;
 
+    @ApiModelProperty(value = "子功能")
     List<MenuVO> children;
 }

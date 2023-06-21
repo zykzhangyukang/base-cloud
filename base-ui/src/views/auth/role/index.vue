@@ -42,7 +42,7 @@
                            <a href="#" class="btn-text-small"  type="link"><DeleteOutlined/>删除</a>
                         </a-popconfirm>
                        <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small"  ><LockOutlined />授权</a>
+                      <a href="#" class="btn-text-small"  @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)"><LockOutlined />授权</a>
                     </span>
                 </template>
             </a-table>

@@ -1,4 +1,5 @@
 <template>
+  <a-card>
   <a-result
         status="404"
         title="404"
@@ -8,6 +9,7 @@
         <a-button type="primary" @click="()=>{this.$router.push('/')}">返回首页</a-button>
       </template>
     </a-result>
+  </a-card>
 </template>
 <script>
 export default {

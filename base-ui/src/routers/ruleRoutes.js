@@ -1,60 +1,27 @@
-const Auth =() =>  import(/* webpackChunkName: 'login' */'../views/auth');
-const Sync =() =>  import(/* webpackChunkName: 'login' */'../views/sync');
+const authUser = () => import(/* webpackChunkName: 'login' */'../views/auth/user/index');
+const authRole = () => import(/* webpackChunkName: 'login' */'../views/auth/role/index');
+const authRoleAuthorized = ()=> import(/* webpackChunkName: 'login' */'../views/auth/role/roleAuthorized');
+const authResc = () => import(/* webpackChunkName: 'login' */'../views/auth/resc/index');
+const authFunc = () => import(/* webpackChunkName: 'login' */'../views/auth/func/index');
+
+const syncPlan = () => import(/* webpackChunkName: 'login' */'../views/sync/plan/index');
+const syncResult = () => import(/* webpackChunkName: 'login' */'../views/sync/result/index');
+const syncMsg = () => import(/* webpackChunkName: 'login' */'../views/sync/msg/index');
+const syncCallback = () => import(/* webpackChunkName: 'login' */'../views/sync/callback/index');
 
 const routes = [
-    {
-        path: '/auth',
-        name: 'auth',
-        component: Auth,
-        children: [
-            {
-                path: 'user',
-                name: 'authUser',
-                component: () => import('../views/auth/user/index'),
-            },
-            {
-                path: 'role',
-                name: 'authRole',
-                component: () => import('../views/auth/role/index')
-            },
-            {
-                path: 'resc',
-                name: 'authResc',
-                component: () => import('../views/auth/resc/index')
-            },
-            {
-                path: 'func',
-                name: 'authFunc',
-                component: () => import('../views/auth/func/index')
-            }
-        ]
-    },
-    {
-        path: '/sync',
-        name: 'Sync',
-        component: Sync,
-        children: [
-            {
-                path: 'plan',
-                name: 'syncPlan',
-                component: () => import('../views/sync/plan/index'),
-            },
-            {
-                path: 'result',
-                name: 'syncResult',
-                component: () => import('../views/sync/result/index')
-            },
-            {
-                path: 'msg',
-                name: 'syncMsg',
-                component: () => import('../views/sync/msg/index')
-            },
-            {
-                path: 'callback',
-                name: 'syncCallback',
-                component: () => import('../views/sync/callback/index')
-            }
-        ]
-    },
+
+    {path: '/auth/user', name: 'authUser', component: authUser},
+    {path: '/auth/role', name: 'authRole', component: authRole},
+    { path: '/auth/role/authorized' ,name: 'authRoleAuthorized', component: authRoleAuthorized},
+    {path: '/auth/resc', name: 'authResc', component: authResc},
+    {path: '/auth/func', name: 'authFunc', component: authFunc},
+
+    {path: '/sync/plan', name: 'syncPlan', component: syncPlan},
+    {path: '/sync/result', name: 'syncResult', component: syncResult},
+    {path: '/sync/msg', name: 'syncMsg', component: syncMsg},
+    {path: '/sync/callback', name: 'syncCallback', component: syncCallback},
+
 ]
+
 export default routes

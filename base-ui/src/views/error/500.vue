@@ -1,4 +1,5 @@
 <template>
+  <a-card>
   <a-result
         status="500"
         title="500"
@@ -8,6 +9,7 @@
         <a-button type="primary" @click="()=>{this.$router.push('/')}">Back Home</a-button>
       </template>
     </a-result>
+  </a-card>
 </template>
 <script>
 export default {

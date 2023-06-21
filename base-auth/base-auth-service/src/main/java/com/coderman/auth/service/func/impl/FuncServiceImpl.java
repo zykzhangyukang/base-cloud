@@ -212,6 +212,7 @@ public class FuncServiceImpl implements FuncService {
         insert.setFuncSort(funcSort);
         insert.setFuncDirStatus(funcDirStatus);
         insert.setFuncIcon(funcIcon);
+        insert.setUpdateTime(new Date());
 
         this.funcDAO.insertSelectiveReturnKey(insert);
 
