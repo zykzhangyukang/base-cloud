@@ -8,12 +8,10 @@ import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.constant.AuthConstant;
-import com.coderman.auth.dao.dept.DeptDAO;
 import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
 import com.coderman.auth.dto.user.*;
-import com.coderman.auth.model.dept.DeptExample;
 import com.coderman.auth.model.dept.DeptModel;
 import com.coderman.auth.model.role.RoleModel;
 import com.coderman.auth.model.user.UserExample;
@@ -23,6 +21,7 @@ import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.dept.DeptService;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.resc.RescService;
+import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.func.MenuVO;
 import com.coderman.auth.vo.resc.RescVO;
@@ -37,7 +36,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -64,9 +62,6 @@ public class UserServiceImpl extends BaseService implements UserService {
     private UserRoleDAO userRoleDAO;
 
     @Resource
-    private DeptDAO deptDAO;
-
-    @Resource
     private RedisService redisService;
 
     @Resource
@@ -77,6 +72,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Resource
     private DeptService deptService;
+
+    @Resource
+    private RoleService roleService;
 
 
     @Override
@@ -130,7 +128,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 }
             }
 
-            this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + token, authUserVO, 12 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
+            this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + token, authUserVO, 7*24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
 
             return ResultUtil.getSuccess(UserLoginRespVO.class, this.convertUserLoginRespVO(authUserVO));
 
@@ -268,7 +266,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         newAuthUserVo.setRealName(dbUser.getRealName());
         newAuthUserVo.setToken(newToken);
         newAuthUserVo.setRescIdList(getUserRescIds(dbUser.getUsername()));
-        this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + newToken, newAuthUserVo, 12 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
+        this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + newToken, newAuthUserVo, 7*24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
         return ResultUtil.getSuccess(String.class, newToken);
     }
 
@@ -505,30 +503,22 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "根据用户名获取用户信息")
     public ResultVO<UserVO> selectUserByName(String username) {
 
-        UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(username);
-        Optional<UserModel> first = this.userDAO.selectByExample(example).stream().findFirst();
+        if(StringUtils.isBlank(username)){
 
-        UserVO userVO = null;
-        if (first.isPresent()) {
-            userVO = new UserVO();
-            BeanUtils.copyProperties(first.get(), userVO);
-
-            // 设置部门信息
-            DeptExample example1 = new DeptExample();
-            example1.createCriteria().andDeptCodeEqualTo(first.get().getDeptCode());
-            Optional<DeptModel> first1 = this.deptDAO.selectByExample(example1).stream().findFirst();
-
-            if (first1.isPresent()) {
-
-                userVO.setDeptName(first1.get().getDeptName());
-            }
-
-            // 设置角色信息
-            List<String> roleNames = this.roleDAO.selectUserRoleList(userVO.getUserId()).stream().map(RoleModel::getRoleName)
-                    .collect(Collectors.toList());
-            userVO.setRoleList(roleNames);
+            return ResultUtil.getSuccess(UserVO.class,null);
         }
+
+        UserVO userVO = this.userDAO.selectByUsernameVos(username);
+        if(userVO == null){
+
+            return ResultUtil.getSuccess(UserVO.class,null);
+        }
+
+        // 查询用户角色
+        List<String> roleNames = this.roleDAO.selectUserRoleList(userVO.getUserId()).stream()
+                .map(RoleModel::getRoleName)
+                .collect(Collectors.toList());
+        userVO.setRoleList(roleNames);
 
         return ResultUtil.getSuccess(UserVO.class, userVO);
     }

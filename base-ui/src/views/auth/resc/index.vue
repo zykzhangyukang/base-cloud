@@ -14,13 +14,13 @@
                         <a-select-option v-for="item in rescDomainG" :value="item.code" :key="item.code">{{rescDomainName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="资源名称" name='rescName'>
+                <a-form-item label="资源名称" >
                     <a-input v-model:value="searchParams.rescName" :style="{width:'200px'}" placeholder="资源名称输入框"></a-input>
                 </a-form-item>
-                <a-form-item label="资源URL" name='rescUrl'>
+                <a-form-item label="资源URL" >
                     <a-input v-model:value="searchParams.rescUrl" :style="{width:'280px'}" placeholder="资源URL输入框"></a-input>
                 </a-form-item>
-                <a-form-item label="方法类型" name="methodType">
+                <a-form-item label="方法类型" >
                     <a-select v-model:value="searchParams.methodType" :style="{width:'180px'}" placeholder="请求方法类型">
                         <a-select-option v-for="item in methodTypeG" :value="item.code" :key="item.code">{{methodTypeGName[item.code]}}</a-select-option>
                     </a-select>

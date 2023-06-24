@@ -12,9 +12,9 @@
         :toggleLanguage='toggleLanguage'
         :avatar='avatar' :loginOut='loginOut'
       ></app-header>
-      <a-layout-content class="content">
-        <router-view :key="key"/>
-      </a-layout-content>
+        <a-layout-content class="content">
+                <router-view :key="key"/>
+        </a-layout-content>
       <app-footer></app-footer>
     </a-layout>
   </a-layout>
@@ -103,3 +103,5 @@ export default {
   }
 }
 </script>
+<style>
+</style>
