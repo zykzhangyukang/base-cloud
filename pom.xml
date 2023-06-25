@@ -52,34 +52,4 @@
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <base.env>DEV</base.env>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>fat</id>
-            <properties>
-                <base.env>FAT</base.env>
-            </properties>
-        </profile>
-        <profile>
-            <id>uat</id>
-            <properties>
-                <base.env>UAT</base.env>
-            </properties>
-        </profile>
-        <profile>
-            <id>pro</id>
-            <properties>
-                <base.env>PRO</base.env>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>
