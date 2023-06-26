@@ -4,12 +4,13 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +21,19 @@ import java.util.Properties;
  *
  * @author xuxueli 2018-01-17 20:39:06
  */
+@Component
+@DependsOn(value = "xxlJobAdminConfig")
 public class I18nUtil {
-    private static Logger logger = LoggerFactory.getLogger(I18nUtil.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(I18nUtil.class);
 
     private static Properties prop = null;
     public static Properties loadI18nProp(){
+
         if (prop != null) {
             return prop;
         }
+
         try {
             // build i18n prop
             String i18n = XxlJobAdminConfig.getAdminConfig().getI18n();
@@ -40,7 +46,7 @@ public class I18nUtil {
             prop = PropertiesLoaderUtils.loadProperties(encodedResource);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            logger.error("config:{}", JSONUtils.toJSONString(XxlJobAdminConfig.getAdminConfig()));
+            logger.error("config-----> :{}", JSONUtils.toJSONString(XxlJobAdminConfig.getAdminConfig()));
         }
         return prop;
     }
@@ -65,12 +71,12 @@ public class I18nUtil {
         Map<String, String> map = new HashMap<String, String>();
 
         Properties prop = loadI18nProp();
-        if (keys!=null && keys.length>0) {
-            for (String key: keys) {
+        if (keys != null && keys.length > 0) {
+            for (String key : keys) {
                 map.put(key, prop.getProperty(key));
             }
         } else {
-            for (String key: prop.stringPropertyNames()) {
+            for (String key : prop.stringPropertyNames()) {
                 map.put(key, prop.getProperty(key));
             }
         }
