@@ -81,14 +81,6 @@ public class RoleServiceImpl implements RoleService {
 
         Map<String, Object> conditionMap = new HashMap<>(1);
 
-        if (Objects.isNull(currentPage)) {
-            currentPage = 1;
-        }
-
-        if (Objects.isNull(pageSize)) {
-            pageSize = 20;
-        }
-
         if (StringUtils.isNotBlank(roleName)) {
 
             conditionMap.put("roleName", roleName);

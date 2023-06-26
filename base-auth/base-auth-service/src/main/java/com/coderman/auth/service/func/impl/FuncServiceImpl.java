@@ -105,16 +105,6 @@ public class FuncServiceImpl implements FuncService {
         Integer currentPage = funcPageDTO.getCurrentPage();
         Integer pageSize = funcPageDTO.getPageSize();
 
-        if (Objects.isNull(currentPage)) {
-
-            currentPage = 1;
-        }
-
-        if (Objects.isNull(pageSize)) {
-
-            pageSize = 20;
-        }
-
         if (StringUtils.isNotBlank(funcName)) {
             conditionMap.put("funcName", funcName);
         }
@@ -140,12 +130,10 @@ public class FuncServiceImpl implements FuncService {
             conditionMap.put("parentId", parentId);
         }
 
+        List<FuncVO> funcVOList = new ArrayList<>();
         PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
 
         Long count = this.funcDAO.countPage(conditionMap);
-
-        List<FuncVO> funcVOList = new ArrayList<>();
-
         if (count > 0) {
 
             funcVOList = this.funcDAO.page(conditionMap);
@@ -191,7 +179,7 @@ public class FuncServiceImpl implements FuncService {
             return ResultUtil.getWarn("功能排序不能为空，请输入0-100之间的整数！");
         }
 
-        if (AuthConstant.FUNC_TYPE_DIR.equals(funcType) && StringUtils.isBlank(funcDirStatus)) {
+        if (StringUtils.equals(AuthConstant.FUNC_TYPE_DIR, funcType) && StringUtils.isBlank(funcDirStatus)) {
 
             return ResultUtil.getWarn("请选择目录是显示还是隐藏！");
         }
@@ -418,7 +406,7 @@ public class FuncServiceImpl implements FuncService {
     @LogError(value = "功能解绑资源")
     public ResultVO<Void> deleteResourceBind(@LogErrorParam Integer funcId) {
 
-        if(Objects.isNull(funcId)){
+        if (Objects.isNull(funcId)) {
 
             return ResultUtil.getWarn("功能id不能为空！");
         }
@@ -484,19 +472,19 @@ public class FuncServiceImpl implements FuncService {
         List<FuncUpdateRescBindDTO.RescBindItem> rescVOList = rescBindDTO.getRescVOList();
         Integer funcId = rescBindDTO.getFuncId();
 
-        if(Objects.isNull(funcId)){
+        if (Objects.isNull(funcId)) {
 
             return ResultUtil.getWarn("资源id不能为空！");
         }
 
         this.funcRescDAO.deleteByFuncId(funcId);
 
-        if(CollectionUtils.isNotEmpty(rescVOList)){
+        if (CollectionUtils.isNotEmpty(rescVOList)) {
 
             List<Integer> rescIdList = rescVOList.stream().map(FuncUpdateRescBindDTO.RescBindItem::getKey).distinct()
                     .collect(Collectors.toList());
 
-            this.funcRescDAO.insertBatchByFuncId(funcId,rescIdList);
+            this.funcRescDAO.insertBatchByFuncId(funcId, rescIdList);
         }
 
         return ResultUtil.getSuccess();

@@ -56,16 +56,6 @@ public class RescServiceImpl implements RescService {
 
         Map<String, Object> conditionMap = new HashMap<>(6);
 
-        if (Objects.isNull(currentPage)) {
-
-            currentPage = 1;
-        }
-
-        if (Objects.isNull(pageSize)) {
-
-            pageSize = 20;
-        }
-
         if (StringUtils.isNotBlank(rescUrl)) {
             conditionMap.put("rescUrl", rescUrl);
         }

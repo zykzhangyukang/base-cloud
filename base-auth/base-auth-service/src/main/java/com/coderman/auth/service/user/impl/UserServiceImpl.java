@@ -286,16 +286,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         Integer pageSize = queryVO.getPageSize();
         Integer currentPage = queryVO.getCurrentPage();
 
-        if (Objects.isNull(currentPage)) {
-
-            currentPage = 1;
-        }
-
-        if (Objects.isNull(pageSize)) {
-
-            pageSize = 20;
-        }
-
         if (StringUtils.isNotBlank(queryVO.getUsername())) {
             conditionMap.put("username", queryVO.getUsername());
         }
