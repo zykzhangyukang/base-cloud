@@ -1,5 +1,6 @@
 package com.xxl.job.admin.core.util;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,9 @@ public class I18nUtil {
             Resource resource = new ClassPathResource(i18nFile);
             EncodedResource encodedResource = new EncodedResource(resource,"UTF-8");
             prop = PropertiesLoaderUtils.loadProperties(encodedResource);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            logger.error("config:{}", JSONUtils.toJSONString(XxlJobAdminConfig.getAdminConfig()));
         }
         return prop;
     }
