@@ -1,5 +1,6 @@
 package com.xxl.job.admin.controller;
 
+import com.xxl.job.admin.core.cron.CronExpression;
 import com.xxl.job.admin.core.exception.XxlJobException;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
@@ -14,18 +15,18 @@ import com.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
+import com.xxl.job.core.util.DateUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * index controller
@@ -140,6 +141,28 @@ public class JobInfoController {
 
 		JobTriggerPoolHelper.trigger(id, TriggerTypeEnum.MANUAL, -1, null, executorParam);
 		return ReturnT.SUCCESS;
+	}
+
+	@RequestMapping("/cron/parse")
+	@ResponseBody
+	public ReturnT<List<String>> parse(String cron) {
+
+		List<String> result = new ArrayList<>();
+		try {
+			CronExpression cronExpression = new CronExpression(cron);
+			Date lastTime = new Date();
+			for (int i = 0; i < 10; i++) {
+				lastTime = cronExpression.getNextValidTimeAfter(lastTime);
+				if (lastTime != null) {
+					result.add(DateUtil.formatDateTime(lastTime));
+				} else {
+					break;
+				}
+			}
+		} catch (ParseException e) {
+			return new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_invalid"));
+		}
+		return new ReturnT<>(result);
 	}
 	
 }

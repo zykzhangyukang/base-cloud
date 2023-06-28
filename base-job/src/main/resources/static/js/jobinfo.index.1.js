@@ -65,7 +65,12 @@ $(function() {
 					{
 						"data": 'jobCron',
 						"visible" : true,
-						"width":'10%'
+						"width":'10%',
+						"render": function ( data, type, row ) {
+							return `<button  _cron=" ${data}" class="jobCronBtn btn btn-default btn-xs">
+  <span class="glyphicon glyphicon glyphicon-time" aria-hidden="true"></span> ${data}
+</button>`;
+						}
 					},
 	                { 
 	                	"data": 'addTime', 
@@ -187,7 +192,32 @@ $(function() {
         var jobGroup = $('#jobGroup').val();
         window.location.href = base_url + "/jobinfo?jobGroup=" + jobGroup;
     });
-	
+
+	$("#job_list").on('click', '.jobCronBtn',function() {
+		let cron = $(this).attr('_cron');
+		$.ajax({
+			type : 'POST',
+			url : base_url+ '/jobinfo/cron/parse',
+			data : {
+				"cron" : cron
+			},
+			dataType : "json",
+			success : function(data){
+				if(data.code === 200){
+					let html = "";
+					let content = data.content;
+					if(content && content.length > 0){
+						for (let i = 0; i < content.length - 1; i++) {
+							html += content[i] + '</br>'
+						}
+					}
+					layer.alert(html, {icon: 6,'title': '近10次执行时间'});
+				}
+			}
+		});
+	});
+
+
 	// job operate
 	$("#job_list").on('click', '.job_operate',function() {
 		var typeName;
