@@ -131,7 +131,7 @@ public class FuncController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取资源")
-    @GetMapping(value = "/{funcId}")
+    @GetMapping(value = "/detail/{funcId}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "资源Id",required = true)
     })

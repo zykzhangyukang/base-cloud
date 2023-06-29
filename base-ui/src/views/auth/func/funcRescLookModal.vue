@@ -30,7 +30,7 @@
 </template>
 <script>
 
-    import {authFuncSelectById, authRescSearchByKeyword} from "@/api/auth";
+    import {authFuncSelectById } from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
 
     export default {

@@ -92,7 +92,7 @@ public class RescController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "获取资源")
-    @GetMapping(value = "/{rescId}")
+    @GetMapping(value = "/detail/{rescId}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rescId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "资源Id", required = true)
     })

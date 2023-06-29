@@ -8,7 +8,7 @@ import http from '../utils/request'
  */
 export const authFuncSelectById = (id) => {
     return http({
-        url: `/auth/func/${id}`,
+        url: `/auth/func/detail/${id}`,
         method: 'get',
     })
 }
@@ -105,7 +105,7 @@ export const authFuncTree = data => {
 /************************************ 资源 *********************************/
 
 /**
- * 根据id获取资源信息
+ * 根据关键字获取资源信息
  */
 export const authRescSearchByKeyword = (keyword) => {
     return http({
@@ -120,7 +120,7 @@ export const authRescSearchByKeyword = (keyword) => {
  */
 export const authRescSelectById = (id) => {
     return http({
-        url: `/auth/resc/${id}`,
+        url: `/auth/resc/detail/${id}`,
         method: 'get',
     })
 }
@@ -189,7 +189,7 @@ export const authRoleUpdate = (data) => {
  */
 export const authRoleSelectById = (id) => {
     return http({
-        url: `/auth/role/${id}`,
+        url: `/auth/role/detail/${id}`,
         method: 'get',
     })
 }
@@ -280,7 +280,7 @@ export const authUserUpdate = (data) => {
  */
 export const authUserSelectById = (id) => {
     return http({
-        url: `/auth/user/${id}`,
+        url: `/auth/user/detail/${id}`,
         method: 'get',
     })
 }
@@ -389,7 +389,6 @@ export const authUserLogout = data => {
 export const authUserInfo = data => {
     return http({
         url: `/auth/user/info`,
-        method: 'post',
-        data: data
+        method: 'get'
     })
 }

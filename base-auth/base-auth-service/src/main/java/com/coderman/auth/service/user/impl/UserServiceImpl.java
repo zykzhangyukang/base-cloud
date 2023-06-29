@@ -1,5 +1,6 @@
 package com.coderman.auth.service.user.impl;
 
+import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.exception.BusinessException;
@@ -30,6 +31,7 @@ import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
+import com.coderman.service.util.HttpContextUtil;
 import com.coderman.service.util.MD5Utils;
 import com.coderman.service.util.UUIDUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -40,6 +42,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,9 +75,6 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Resource
     private DeptService deptService;
-
-    @Resource
-    private RoleService roleService;
 
 
     @Override
@@ -173,22 +173,29 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     @LogError(value = "获取用户信息")
-    public ResultVO<UserPermissionVO> info(@LogErrorParam String token) {
+    public ResultVO<UserPermissionVO> info(String token) {
+
+        HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
+
+        // 兼容请求url上携带的token
+        token = StringUtils.defaultString( httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), token);
 
         if (StringUtils.isBlank(token)) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空！");
+
+        } else if (StringUtils.length(token.trim()) != 32) {
+
+            return ResultUtil.getWarn("非法令牌！");
         }
 
         AuthUserVO authUserVO = this.getUserByToken(token).getResult();
-
         if (null == authUserVO) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
         }
 
         UserVO userVO = this.selectUserByName(authUserVO.getUsername()).getResult();
-
         if (null == userVO) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
@@ -200,10 +207,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         userPermissionVO.setDeptCode(authUserVO.getDeptCode());
         userPermissionVO.setDeptName(authUserVO.getDeptName());
         userPermissionVO.setRealName(authUserVO.getRealName());
-
-        // 查询角色
-        ResultVO<List<String>> roleNamesRes = this.selectRoleNames(userVO.getUserId());
-        userPermissionVO.setRoles(roleNamesRes.getResult());
 
         // 查询菜单
         ResultVO<List<MenuVO>> listResultVO = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
@@ -612,24 +615,10 @@ public class UserServiceImpl extends BaseService implements UserService {
         return ResultUtil.getSuccess();
     }
 
-    @Override
-    public ResultVO<List<String>> selectRoleNames(Integer userId) {
-
-        UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
-        if (userModel == null) {
-            throw new BusinessException("用户不存在!");
-        }
-
-        // 查询全部角色信息
-        List<RoleModel> roleList = this.roleDAO.selectUserRoleList(userId);
-        List<String> roleNames = roleList.stream().map(RoleModel::getRoleName).collect(Collectors.toList());
-
-        return ResultUtil.getSuccessList(String.class, roleNames);
-    }
 
     @Override
     @LogError(value = "用户更新密码")
-    public ResultVO<Void> updatePassword(UserUpdatePwdDTO userUpdatePwdDTO) {
+    public ResultVO<Void> updatePassword(@LogErrorParam UserUpdatePwdDTO userUpdatePwdDTO) {
 
         Integer userId = userUpdatePwdDTO.getUserId();
         String password = userUpdatePwdDTO.getPassword();

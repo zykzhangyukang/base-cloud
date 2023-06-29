@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -70,27 +69,14 @@ public class UserController {
         return this.userService.logout(token);
     }
 
-    @PostMapping(value = "/info")
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "获取用户菜单与权限")
+    @GetMapping(value = "/info")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取用户菜单与权限")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","roles","funcKeys","menus"}),
+            @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","funcKeys","menus"}),
     })
-    public ResultVO<UserPermissionVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME,required = false) String token){
+    public ResultVO<UserPermissionVO> info(String token){
         return this.userService.info(token);
-    }
-
-
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "获取用户拥有的角色名称")
-    @GetMapping(value = "/select/role/names")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
-    })
-    @ApiReturnParams({
-            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
-    })
-    public ResultVO<List<String>> selectRoleNames(@RequestParam(value = "userId") Integer userId) {
-        return this.userService.selectRoleNames(userId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户分配初始化")
@@ -116,7 +102,7 @@ public class UserController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "根据ID获取用户信息")
-    @GetMapping(value = "/{userId}")
+    @GetMapping(value = "/detail/{userId}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })

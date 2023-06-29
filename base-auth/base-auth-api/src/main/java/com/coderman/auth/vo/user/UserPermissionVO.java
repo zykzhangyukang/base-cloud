@@ -36,7 +36,4 @@ public class UserPermissionVO extends BaseModel {
 
     @ApiModelProperty(value = "功能key")
     private List<String> funcKeys;
-
-    @ApiModelProperty(value = "角色信息")
-    private List<String> roles;
 }

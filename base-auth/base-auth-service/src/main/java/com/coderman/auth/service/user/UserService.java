@@ -99,14 +99,6 @@ public interface UserService {
      */
     ResultVO<Void> updateAssign(UserAssignDTO userAssignDTO);
 
-    /**
-     * 查看用户拥有的角色信息
-     *
-     * @param userId
-     * @return
-     */
-    ResultVO<List<String>> selectRoleNames(Integer userId);
-
 
     /**
      * 设置密码

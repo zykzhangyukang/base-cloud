@@ -155,7 +155,7 @@ public class RoleController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取角色")
-    @GetMapping(value = "/{roleId}")
+    @GetMapping(value = "/detail/{roleId}")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
     })
