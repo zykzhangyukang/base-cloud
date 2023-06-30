@@ -34,6 +34,9 @@
             <a-form-item label="功能排序">
                 <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
             </a-form-item>
+            <a-form-item label="Icon图标">
+              <func-icon-picker></func-icon-picker>
+            </a-form-item>
         </a-form>
     </a-modal>
 </template>
@@ -42,10 +45,12 @@
 
     import constant, {authDomain} from "@/utils/constant";
     import {authFucSave} from "@/api/auth";
+    import funcIconPicker from "@/views/auth/func/funcIconPicker";
 
     export default {
         name: "funcSaveModel.vue",
         components:{
+          funcIconPicker
         },
         data() {
             return {

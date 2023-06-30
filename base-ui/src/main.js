@@ -7,5 +7,15 @@ import App from './App.vue'
 import router from './routers'
 import './permission' 
 import store from './store'
-createApp(App).use(Antd).use(store).use(router).mount('#root')
+import * as antIcons from '@ant-design/icons-vue'
+
+const  app = createApp(App);
+
+Object.keys(antIcons).forEach(key => {
+    // @ts-ignore
+    app.component(key, antIcons[key])
+})
+// 添加到全局
+app.config.globalProperties.$antIcons = antIcons
+app.use(Antd).use(store).use(router).mount('#root')
  
