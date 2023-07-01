@@ -57,11 +57,11 @@ public class RescServiceImpl implements RescService {
         Map<String, Object> conditionMap = new HashMap<>(6);
 
         if (StringUtils.isNotBlank(rescUrl)) {
-            conditionMap.put("rescUrl", rescUrl);
+            conditionMap.put("rescUrl", rescUrl.trim());
         }
 
         if (StringUtils.isNotBlank(rescName)) {
-            conditionMap.put("rescName", rescName);
+            conditionMap.put("rescName", rescName.trim());
         }
 
         if (StringUtils.isNotBlank(rescDomain)) {

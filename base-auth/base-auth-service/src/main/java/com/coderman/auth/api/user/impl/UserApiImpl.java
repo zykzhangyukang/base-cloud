@@ -4,13 +4,14 @@ import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.api.UserApi;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.user.AuthUserVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 @Service
 public class UserApiImpl implements UserApi {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
 

@@ -3,16 +3,16 @@ package com.coderman.auth.api.resc.impl;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.api.RescApi;
 import com.coderman.auth.service.resc.RescService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
 
 @Service
 public class RescApiImpl implements RescApi {
 
-    @Autowired
+    @Resource
     private RescService rescService;
 
     @Override

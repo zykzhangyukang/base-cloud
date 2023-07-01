@@ -29,15 +29,16 @@
                 </a-select>
             </a-form-item>
             <a-form-item label="功能图标" v-if="form.funcType === 'dir'">
-                <a-input v-model:value="form.funcIcon" />
+                <span>
+                       <component class="icon" v-if="form.funcIcon" @click="this.$refs['funcIconPicker'].open()" :is="this.$antIcons[form.funcIcon]"/>
+                       <a-button v-else @click="this.$refs['funcIconPicker'].open()">选择</a-button>
+                </span>
             </a-form-item>
             <a-form-item label="功能排序">
                 <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
             </a-form-item>
-            <a-form-item label="Icon图标">
-              <func-icon-picker></func-icon-picker>
-            </a-form-item>
         </a-form>
+        <func-icon-picker ref="funcIconPicker" @success="selectIcon"></func-icon-picker>
     </a-modal>
 </template>
 
@@ -62,7 +63,7 @@
                 form:{
                     funcName: '',
                     funcIcon: '',
-                    funcType: '',
+                    funcType: 'dir',
                     parentId: null,
                     funcSort: 0,
                     funcDirStatus: 'show',
@@ -84,6 +85,10 @@
             },
         },
         methods:{
+            selectIcon(iconText) {
+                this.form.funcIcon = iconText;
+                this.$refs['funcIconPicker'].close();
+            },
             handleOk() {
                 this.confirmLoading = true;
                 authFucSave(this.form).then(res => {
@@ -109,5 +114,7 @@
 </script>
 
 <style scoped>
-
+.icon{
+    font-size: 25px;
+}
 </style>

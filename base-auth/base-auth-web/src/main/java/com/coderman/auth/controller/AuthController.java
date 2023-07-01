@@ -14,7 +14,6 @@ import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -22,6 +21,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,19 +29,18 @@ import java.util.Set;
 
 @Api(value = "公共接口", tags = "公共接口")
 @RestController
-@SuppressWarnings("all")
 @RequestMapping(value = "/${domain}")
 public class AuthController {
 
-    @Autowired
+    @Resource
     private RedisService redisService;
 
 
-    @Autowired
+    @Resource
     private RescApi rescApi;
 
 
-    @Autowired
+    @Resource
     private UserService userService;
 
 
@@ -78,6 +77,7 @@ public class AuthController {
      */
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "常量列表")
     @GetMapping(value = "/const/all")
+    @SuppressWarnings("all")
     public ResultVO<Map<String, List<ConstItems>>> constAll() {
 
         Map<String, List<ConstItems>> resultMap = new HashMap<>();

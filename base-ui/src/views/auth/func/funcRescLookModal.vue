@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="资源列表"
+             title="资源&用户"
              :width="700"
              :footer="null"
              @cancel="handleClose"
@@ -11,7 +11,7 @@
     >
 
         <!-- 表格显示部分 -->
-        <a-table  v-if="dataSource && dataSource.length > 0" size="small" class="mb15"  :dataSource="dataSource"
+        <a-table size="small"   v-if="rescVOList && rescVOList.length > 0"  class="mb15"  :dataSource="rescVOList"
                    rowKey='rescId'
                    :pagination='false'
                    :columns="columns" >
@@ -25,6 +25,18 @@
         <span v-else>
              <a-empty description="暂无绑定的资源" />
                <a-divider />
+        </span>
+
+        <!-- 用户列表 -->
+        <span v-if="userVOList && userVOList.length > 0">
+             <span v-for="item in userVOList" :key="item.userId" class="ml15">
+               <a-tooltip>
+                <template #title>{{'账号:'+item.username}}</template>
+                 <a-avatar shape="square"  style="background-color: rgb(253, 227, 207);color: rgb(245, 106, 0);cursor: pointer">
+                    {{item.realName}}
+              </a-avatar>
+              </a-tooltip>
+            </span>
         </span>
     </a-modal>
 </template>
@@ -42,7 +54,8 @@
                 searchLoading: true,
                 searchValues: [],
                 searchList: [],
-                dataSource: [],
+                rescVOList: [],
+                userVOList: [],
                 columns: [
                     {
                         title: '资源名称',
@@ -91,7 +104,8 @@
             },
             open(funcId) {
                 authFuncSelectById(funcId).then(res=>{
-                    this.dataSource = res.result.rescVOList;
+                    this.rescVOList = res.result.rescVOList;
+                    this.userVOList = res.result.userVOList;
                     this.visible = true;
                 })
             }

@@ -54,6 +54,12 @@
                                 :data-source='tableData'
                                 :scroll="{ y: 580 }"
                         >
+                            <template #funcIcon="{ text }">
+                                <span v-if="text">
+                                      <component class="icon" :is="this.$antIcons[text]"/>
+                                </span>
+                                <a v-else class="btn-text-small color303030">-</a>
+                            </template>
                             <template #funcType="{ text }">
                               <span>
                                   <FolderOpenOutlined  v-if="text === 'dir'"/>
@@ -90,7 +96,7 @@
                                         <a href="#" class="btn-text-small"><DeleteOutlined />删除</a>
                                       </a-popconfirm>
                                      <a-divider type="vertical"/>
-                                    <a-dropdown :trigger="['click']">
+                                    <a-dropdown :trigger="['hover']">
                                         <a class="ant-dropdown-link btn-text-small" @click.prevent >
                                           <SettingOutlined/>设置
                                         </a>
@@ -239,6 +245,7 @@ export default {
                         dataIndex: 'funcIcon',
                         align: 'center',
                         key: 'funcIcon',
+                        slots: { customRender: 'funcIcon' },
                         ellipsis:  true,
                     },
                     {
@@ -280,6 +287,7 @@ export default {
                     this.parentFunc = item;
                     parentId = item.funcId;
                     this.searchParams.parentId = parentId;
+                    this.searchParams.currentPage = 1;
                     this.queryData();
                 }else {
                     this.searchParams.parentId = null;
