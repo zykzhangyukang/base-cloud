@@ -39,7 +39,7 @@ public class FuncController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "FuncVO",value = {"funcTreeVOList","funcVOList"}),
-            @ApiReturnParam(name = "FuncTreeVO",value = {"funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcSort"})
+            @ApiReturnParam(name = "FuncTreeVO",value = {"funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcSort","funcType"})
     })
     public ResultVO<List<FuncTreeVO>> listTree(){
 

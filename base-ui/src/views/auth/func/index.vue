@@ -1,12 +1,12 @@
 <template>
     <a-layout>
-            <a-row :gutter="16">
-                <a-col :span="3">
+            <a-row :gutter="10">
+                <a-col :span="4">
                     <div class="left">
                         <func-left-tree ref="funcLeftTree" @select-node="handleSelectNode"></func-left-tree>
                     </div>
                 </a-col>
-                <a-col :span="21">
+                <a-col :span="20">
                     <a-card>
                         <div :style="{'textAlign':'right'}">
                             <a-button type="danger" @click="handleAdd" :disabled="searchParams.parentId === null">
@@ -61,11 +61,10 @@
                                 <a v-else class="btn-text-small color303030">-</a>
                             </template>
                             <template #funcType="{ text }">
-                              <span>
-                                  <FolderOpenOutlined  v-if="text === 'dir'"/>
-                                  <ToolOutlined v-else />
-                              </span>
                                 {{ funcTypeGName[text] }}
+                            </template>
+                            <template #funcKey="{ text }">
+                                <a-tag>{{text}}</a-tag>
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
@@ -205,18 +204,19 @@ export default {
                         ellipsis:  true,
                     },
                     {
-                        title: '功能Key',
-                        dataIndex: 'funcKey',
-                        key: 'funcKey',
-                        ellipsis:  true,
-                        align: 'center',
-                    },
-                    {
                         title: '功能类型',
                         dataIndex: 'funcType',
                         key: 'funcType',
                         align: 'center',
                         slots: { customRender: 'funcType' },
+                    },
+                    {
+                        title: '功能Key',
+                        dataIndex: 'funcKey',
+                        key: 'funcKey',
+                        ellipsis: true,
+                        width: '200px',
+                        slots: { customRender: 'funcKey' },
                     },
                     {
                         title: '资源列表',
@@ -259,7 +259,7 @@ export default {
                     {
                         title: '操作',
                         key: 'action',
-                        width: '180px',
+                        width: '200px',
                         slots: { customRender: 'action' },
                         fixed: 'right',
                     },

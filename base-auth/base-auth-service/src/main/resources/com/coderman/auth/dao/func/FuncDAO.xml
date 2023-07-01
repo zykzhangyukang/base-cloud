@@ -389,6 +389,7 @@
       func_name,
       func_key,
       func_sort,
+      func_type,
       parent_id
       from auth_func
   </select>

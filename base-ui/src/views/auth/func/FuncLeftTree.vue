@@ -1,9 +1,9 @@
 <template>
     <a-card class="tree-card">
-        <a-input-search size="small" style="margin-bottom: 8px" placeholder="查询" @change="onChange" />
+        <a-input-search size="small" v-model:value="searchValue" style="margin-bottom: 8px"  placeholder="查询" @change="onChange" />
       <a-spin size="small" :spinning="treeLoading">
         <a-tree
-                show-line
+                :show-icon="true"
                 :selectedKeys="selectedKeys"
                 :expanded-keys="expandedKeys"
                 :auto-expand-parent="autoExpandParent"
@@ -11,10 +11,26 @@
                 @expand="onExpand"
                 @select="select"
         >
+            <!-- 节点切换图标 -->
+            <template #switcherIcon>
+                <down-outlined />
+            </template>
+            <!-- 目录关闭目标 -->
+            <template #dir>
+                <img :src="require('@/assets/images/folder.svg')" class="tree-icon">
+            </template>
+            <!-- 目录打开图标 -->
+            <template #openDir>
+                <img :src="require('@/assets/images/folder-open.svg')" class="tree-icon" >
+            </template>
+            <!-- 功能图标 -->
+            <template #func>
+                <img :src="require('@/assets/images/func.svg')" class="tree-icon">
+            </template>
             <template #title="{ title }">
                 <span v-if="title.indexOf(searchValue) > -1">
                   {{ title.substr(0, title.indexOf(searchValue)) }}
-                  <span style="color: #f50">{{ searchValue }}</span>
+                  <b style="color: #ed4014">{{ searchValue }}</b>
                   {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
                 </span>
                 <span v-else>{{ title }}</span>
@@ -65,11 +81,9 @@
             }
         },
         methods:{
-            reloadTree(){
-               this.queryFuncTree();
-            },
             resetSelect(){
                this.selectedKeys = [];
+               this.searchValue = '';
             },
             select(e){
                 this.selectedKeys = e;
@@ -83,21 +97,39 @@
                 }
                 this.$emit("select-node",item);
             },
-            onExpand(expandedKeys) {
+            onExpand(expandedKeys, event) {
                 this.expandedKeys = expandedKeys;
                 this.autoExpandParent = false;
+                if(event.node.dataRef.slots.icon !=='func'){
+                    if (event.expanded) {
+                        event.node.dataRef.slots.icon = 'openDir'
+                    } else {
+                        event.node.dataRef.slots.icon = 'dir'
+                    }
+                }
             },
-            async queryFuncTree(){
-              this.treeLoading = true;
-              try {
-                const res = await authFuncTree();
-                const tree  = res.result;
-                this.treeData = tree;
-                this.expandedKeys  = ["Root"];
-                return tree;
-              }finally {
-                this.treeLoading = false;
-              }
+            setTitleSlots(tree){
+                if(tree){
+                   tree.forEach(item=>{
+                       item.slots = {title: 'title' , icon:  item.funcType};
+                       if(item.children && item.children.length > 0){
+                           this.setTitleSlots(item.children);
+                       }
+                   })
+                }
+            },
+            async queryFuncTree() {
+                this.treeLoading = true;
+                try {
+                    const res = await authFuncTree();
+                    const tree = res.result;
+                    this.setTitleSlots(tree)
+                    this.treeData = tree;
+                    this.expandedKeys = ["Root"];
+                    return tree;
+                } finally {
+                    this.treeLoading = false;
+                }
             },
             onChange(e) {
                 const value = e.target.value;
@@ -131,5 +163,11 @@
     }
     .tree{
         margin-top: 5px;
+    }
+    .tree-icon{
+        width: 15px;
+        height: 15px;
+        user-select: none;
+        -webkit-user-drag: none;
     }
 </style>

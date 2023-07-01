@@ -36,6 +36,9 @@ public class FuncTreeVO extends BaseModel {
     @ApiModelProperty(value = "父级id")
     private Integer parentId;
 
+    @ApiModelProperty(value = "功能类型")
+    private String funcType;
+
     /**
      * 子功能
      */
