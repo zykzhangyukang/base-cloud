@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="新增功能"
+             title="更新功能"
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"
@@ -9,9 +9,6 @@
              ref="form"
     >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="父级功能">
-                <a-input v-model:value="parentFunc.title"  disabled />
-            </a-form-item>
             <a-form-item label="功能名称">
                 <a-input v-model:value="form.funcName"/>
             </a-form-item>
@@ -24,7 +21,7 @@
                 </a-select>
             </a-form-item>
             <a-form-item label="是否隐藏" v-if="form.funcType === 'dir'">
-                <a-select v-model:value="form.funcDirStatus"   >
+                <a-select v-model:value="form.funcDirStatus" >
                     <a-select-option v-for="item in funcDirStatusG"  :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
                 </a-select>
             </a-form-item>
@@ -41,32 +38,24 @@
         <func-icon-picker ref="funcIconPicker" @success="selectIcon"></func-icon-picker>
     </a-modal>
 </template>
-
 <script>
 
+    import {authFuncSelectById, authFuncUpdate} from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
-    import {authFucSave} from "@/api/auth";
-    import funcIconPicker from "@/views/auth/func/funcIconPicker";
+    import funcIconPicker from "@/views/auth/func/FuncIconPicker";
 
     export default {
-        name: "funcSaveModel.vue",
-        components:{
+        name: "funcUpdateModal.vue",
+        components: {
           funcIconPicker
         },
         data() {
             return {
-                parentFunc:{},
-                confirmLoading:  false,
+                confirmLoading: false,
                 visible: false,
-                labelCol: { span: 4 },
-                wrapperCol: { span: 18 },
-                form:{
-                    funcName: '',
-                    funcIcon: '',
-                    funcType: 'dir',
-                    parentId: null,
-                    funcSort: 0,
-                    funcDirStatus: 'show',
+                labelCol: {span: 4},
+                wrapperCol: {span: 18},
+                form: {
                 },
             }
         },
@@ -84,37 +73,38 @@
                 return constant.formatConst(this.funcDirStatusG)
             },
         },
-        methods:{
+        methods: {
             selectIcon(iconText) {
                 this.form.funcIcon = iconText;
                 this.$refs['funcIconPicker'].close();
             },
             handleOk() {
                 this.confirmLoading = true;
-                authFucSave(this.form).then(res => {
-                    this.$message.success("新增功能成功");
+                authFuncUpdate(this.form).then(res => {
+                    this.$message.success("更新功能成功！");
                     this.handleClose();
                     this.$emit('success')
-                }).finally(e=>{
+                }).finally(e => {
                     this.confirmLoading = false;
                 })
             },
-            handleClose(){
+            handleClose() {
                 this.visible = false
                 this.confirmLoading = false;
                 this.form = this.$options.data().form;
             },
-            open(parentFunc){
-                this.visible = true;
-                this.parentFunc = parentFunc;
-                this.form.parentId = parentFunc.funcId;
+            open(funcId) {
+                authFuncSelectById(funcId).then(res => {
+                    this.form = res.result;
+                    this.visible = true;
+                });
             }
         }
     }
 </script>
 
 <style scoped>
-.icon{
-    font-size: 25px;
-}
+    .icon{
+        font-size: 25px;
+    }
 </style>

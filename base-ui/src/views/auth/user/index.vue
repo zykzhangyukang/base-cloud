@@ -108,10 +108,10 @@
 
 <script>
 import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
-import userSaveModal from '@/views/auth/user/userSaveModal'
-import userUpdateModal from "@/views/auth/user/userUpdateModal";
-import userAssignRole from "@/views/auth/user/userAssignRole";
-import updatePwd from "@/views/auth/user/updatePwd";
+import userSaveModal from '@/views/auth/user/UserSaveModal'
+import userUpdateModal from "@/views/auth/user/UserUpdateModal";
+import userAssignRole from "@/views/auth/user/UserAssignRole";
+import updatePwd from "@/views/auth/user/UpdatePwd";
 import {authDomain, formatConst, getConst} from "@/utils/constant";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, SettingOutlined} from '@ant-design/icons-vue';
 import {Modal} from 'ant-design-vue';

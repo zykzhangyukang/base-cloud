@@ -69,7 +69,7 @@
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
-                                         <a  v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-small color303030" @click="handleLookResc(record.funcId)">
+                                         <a  v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-normal color303030" @click="handleLookResc(record.funcId)">
                                              {{record.rescVOList.map(item=>{return item.rescUrl}).join(",") }}
                                          </a>
                                         <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
@@ -77,9 +77,9 @@
                             </template>
                           <template #userVOList="{ record }">
                                    <span>
-                                         <a  v-if="record.userVOList !==null && record.userVOList.length >0" class="btn-text-mini color303030" >
+                                         <span  v-if="record.userVOList !==null && record.userVOList.length >0" class="btn-text-mini color303030" >
                                              {{record.userVOList.map(item=>{return item.realName}).join(",") }}
-                                         </a>
+                                         </span>
                                         <a v-else class="btn-text-small color303030">-</a>
                                     </span>
                           </template>
@@ -153,11 +153,11 @@ import {
   ToolOutlined
 } from '@ant-design/icons-vue';
 import constant, {authDomain} from "@/utils/constant";
-import funcLeftTree from "@/views/auth/func/funcLeftTree";
-import funcSaveModal from "@/views/auth/func/funcSaveModal";
-import funcUpdateModal from "@/views/auth/func/funcUpdateModal";
-import funcBindRescModal from "@/views/auth/func/funcBindRescModal";
-import funcRescLookModal from "@/views/auth/func/funcRescLookModal";
+import funcLeftTree from "@/views/auth/func/FuncLeftTree";
+import funcSaveModal from "@/views/auth/func/FuncSaveModal";
+import funcUpdateModal from "@/views/auth/func/FuncUpdateModal";
+import funcBindRescModal from "@/views/auth/func/FuncBindRescModal";
+import funcRescLookModal from "@/views/auth/func/FuncRescLookModal";
 import {Modal} from "ant-design-vue";
 import {createVNode} from 'vue';
 
@@ -253,13 +253,13 @@ export default {
                         dataIndex: 'updateTime',
                         align: 'center',
                         key: 'updateTime',
+                        width: '150px',
                       ellipsis:  true,
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: '200px',
-                        align: 'center',
+                        width: '180px',
                         slots: { customRender: 'action' },
                         fixed: 'right',
                     },

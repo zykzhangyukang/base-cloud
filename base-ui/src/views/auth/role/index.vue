@@ -67,8 +67,8 @@
 
 <script>
     import {authRoleDelete, authRolePage} from "@/api/auth";
-    import roleSaveModal from "@/views/auth/role/roleSaveModal";
-    import roleUpdateModal from "@/views/auth/role/roleUpdateModal";
+    import roleSaveModal from "@/views/auth/role/RoleSaveModal";
+    import roleUpdateModal from "@/views/auth/role/RoleUpdateModal";
     import {DeleteOutlined, EditOutlined,LockOutlined} from '@ant-design/icons-vue';
 
     export default {

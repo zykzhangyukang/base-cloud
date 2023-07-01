@@ -93,7 +93,7 @@
                 const res = await authFuncTree();
                 const tree  = res.result;
                 this.treeData = tree;
-                this.expandedKeys  = ["root"];
+                this.expandedKeys  = ["Root"];
                 return tree;
               }finally {
                 this.treeLoading = false;

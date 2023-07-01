@@ -88,8 +88,8 @@
 
     import {authRescDelete, authRescPage} from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
-    import rescSaveModal from "@/views/auth/resc/rescSaveModal";
-    import rescUpdateModal from "@/views/auth/resc/rescUpdateModal";
+    import rescSaveModal from "@/views/auth/resc/RescSaveModal";
+    import rescUpdateModal from "@/views/auth/resc/RescUpdateModal";
     import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
 
     export default {
