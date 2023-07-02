@@ -36,7 +36,7 @@
 <script>
 
 import {authFuncSelectById, authFuncRescBindUpdate, authRescSearchByKeyword} from "@/api/auth";
-
+let timer = null;
 export default {
         name: "funcBindRescModal.vue",
         data() {
@@ -53,7 +53,13 @@ export default {
         },
         methods: {
             handleSearchResc(val){
-                this.queryRescByKeywords(val);
+                 let _this = this;
+                 if(timer!=null){
+                   clearTimeout(timer)
+                 }
+                 timer = setTimeout(()=>{
+                   _this.queryRescByKeywords(val);
+                 },500);
             },
             queryRescByKeywords(val){
                 this.searchLoading = true;

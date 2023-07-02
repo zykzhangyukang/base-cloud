@@ -2,7 +2,7 @@
     <a-table
             size='small'
             ref='table'
-            :scroll='{x: width, y:height}'
+            :scroll='{x: width, y:windowHeight-350}'
             v-bind="$attrs"
     >
         <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">
@@ -20,35 +20,22 @@
             },
             width: {
                 type: [String, Number],
-                default: 'calc(100%+50px)'
             }
         },
         data () {
             return {
-                height: 'auto'
+               windowHeight: document.documentElement.clientHeight,   //实时屏幕高度
             };
         },
         mounted () {
-            this.setHeight();
+          window.onresize = () => {
+            return (() => {
+              window.fullHeight = document.documentElement.clientHeight;
+              this.windowHeight = window.fullHeight;
+            })()
+          };
         },
-        methods: {
-            setHeight () {
-                if (this.$el) {
-                    let rect = this.$el.getBoundingClientRect();
-                    let bodyRect = document.body.getBoundingClientRect();
-                    let maxHeight = bodyRect.height - rect.top - 125;
-                    if (this.page) {
-                        maxHeight -= 40;
-                    }
-                    if (maxHeight < 200) {
-                        this.height = 200;
-                        return void 0;
-                    }
-                    this.height = maxHeight;
-                } else {
-                    this.height = 'auto';
-                }
-            }
-        },
+      watch: {
+      },
     };
 </script>

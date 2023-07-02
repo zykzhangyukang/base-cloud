@@ -1,7 +1,7 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="资源&用户"
-             :width="700"
+             :title="null"
+             :width="600"
              :footer="null"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"
@@ -9,35 +9,32 @@
              okText="确定"
              ref="form"
     >
-
-        <!-- 表格显示部分 -->
-        <a-table size="small"   v-if="rescVOList && rescVOList.length > 0"  class="mb15"  :dataSource="rescVOList"
-                   rowKey='rescId'
-                   :pagination='false'
-                   :columns="columns" >
-            <template #rescDomain="{ text }">
-                {{ rescDomainName[text] }}
-            </template>
-            <template #methodType="{ text }">
-                {{ methodTypeGName[text] }}
-            </template>
-        </a-table>
-        <span v-else>
-             <a-empty description="暂无绑定的资源" />
-               <a-divider />
+      <a-divider >资源列表</a-divider>
+      <div>
+        <span  v-if="rescVOList && rescVOList.length > 0">
+          <div class="resc_item" v-for="item in rescVOList" :key="item.rescId">{{   '请求方式：'+methodTypeGName[item.methodType] + " ，资源URL：" + item.rescUrl  }} <span style="float: right">({{item.rescName}})</span></div>
         </span>
-
+        <span v-else>
+             <a-empty description="暂无绑定的资源"/>
+               <a-divider/>
+        </span>
+      </div>
+      <a-divider >用户列表</a-divider>
         <!-- 用户列表 -->
-        <span v-if="userVOList && userVOList.length > 0">
-             <span v-for="item in userVOList" :key="item.userId" class="ml15">
+      <div>
+          <div v-if="userVOList && userVOList.length > 0">
+             <a-tag v-for="item in userVOList" :key="item.userId" class="ml15 user_item">
                <a-tooltip>
                 <template #title>{{'账号:'+item.username}}</template>
-                 <a-avatar shape="square"  style="background-color: rgb(253, 227, 207);color: rgb(245, 106, 0);cursor: pointer">
-                    {{item.realName}}
-              </a-avatar>
+                  {{item.realName + '-' + item.deptName}}
               </a-tooltip>
-            </span>
-        </span>
+            </a-tag>
+        </div>
+          <span v-else>
+               <a-empty description="暂无绑定的用户"/>
+                 <a-divider/>
+          </span>
+      </div>
     </a-modal>
 </template>
 <script>
@@ -114,5 +111,18 @@
 </script>
 
 <style scoped>
-
+.resc_item{
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  font-size: 11px;
+  color: #000000d9;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+.user_item{
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
 </style>
