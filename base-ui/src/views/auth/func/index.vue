@@ -65,21 +65,10 @@
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
-                                         <a v-if="record.rescVOList !==null && record.rescVOList.length >0"
-                                            class="btn-text-normal color303030" @click="handleLookResc(record.funcId)">
+                                         <a v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-small color303030" @click="handleLookResc(record.funcId)">
                                              {{record.rescVOList.map(item=>{return item.rescUrl}).join(",") }}
                                          </a>
-                                        <a v-else class="btn-text-small color303030"
-                                           @click="handleLookResc(record.funcId)">-</a>
-                                    </span>
-                            </template>
-                            <template #userVOList="{ record }">
-                                   <span>
-                                         <span v-if="record.userVOList !==null && record.userVOList.length >0"
-                                               class="btn-text-mini color303030">
-                                             {{record.userVOList.map(item=>{return item.realName}).join(",") }}
-                                         </span>
-                                        <a v-else class="btn-text-small color303030">-</a>
+                                        <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
                                     </span>
                             </template>
                             <template #action="{ record }">
@@ -95,7 +84,7 @@
                                         <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
                                       </a-popconfirm>
                                      <a-divider type="vertical"/>
-                                    <a-dropdown :trigger="['hover']">
+                                    <a-dropdown :trigger="['click']">
                                         <a class="ant-dropdown-link btn-text-small" @click.prevent>
                                           <SettingOutlined/>设置
                                         </a>
@@ -198,21 +187,20 @@ export default {
                     title: 'ID',
                     dataIndex: 'funcId',
                     key: 'funcId',
-                    width: 80,
                 },
                     {
                         title: '功能名称',
                         dataIndex: 'funcName',
                         key: 'funcName',
                         align: 'center',
-                        ellipsis:  true,
+                        ellipsis: true,
                     },
                     {
                         title: '功能类型',
                         dataIndex: 'funcType',
                         key: 'funcType',
                         align: 'center',
-                        slots: { customRender: 'funcType' },
+                        slots: {customRender: 'funcType'},
                     },
                     {
                         title: '功能Key',
@@ -220,16 +208,16 @@ export default {
                         key: 'funcKey',
                         ellipsis: true,
                         width: '180px',
-                        slots: { customRender: 'funcKey' },
+                        slots: {customRender: 'funcKey'},
                     },
                     {
                         title: '资源列表',
                         dataIndex: 'rescVOList',
                         key: 'rescVOList',
-                        slots: { customRender: 'rescVOList' },
+                        slots: {customRender: 'rescVOList'},
                         align: 'center',
                         width: '180px',
-                        ellipsis:  true,
+                        ellipsis: true,
                     },
                     {
                         title: '排序',
@@ -242,8 +230,8 @@ export default {
                         dataIndex: 'funcIcon',
                         align: 'center',
                         key: 'funcIcon',
-                        slots: { customRender: 'funcIcon' },
-                        ellipsis:  true,
+                        slots: {customRender: 'funcIcon'},
+                        ellipsis: true,
                     },
                     {
                         title: '更新时间',
@@ -251,13 +239,13 @@ export default {
                         align: 'center',
                         key: 'updateTime',
                         width: '150px',
-                      ellipsis:  true,
+                        ellipsis: true,
                     },
                     {
                         title: '操作',
                         key: 'action',
                         width: '200px',
-                        slots: { customRender: 'action' },
+                        slots: {customRender: 'action'},
                         fixed: 'right',
                     },
                 ],
@@ -387,5 +375,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

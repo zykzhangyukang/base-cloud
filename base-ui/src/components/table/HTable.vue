@@ -32,15 +32,6 @@
             this.setHeight();
         },
         methods: {
-            handleResize () {
-                this.setHeight();
-            },
-            listenerResize () {
-                window.addEventListener('resize', this.eventResize);
-            },
-            eventResize () {
-                this.setHeight();
-            },
             setHeight () {
                 if (this.$el) {
                     let rect = this.$el.getBoundingClientRect();
@@ -59,13 +50,5 @@
                 }
             }
         },
-        beforeUnmount () {
-            window.removeEventListener('resize', this.eventResize);
-        },
-        watch: {
-            '$attrs.data' () {
-                this.$refs.table.bodyWrapper.scrollTop = 0;
-            }
-        }
     };
 </script>

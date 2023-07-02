@@ -4,19 +4,19 @@ import DefaultLayout from '../layout/DefaultLayout.vue';
 const View404 = () => import(/* webpackChunkName: '404' */'../views/error/404.vue');
 const View500 = () => import(/* webpackChunkName: '500' */'../views/error/500.vue');
 const Login = () => import(/* webpackChunkName: 'login' */'../views/Login.vue');
-const Index = () => import(/* webpackChunkName: 'login' */'../views/Index.vue');
+const Dashboard = () => import(/* webpackChunkName: 'login' */'../views/Dashboard.vue');
 
 export const routes = [
     {
         path: '',
-        redirect: '/index',
+        redirect: '/dashboard',
         name: 'Root',
         component: DefaultLayout,
         children: [
             {
-                path: '/index',
-                name: 'Index',
-                component: Index
+                path: '/dashboard',
+                name: 'Dashboard',
+                component: Dashboard
             },
             {
                 path: '/404',
@@ -76,7 +76,7 @@ router.$addRoutes = (params) => {
     router.addRoute({
         path: "/:pathMatch(.*)",
         name: 'Redirect',
-        redirect: '/index'
+        redirect: '/dashboard'
     });
 };
 export default router

@@ -106,7 +106,7 @@ public class FuncServiceImpl implements FuncService {
         Integer pageSize = funcPageDTO.getPageSize();
 
         if (StringUtils.isNotBlank(funcName)) {
-            conditionMap.put("funcName", funcName);
+            conditionMap.put("funcName", funcName.trim());
         }
 
         if (StringUtils.isNotBlank(funcType)) {
@@ -118,11 +118,11 @@ public class FuncServiceImpl implements FuncService {
         }
 
         if (StringUtils.isNotBlank(funcKey)) {
-            conditionMap.put("funcKey", funcKey);
+            conditionMap.put("funcKey", funcKey.trim());
         }
 
         if (StringUtils.isNotBlank(rescUrl)) {
-            conditionMap.put("rescUrl", rescUrl);
+            conditionMap.put("rescUrl", rescUrl.trim());
         }
 
         if (Objects.nonNull(parentId)) {

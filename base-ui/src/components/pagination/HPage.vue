@@ -4,6 +4,7 @@
             show-size-changer
             :current="current"
             :page-size="pageSize"
+            :show-total="total => `共 ${total} 条记录`"
             :total="total"
             @change="pageCurrentChange"
             @showSizeChange="pageSizeChange" />

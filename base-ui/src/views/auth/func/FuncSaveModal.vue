@@ -28,14 +28,14 @@
                     <a-select-option v-for="item in funcDirStatusG"  :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
                 </a-select>
             </a-form-item>
+            <a-form-item label="功能排序">
+                <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
+            </a-form-item>
             <a-form-item label="功能图标" v-if="form.funcType === 'dir'">
                 <span>
                        <component class="icon" v-if="form.funcIcon" @click="this.$refs['funcIconPicker'].open()" :is="this.$antIcons[form.funcIcon]"/>
                        <a-button v-else @click="this.$refs['funcIconPicker'].open()">选择</a-button>
                 </span>
-            </a-form-item>
-            <a-form-item label="功能排序">
-                <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
             </a-form-item>
         </a-form>
         <icon-picker ref="funcIconPicker" @success="selectIcon"></icon-picker>
