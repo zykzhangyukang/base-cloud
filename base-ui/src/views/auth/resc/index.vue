@@ -32,18 +32,15 @@
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
             </a-form>
-            <a-table
-                    size='small'
+            <HTable
                     rowKey='rescId'
-                    bordered
                     :pagination='false'
                     :loading='tableLoading'
                     :columns='tableColumns'
                     :data-source='tableData'
-                    :scroll="{ y: 580 }"
             >
                 <template #rescDomain="{ text }">
-                        {{ rescDomainName[text] }}
+                    {{ rescDomainName[text] }}
                 </template>
                 <template #methodType="{ text }">
                     {{ methodTypeGName[text] }}
@@ -51,30 +48,25 @@
                 <template #action="{ record }">
                     <span>
                          <a-divider type="vertical"/>
-                         <a href="#" class="btn-text-small" @click="handleUpdate(record.rescId)"><EditOutlined />编辑</a>
+                         <a href="#" class="btn-text-small" @click="handleUpdate(record.rescId)"><EditOutlined/>编辑</a>
                        <a-divider type="vertical"/>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.rescId)">
-                             <a  href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
+                             <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
                     </span>
                 </template>
-            </a-table>
-
-            <a-pagination
-                    a-pagination
-                    :style="{marginTop:'10px',textAlign:'right'}"
-                    show-size-changer
-                    show-quick-jumper
+            </HTable>
+            <HPage
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
                     @change="pageCurrentChange"
                     @showSizeChange="pageSizeChange">
-            </a-pagination>
+            </HPage>
 
             <!-- 新增资源 -->
             <resc-save-modal ref="rescSaveModal" @success="queryData"></resc-save-modal>
@@ -91,14 +83,18 @@
     import rescSaveModal from "@/views/auth/resc/RescSaveModal";
     import rescUpdateModal from "@/views/auth/resc/RescUpdateModal";
     import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
+    import HPage from "@/components/pagination/HPage";
+    import HTable from "@/components/table/HTable";
 
     export default {
         name: "Resc..vue",
         components: {
             rescSaveModal,
             rescUpdateModal,
-          DeleteOutlined,
-          EditOutlined
+            DeleteOutlined,
+            EditOutlined,
+            HPage,
+            HTable
         },
         data() {
             return {

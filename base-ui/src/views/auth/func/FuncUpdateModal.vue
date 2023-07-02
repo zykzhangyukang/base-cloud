@@ -35,19 +35,19 @@
                 <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
             </a-form-item>
         </a-form>
-        <func-icon-picker ref="funcIconPicker" @success="selectIcon"></func-icon-picker>
+        <icon-picker ref="funcIconPicker" @success="selectIcon"></icon-picker>
     </a-modal>
 </template>
 <script>
 
     import {authFuncSelectById, authFuncUpdate} from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
-    import funcIconPicker from "@/views/auth/func/FuncIconPicker";
+    import iconPicker from "@/components/icon/iconPicker";
 
     export default {
         name: "funcUpdateModal.vue",
         components: {
-          funcIconPicker
+            iconPicker
         },
         data() {
             return {
@@ -105,6 +105,6 @@
 
 <style scoped>
     .icon{
-        font-size: 25px;
+        font-size: 20px;
     }
 </style>

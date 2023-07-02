@@ -19,45 +19,44 @@
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
             </a-form>
-            <a-table
-                    size='small'
-                    rowKey='roleId'
-                    bordered
+
+            <HTable
                     :pagination='false'
                     :loading='tableLoading'
+                    bordered
+                    rowKey='roleId'
                     :columns='tableColumns'
                     :data-source='tableData'
-                    :scroll="{ y: 580 }"
             >
                 <template #action="{ record }">
                     <span>
+
+                        <!--编辑-->
+                      <a href="#" class="btn-text-small" @click="handleUpdate(record.roleId)"><EditOutlined/>编辑</a>
                       <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small" @click="handleUpdate(record.roleId)"><EditOutlined />编辑</a>
-                      <a-divider type="vertical"/>
+
+                        <!--设置-->
                        <a-popconfirm
                                title="您确定要删除该角色吗?"
                                ok-text="确定"
                                cancel-text="取消"
                                @confirm="handleDelete(record.roleId)">
-                           <a href="#" class="btn-text-small"  type="link"><DeleteOutlined/>删除</a>
+                           <a href="#" class="btn-text-small" type="link"><DeleteOutlined/>删除</a>
                         </a-popconfirm>
+
+                        <!--授权-->
                        <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small"  @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)"><LockOutlined />授权</a>
+                      <a href="#" class="btn-text-small"
+                         @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)"><LockOutlined/>授权</a>
                     </span>
                 </template>
-            </a-table>
-
-            <a-pagination
-                    a-pagination
-                    :style="{marginTop:'10px',textAlign:'right'}"
-                    show-size-changer
-                    show-quick-jumper
+            </HTable>
+            <HPage
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
                     @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange">
-            </a-pagination>
+                    @showSizeChange="pageSizeChange"/>
 
             <role-save-modal ref="roleSaveModal" @success="queryData"></role-save-modal>
             <role-update-modal ref="roleUpdateModal" @success="queryData"></role-update-modal>
@@ -69,16 +68,16 @@
     import {authRoleDelete, authRolePage} from "@/api/auth";
     import roleSaveModal from "@/views/auth/role/RoleSaveModal";
     import roleUpdateModal from "@/views/auth/role/RoleUpdateModal";
-    import {DeleteOutlined, EditOutlined,LockOutlined} from '@ant-design/icons-vue';
+    import HTable from "@/components/table/HTable";
+    import HPage from "@/components/pagination/HPage";
 
     export default {
         name: "role.vue",
         components: {
             roleUpdateModal,
             roleSaveModal,
-          DeleteOutlined,
-          LockOutlined,
-          EditOutlined
+            HTable,
+            HPage
         },
         data() {
             return {

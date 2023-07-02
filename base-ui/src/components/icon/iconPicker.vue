@@ -28,7 +28,7 @@
         defineComponent
     } from 'vue';
 
-    import iconList from '../../../assets/icons.json'
+    import iconList from './icons.json'
 
     export default defineComponent({
         components: {},
@@ -53,8 +53,8 @@
     });
 </script>
 <style scoped>
-	.icon{
-		font-size: 22px;
-		margin-left: 5px;
-	}
+    .icon{
+        font-size: 22px;
+        margin-left: 5px;
+    }
 </style>

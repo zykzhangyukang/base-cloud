@@ -38,7 +38,7 @@
                 <a-input-number  v-model:value="form.funcSort" :style="{width:'180px'}" :min="0" :max="100" />
             </a-form-item>
         </a-form>
-        <func-icon-picker ref="funcIconPicker" @success="selectIcon"></func-icon-picker>
+        <icon-picker ref="funcIconPicker" @success="selectIcon"></icon-picker>
     </a-modal>
 </template>
 
@@ -46,12 +46,12 @@
 
     import constant, {authDomain} from "@/utils/constant";
     import {authFucSave} from "@/api/auth";
-    import funcIconPicker from "@/views/auth/func/FuncIconPicker";
+    import iconPicker from "@/components/icon/iconPicker";
 
     export default {
         name: "funcSaveModel.vue",
         components:{
-          funcIconPicker
+          iconPicker
         },
         data() {
             return {
@@ -115,6 +115,6 @@
 
 <style scoped>
 .icon{
-    font-size: 25px;
+    font-size: 20px;
 }
 </style>

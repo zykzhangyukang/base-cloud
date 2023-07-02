@@ -44,15 +44,12 @@
                                 <a-button type="default" @click="pageSearchReset">重置</a-button>
                             </a-form-item>
                         </a-form>
-                        <a-table
-                                size='small'
-                                bordered
+                        <HTable
                                 rowKey='funcId'
                                 :pagination='false'
                                 :loading='tableLoading'
                                 :columns='tableColumns'
                                 :data-source='tableData'
-                                :scroll="{ y: 580 }"
                         >
                             <template #funcIcon="{ text }">
                                 <span v-if="text">
@@ -68,65 +65,67 @@
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
-                                         <a  v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-normal color303030" @click="handleLookResc(record.funcId)">
+                                         <a v-if="record.rescVOList !==null && record.rescVOList.length >0"
+                                            class="btn-text-normal color303030" @click="handleLookResc(record.funcId)">
                                              {{record.rescVOList.map(item=>{return item.rescUrl}).join(",") }}
                                          </a>
-                                        <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
+                                        <a v-else class="btn-text-small color303030"
+                                           @click="handleLookResc(record.funcId)">-</a>
                                     </span>
                             </template>
-                          <template #userVOList="{ record }">
+                            <template #userVOList="{ record }">
                                    <span>
-                                         <span  v-if="record.userVOList !==null && record.userVOList.length >0" class="btn-text-mini color303030" >
+                                         <span v-if="record.userVOList !==null && record.userVOList.length >0"
+                                               class="btn-text-mini color303030">
                                              {{record.userVOList.map(item=>{return item.realName}).join(",") }}
                                          </span>
                                         <a v-else class="btn-text-small color303030">-</a>
                                     </span>
-                          </template>
+                            </template>
                             <template #action="{ record }">
                                 <span>
                                     <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)"><EditOutlined />编辑</a>
+                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)"><EditOutlined/>编辑</a>
                                         <a-divider type="vertical"/>
                                           <a-popconfirm
                                                   title="您确定要删除该功能吗?"
                                                   ok-text="确定"
                                                   cancel-text="取消"
                                                   @confirm="handleDelete(record.funcId)">
-                                        <a href="#" class="btn-text-small"><DeleteOutlined />删除</a>
+                                        <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
                                       </a-popconfirm>
                                      <a-divider type="vertical"/>
                                     <a-dropdown :trigger="['hover']">
-                                        <a class="ant-dropdown-link btn-text-small" @click.prevent >
+                                        <a class="ant-dropdown-link btn-text-small" @click.prevent>
                                           <SettingOutlined/>设置
                                         </a>
                                         <template #overlay>
                                           <a-menu>
                                             <a-menu-item>
-                                                <a href="#" class="btn-text-small" @click="handleBindResc(record.funcId)">绑定资源</a>
+                                                <a href="#" class="btn-text-small"
+                                                   @click="handleBindResc(record.funcId)">绑定资源</a>
                                             </a-menu-item>
                                             <a-menu-item>
-                                               <a href="#" class="btn-text-small" @click="handleDeleteResourceBind(record.funcId)">清空资源</a>
+                                               <a href="#" class="btn-text-small"
+                                                  @click="handleDeleteResourceBind(record.funcId)">清空资源</a>
                                             </a-menu-item>
                                               <a-menu-item>
-                                               <a href="#" class="btn-text-small" @click="handleDeleteUserBind(record.funcId)">清空用户</a>
+                                               <a href="#" class="btn-text-small"
+                                                  @click="handleDeleteUserBind(record.funcId)">清空用户</a>
                                             </a-menu-item>
                                           </a-menu>
                                         </template>
                                       </a-dropdown>
                                 </span>
                             </template>
-                        </a-table>
-                        <a-pagination
-                                a-pagination
-                                :style="{marginTop:'10px',textAlign:'right'}"
-                                show-size-changer
-                                show-quick-jumper
+                        </HTable>
+                        <HPage
                                 :current="searchParams.currentPage"
                                 :page-size="searchParams.pageSize"
                                 :total="total"
                                 @change="pageCurrentChange"
                                 @showSizeChange="pageSizeChange">
-                        </a-pagination>
+                        </HPage>
 
                         <!-- 新增功能 -->
                         <func-save-modal ref="funcSaveModal" @success="queryData"></func-save-modal>
@@ -157,23 +156,27 @@ import funcSaveModal from "@/views/auth/func/FuncSaveModal";
 import funcUpdateModal from "@/views/auth/func/FuncUpdateModal";
 import funcBindRescModal from "@/views/auth/func/FuncBindRescModal";
 import funcRescLookModal from "@/views/auth/func/FuncRescLookModal";
+import HPage from "@/components/pagination/HPage";
+import HTable from "@/components/table/HTable";
 import {Modal} from "ant-design-vue";
 import {createVNode} from 'vue';
 
 export default {
         name: "Func.vue",
-        components:{
-          funcLeftTree,
-            funcSaveModal,
-            funcUpdateModal,
-            funcBindRescModal,
-            funcRescLookModal,
-            FolderOpenOutlined,
-            ToolOutlined,
-            EditOutlined,
-            DeleteOutlined,
-            SettingOutlined
-        },
+    components: {
+        HPage,
+        HTable,
+        funcLeftTree,
+        funcSaveModal,
+        funcUpdateModal,
+        funcBindRescModal,
+        funcRescLookModal,
+        FolderOpenOutlined,
+        ToolOutlined,
+        EditOutlined,
+        DeleteOutlined,
+        SettingOutlined
+    },
         data(){
             return {
                 toolbarFixed: true,
@@ -195,6 +198,7 @@ export default {
                     title: 'ID',
                     dataIndex: 'funcId',
                     key: 'funcId',
+                    width: 80,
                 },
                     {
                         title: '功能名称',
@@ -215,7 +219,7 @@ export default {
                         dataIndex: 'funcKey',
                         key: 'funcKey',
                         ellipsis: true,
-                        width: '200px',
+                        width: '180px',
                         slots: { customRender: 'funcKey' },
                     },
                     {
@@ -224,16 +228,9 @@ export default {
                         key: 'rescVOList',
                         slots: { customRender: 'rescVOList' },
                         align: 'center',
+                        width: '180px',
                         ellipsis:  true,
                     },
-                  {
-                    title: '用户列表',
-                    dataIndex: 'userVOList',
-                    key: 'userVOList',
-                    slots: { customRender: 'userVOList' },
-                    align: 'center',
-                    ellipsis:  true,
-                  },
                     {
                         title: '排序',
                         dataIndex: 'funcSort',

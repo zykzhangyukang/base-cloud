@@ -27,38 +27,34 @@
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
             </a-form>
-            <a-table
-                    size='small'
+            <HTable
                     rowKey='userId'
                     bordered
                     :pagination='false'
                     :loading='tableLoading'
                     :columns='tableColumns'
                     :data-source='tableData'
-                    :scroll="{ y: 580 }"
             >
-
                 <template #userStatus="{ text }">
-                    <a-tag  :color="text===1 ? 'green' : 'red'">
+                    <a-tag :color="text===1 ? 'green' : 'red'">
                         {{ userStatusGName[text] }}
                     </a-tag>
                 </template>
-
                 <template #action="{ record }">
                     <span>
                       <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small"  @click="handleUpdate(record.userId)"><EditOutlined />编辑</a>
+                      <a href="#" class="btn-text-small" @click="handleUpdate(record.userId)"><EditOutlined/>编辑</a>
                        <a-divider type="vertical"/>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.userId)">
-                               <a href="#" class="btn-text-small"  ><DeleteOutlined />删除</a>
+                               <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
                         <a-divider type="vertical"/>
                         <a-dropdown :trigger="['click']">
-                            <a class="ant-dropdown-link btn-text-small" @click.prevent >
+                            <a class="ant-dropdown-link btn-text-small" @click.prevent>
                               <SettingOutlined/>设置
                             </a>
                             <template #overlay>
@@ -80,20 +76,14 @@
                           </a-dropdown>
                     </span>
                 </template>
-            </a-table>
-
-            <a-pagination
-                    a-pagination
-                    :style="{marginTop:'10px',textAlign:'right'}"
-                    show-size-changer
-                    show-quick-jumper
+            </HTable>
+            <HPage
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
                     @change="pageCurrentChange"
                     @showSizeChange="pageSizeChange">
-            </a-pagination>
-
+            </HPage>
             <!-- 新增用户 -->
             <user-save-modal  ref="userSaveModal" @success="queryData"></user-save-modal>
             <!-- 更新用户 -->
@@ -112,6 +102,8 @@ import userSaveModal from '@/views/auth/user/UserSaveModal'
 import userUpdateModal from "@/views/auth/user/UserUpdateModal";
 import userAssignRole from "@/views/auth/user/UserAssignRole";
 import updatePwd from "@/views/auth/user/UpdatePwd";
+import HPage from "@/components/pagination/HPage";
+import HTable from "@/components/table/HTable";
 import {authDomain, formatConst, getConst} from "@/utils/constant";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, SettingOutlined} from '@ant-design/icons-vue';
 import {Modal} from 'ant-design-vue';
@@ -123,10 +115,12 @@ export default {
             userSaveModal,
             userUpdateModal,
             updatePwd,
-             EditOutlined,
+            EditOutlined,
             DeleteOutlined,
             SettingOutlined,
-            userAssignRole
+            userAssignRole,
+            HPage,
+            HTable
         },
         data() {
             return {
