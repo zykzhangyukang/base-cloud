@@ -7,15 +7,9 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-/**
- * @author coderman
- * @Title: 角色分配功能vo
- * @Description: TOD
- * @date 2022/3/2714:39
- */
-@Data
 @EqualsAndHashCode(callSuper = true)
-public class RoleAuthInitVO extends BaseModel {
+@Data
+public class RoleAuthorizedInitVO extends BaseModel {
 
     /**
      * 角色id
@@ -37,4 +31,5 @@ public class RoleAuthInitVO extends BaseModel {
      * 所有的功能树
      */
     private List<FuncTreeVO> allTreeList;
+
 }

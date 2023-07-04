@@ -8,9 +8,8 @@ import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthInitVO;
+import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
 import com.coderman.auth.vo.role.RoleVO;
-import com.coderman.auth.vo.user.UserAssignVO;
 
 import java.util.List;
 
@@ -85,7 +84,7 @@ public interface RoleService {
      * @param roleId
      * @return
      */
-    ResultVO<RoleAuthInitVO> roleFuncUpdateInit(Integer roleId);
+    ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(Integer roleId);
 
 
     /**

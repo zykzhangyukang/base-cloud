@@ -8,9 +8,8 @@ import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthInitVO;
+import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
 import com.coderman.auth.vo.role.RoleVO;
-import com.coderman.auth.vo.user.UserAssignVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -19,7 +18,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -82,17 +80,17 @@ public class RoleController {
         return this.roleService.roleFuncUpdate(roleId,funcKeyList);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "角色分配功能初始化")
-    @GetMapping(value = "/func/update/init")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "角色分配功能初始化")
+    @GetMapping(value = "/authorized/init")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色id",required = true),
+            @ApiImplicitParam(name = "roleId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "角色id", required = true),
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAuthInitVO",value = {"allTreeList", "roleId", "roleName", "funcKeyList"})
+            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName", "funcKeyList"})
     })
-    public ResultVO<RoleAuthInitVO> roleFuncUpdateInit(@RequestParam(value = "roleId") Integer roleId){
-        return this.roleService.roleFuncUpdateInit(roleId);
+    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@RequestParam(value = "roleId") Integer roleId) {
+        return this.roleService.roleAuthorizedInit(roleId);
     }
 
 

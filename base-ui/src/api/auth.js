@@ -195,6 +195,17 @@ export const authRoleSelectById = (id) => {
 }
 
 /**
+ * 角色授权初始化
+ */
+export const authRoleAuthorizedUpdateInit = (id) => {
+    return http({
+        url: `/auth/role/authorized/init?roleId=${id}`,
+        method: 'get',
+    })
+}
+
+
+/**
  * 删除角色
  */
 export const authRoleDelete = id => {

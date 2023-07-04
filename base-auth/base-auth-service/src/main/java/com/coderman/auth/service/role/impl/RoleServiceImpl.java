@@ -15,7 +15,6 @@ import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
-import com.coderman.auth.model.role.RoleExample;
 import com.coderman.auth.model.role.RoleFuncExample;
 import com.coderman.auth.model.role.RoleFuncModel;
 import com.coderman.auth.model.role.RoleModel;
@@ -25,18 +24,14 @@ import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.vo.func.FuncTreeVO;
-import com.coderman.auth.vo.func.FuncVO;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthInitVO;
+import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -287,9 +282,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResultVO<RoleAuthInitVO> roleFuncUpdateInit(Integer roleId) {
+    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(Integer roleId) {
 
-        RoleAuthInitVO roleAuthInitVO = new  RoleAuthInitVO();
+        if(Objects.isNull(roleId)){
+
+            return ResultUtil.getWarn("角色id不能为空！");
+        }
+
+        RoleAuthorizedInitVO roleAuthInitVO = new  RoleAuthorizedInitVO();
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
         if(null == roleModel){
@@ -314,7 +314,7 @@ public class RoleServiceImpl implements RoleService {
         //roleAuthInitVO.setFuncKeyList(keyList);
 
         // 回显问题: vue-ant-design
-        return ResultUtil.getSuccess(RoleAuthInitVO.class,roleAuthInitVO);
+        return ResultUtil.getSuccess(RoleAuthorizedInitVO.class,roleAuthInitVO);
     }
 
     @Override
