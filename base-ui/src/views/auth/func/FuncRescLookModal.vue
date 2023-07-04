@@ -9,31 +9,20 @@
              okText="确定"
              ref="form"
     >
-      <a-divider >资源列表</a-divider>
-      <div>
-        <span  v-if="rescVOList && rescVOList.length > 0">
-          <div class="resc_item" v-for="item in rescVOList" :key="item.rescId">{{   '请求方式：'+methodTypeGName[item.methodType] + " ，资源URL：" + item.rescUrl  }} <span style="float: right">({{item.rescName}})</span></div>
-        </span>
-        <span v-else>
-             <a-empty description="暂无绑定的资源"/>
-               <a-divider/>
-        </span>
+      <div  v-if="rescVOList && rescVOList.length > 0">
+        <a-divider >资源列表</a-divider>
+        <div class="resc_item" v-for="item in rescVOList" :key="item.rescId">{{   '请求方式：'+methodTypeGName[item.methodType] + " ，资源URL：" + item.rescUrl  }} <span style="float: right">({{item.rescName}})</span></div>
       </div>
-      <a-divider >用户列表</a-divider>
+
         <!-- 用户列表 -->
-      <div>
-          <div v-if="userVOList && userVOList.length > 0">
-             <a-tag v-for="item in userVOList" :key="item.userId" class="ml15 user_item">
-               <a-tooltip>
-                <template #title>{{'账号:'+item.username}}</template>
-                  {{item.realName + '-' + item.deptName}}
-              </a-tooltip>
-            </a-tag>
-        </div>
-          <span v-else>
-               <a-empty description="暂无绑定的用户"/>
-                 <a-divider/>
-          </span>
+      <div v-if="userVOList && userVOList.length > 0">
+        <a-divider >用户列表</a-divider>
+        <a-tag v-for="item in userVOList" :key="item.userId" class="ml15 user_item">
+          <a-tooltip>
+            <template #title>{{'账号:'+item.username}}</template>
+            {{item.realName + '-' + item.deptName}}
+          </a-tooltip>
+        </a-tag>
       </div>
     </a-modal>
 </template>

@@ -1,1 +1,1 @@
-version=2.0.4-${base.env}
+version=2.0.4

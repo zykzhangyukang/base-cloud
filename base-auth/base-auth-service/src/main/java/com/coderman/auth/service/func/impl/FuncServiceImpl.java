@@ -219,6 +219,11 @@ public class FuncServiceImpl implements FuncService {
         String funcDirStatus = funcUpdateDTO.getFuncDirStatus();
         String funcIcon = funcUpdateDTO.getFuncIcon();
 
+        if(Objects.isNull(funcId)){
+
+            return ResultUtil.getWarn("功能id不能为空！");
+        }
+
         FuncModel funcModel = this.funcDAO.selectByPrimaryKey(funcId);
         if (null == funcModel) {
 
@@ -255,7 +260,7 @@ public class FuncServiceImpl implements FuncService {
 
         if (Objects.nonNull(dbFuncModel) && !funcId.equals(dbFuncModel.getFuncId())) {
 
-            throw new BusinessException("存在重复的功能key！");
+            return ResultUtil.getWarn("存在重复的功能key！");
         }
 
         // 更新功能

@@ -520,20 +520,21 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "启用用户")
     public ResultVO<Void> updateEnable(Integer userId) {
 
-        UserModel db = this.userDAO.selectByPrimaryKey(userId);
-        if (db == null) {
-            throw new BusinessException("用户不存在!");
+        UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
+        if(Objects.isNull(userModel)){
+
+            return ResultUtil.getFail("用户不存在！");
         }
 
-        if (AuthConstant.USER_STATUS_ENABLE.equals(db.getUserStatus())) {
+        if (AuthConstant.USER_STATUS_ENABLE.equals(userModel.getUserStatus())) {
+
             return ResultUtil.getWarn("已经是启用状态！");
         }
 
-
-        UserModel userModel = new UserModel();
-        userModel.setUserId(userId);
-        userModel.setUserStatus(AuthConstant.USER_STATUS_ENABLE);
-        this.userDAO.updateByPrimaryKeySelective(userModel);
+        UserModel updateModel = new UserModel();
+        updateModel.setUserId(userId);
+        updateModel.setUserStatus(AuthConstant.USER_STATUS_ENABLE);
+        this.userDAO.updateByPrimaryKeySelective(updateModel);
         return ResultUtil.getSuccess();
     }
 
@@ -541,19 +542,21 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "用户禁用")
     public ResultVO<Void> updateDisable(Integer userId) {
 
-        UserModel db = this.userDAO.selectByPrimaryKey(userId);
-        if (db == null) {
-            throw new BusinessException("用户不存在!");
+        UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
+        if(Objects.isNull(userModel)){
+
+            return ResultUtil.getFail("用户不存在！");
         }
 
-        if (AuthConstant.USER_STATUS_DISABLE.equals(db.getUserStatus())) {
+        if (AuthConstant.USER_STATUS_DISABLE.equals(userModel.getUserStatus())) {
+
             return ResultUtil.getWarn("用户已经是禁用状态");
         }
 
-        UserModel userModel = new UserModel();
-        userModel.setUserId(userId);
-        userModel.setUserStatus(AuthConstant.USER_STATUS_DISABLE);
-        this.userDAO.updateByPrimaryKeySelective(userModel);
+        UserModel updateModel = new UserModel();
+        updateModel.setUserId(userId);
+        updateModel.setUserStatus(AuthConstant.USER_STATUS_DISABLE);
+        this.userDAO.updateByPrimaryKeySelective(updateModel);
         return ResultUtil.getSuccess();
     }
 
@@ -563,8 +566,9 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserAssignVO userAssignVO = new UserAssignVO();
 
         UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
-        if (userModel == null) {
-            throw new BusinessException("需要分配的用户不存在!");
+        if(Objects.isNull(userModel)){
+
+            return ResultUtil.getFail("用户不存在！");
         }
 
         userAssignVO.setUserId(userId);
