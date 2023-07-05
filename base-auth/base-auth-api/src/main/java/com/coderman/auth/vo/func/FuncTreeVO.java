@@ -10,8 +10,6 @@ import java.util.List;
 
 /**
  * @author coderman
- * @Title: 功能树
- * @Description: TOD
  * @date 2022/3/1915:36
  */
 @EqualsAndHashCode(callSuper = true)
@@ -38,6 +36,12 @@ public class FuncTreeVO extends BaseModel {
 
     @ApiModelProperty(value = "功能类型")
     private String funcType;
+
+    @ApiModelProperty(value = "功能图标")
+    private String funcIcon;
+
+    @ApiModelProperty(value = "是否显示")
+    private String funcDirStatus;
 
     /**
      * 子功能

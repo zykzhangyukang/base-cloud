@@ -7,10 +7,8 @@ import com.coderman.auth.dto.func.FuncPageDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
 import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
-import com.coderman.auth.vo.func.FuncQueryVO;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
-import com.coderman.auth.vo.func.MenuVO;
 
 import java.util.List;
 
@@ -84,13 +82,14 @@ public interface FuncService {
      */
     ResultVO<Void> deleteResourceBind(Integer funcId);
 
+
     /**
      * 查询菜单树
      *
      * @param userId
      * @return
      */
-    ResultVO<List<MenuVO>> selectMenusTreeByUserId(Integer userId);
+    ResultVO<List<FuncTreeVO>> selectMenusTreeByUserId(Integer userId);
 
 
     /**

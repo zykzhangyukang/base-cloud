@@ -73,7 +73,7 @@ public class UserController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取用户菜单与权限")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","funcKeys","menus"}),
+            @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode","deptName", "username", "token", "userId","buttons","menus"}),
     })
     public ResultVO<UserPermissionVO> info(String token){
         return this.userService.info(token);

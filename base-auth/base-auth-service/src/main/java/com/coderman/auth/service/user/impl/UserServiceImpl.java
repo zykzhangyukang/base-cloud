@@ -22,9 +22,8 @@ import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.dept.DeptService;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.resc.RescService;
-import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.service.user.UserService;
-import com.coderman.auth.vo.func.MenuVO;
+import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.auth.vo.user.*;
 import com.coderman.service.anntation.LogError;
@@ -176,8 +175,6 @@ public class UserServiceImpl extends BaseService implements UserService {
     public ResultVO<UserPermissionVO> info(String token) {
 
         HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
-
-        // 兼容请求url上携带的token
         token = StringUtils.defaultString( httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), token);
 
         if (StringUtils.isBlank(token)) {
@@ -189,18 +186,20 @@ public class UserServiceImpl extends BaseService implements UserService {
             return ResultUtil.getWarn("非法令牌！");
         }
 
-        AuthUserVO authUserVO = this.getUserByToken(token).getResult();
-        if (null == authUserVO) {
+        ResultVO<AuthUserVO> userByToken = this.getUserByToken(token);
+        if (!ResultConstant.RESULT_CODE_200.equals(userByToken.getCode())) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
         }
 
-        UserVO userVO = this.selectUserByName(authUserVO.getUsername()).getResult();
-        if (null == userVO) {
+        AuthUserVO authUserVO = userByToken.getResult();
+        ResultVO<UserVO> userVOResultVO = this.selectUserByName(authUserVO.getUsername());
+        if (!ResultConstant.RESULT_CODE_200.equals(userVOResultVO.getCode())) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户会话已过期！");
         }
 
+        UserVO userVO = userVOResultVO.getResult();
         UserPermissionVO userPermissionVO = new UserPermissionVO();
         userPermissionVO.setUserId(authUserVO.getUserId());
         userPermissionVO.setUsername(authUserVO.getUsername());
@@ -209,12 +208,16 @@ public class UserServiceImpl extends BaseService implements UserService {
         userPermissionVO.setRealName(authUserVO.getRealName());
 
         // 查询菜单
-        ResultVO<List<MenuVO>> listResultVO = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
-        userPermissionVO.setMenus(listResultVO.getResult());
+        ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
+        if(!ResultConstant.RESULT_CODE_200.equals(r1.getCode())){
+
+            return ResultUtil.getFail("获取菜单失败！");
+        }
+        userPermissionVO.setMenus(r1.getResult());
 
         // 查询功能
         ResultVO<List<String>> resultVO = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
-        userPermissionVO.setFuncKeys(resultVO.getResult());
+        userPermissionVO.setButtons(resultVO.getResult());
         return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
     }
 

@@ -125,7 +125,6 @@
                     const tree = res.result;
                     this.setTitleSlots(tree)
                     this.treeData = tree;
-                    this.expandedKeys = ["Root"];
                     return tree;
                 } finally {
                     this.treeLoading = false;

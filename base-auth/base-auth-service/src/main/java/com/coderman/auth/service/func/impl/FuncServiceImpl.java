@@ -1,7 +1,6 @@
 package com.coderman.auth.service.func.impl;
 
 import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.exception.BusinessException;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
@@ -11,23 +10,24 @@ import com.coderman.auth.dao.func.FuncDAO;
 import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
-import com.coderman.auth.dto.func.*;
+import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncSaveDTO;
+import com.coderman.auth.dto.func.FuncUpdateDTO;
+import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
-import com.coderman.auth.model.func.FuncRescExample;
-import com.coderman.auth.model.resc.RescModel;
 import com.coderman.auth.model.role.RoleFuncExample;
 import com.coderman.auth.model.role.RoleFuncModel;
 import com.coderman.auth.model.user.UserRoleExample;
 import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.func.FuncService;
+import com.coderman.auth.utils.TreeUtils;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
-import com.coderman.auth.vo.func.MenuVO;
-import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -61,34 +61,16 @@ public class FuncServiceImpl implements FuncService {
     @LogError(value = "获取功能树")
     public ResultVO<List<FuncTreeVO>> listTree() {
 
-        // 获取所有功能转成VO
-        List<FuncTreeVO> voList = this.funcDAO.selectAllFuncTreeVO();
+        List<FuncTreeVO> treeVOS = Lists.newArrayList();
 
-        Map<Integer, FuncTreeVO> funcVOMap = voList.stream()
-                .collect(Collectors.toMap(FuncTreeVO::getFuncId, e -> e));
+        List<FuncTreeVO> funcTreeVos = this.funcDAO.selectAllFuncTreeVO();
 
-        for (FuncTreeVO treeVo : voList) {
-
-            Integer parentId = treeVo.getParentId();
-
-            if (funcVOMap.containsKey(parentId)) {
-
-                FuncTreeVO funcTreeVO = funcVOMap.get(parentId);
-                List<FuncTreeVO> childrenList = Optional.ofNullable(funcTreeVO.getChildrenList()).orElse(new ArrayList<>());
-                funcTreeVO.setChildrenList(childrenList);
-
-                // 添加子节点并进行排序
-                childrenList.add(treeVo);
-                childrenList.sort(Comparator.comparing(FuncTreeVO::getFuncSort));
-            }
+        if (CollectionUtils.isNotEmpty(funcTreeVos)) {
+            treeVOS = TreeUtils.buildFuncTreeByList(funcTreeVos);
         }
 
-        // 设置根节点
-        List<FuncTreeVO> rootFunVoList = voList.stream()
-                .filter(e -> !funcVOMap.containsKey(e.getParentId())).collect(Collectors.toList());
-        return ResultUtil.getSuccessList(FuncTreeVO.class, rootFunVoList);
+        return ResultUtil.getSuccessList(FuncTreeVO.class, treeVOS);
     }
-
 
     @Override
     @LogError(value = "功能列表")
@@ -430,44 +412,40 @@ public class FuncServiceImpl implements FuncService {
 
     @Override
     @LogError(value = "查询菜单树")
-    public ResultVO<List<MenuVO>> selectMenusTreeByUserId(@LogErrorParam Integer userId) {
+    public ResultVO<List<FuncTreeVO>> selectMenusTreeByUserId(@LogErrorParam Integer userId) {
 
-        // 获取所有的菜单类型的功能
-        List<MenuVO> allMenus = this.funcDAO.selectAllMenusByUserId(userId);
+        if (Objects.isNull(userId)) {
 
-        // 转成Map结构
-        Map<Integer, MenuVO> funcVOMap = allMenus.stream().collect(Collectors.toMap(MenuVO::getFuncId, e -> e));
-        for (MenuVO menuVO : allMenus) {
-
-            menuVO.setHidden(AuthConstant.FUNC_DIR_STATUS_HIDE.equals(menuVO.getFuncDirStatus()));
-
-            Integer parentId = menuVO.getParentId();
-
-            if (funcVOMap.containsKey(parentId)) {
-
-                MenuVO menuNode = funcVOMap.get(parentId);
-                List<MenuVO> childrenList = Optional.ofNullable(menuNode.getChildren()).orElse(new ArrayList<>());
-                menuNode.setChildren(childrenList);
-
-                // 添加子节点并进行排序
-                childrenList.add(menuVO);
-                childrenList.sort(Comparator.comparingInt(MenuVO::getFuncSort));
-            }
+            return ResultUtil.getWarn("用户id不能为空！");
         }
 
-        // 获取所有父级节点
-        List<MenuVO> rootFunVoList = allMenus.stream()
-                .sorted(Comparator.comparingInt(MenuVO::getFuncSort))
-                .filter(e -> !funcVOMap.containsKey(e.getParentId())).collect(Collectors.toList());
-        return ResultUtil.getSuccessList(MenuVO.class, rootFunVoList);
+        // 查询目录类型的功能
+        List<FuncTreeVO> treeVOs = new ArrayList<>();
+        List<FuncTreeVO> funcTreeVOList = this.funcDAO.selectAllByUserIdAndFuncType(userId,AuthConstant.FUNC_TYPE_DIR);
+
+        if (CollectionUtils.isNotEmpty(funcTreeVOList)) {
+
+            treeVOs = TreeUtils.buildFuncTreeByList(funcTreeVOList);
+        }
+
+        return ResultUtil.getSuccessList(FuncTreeVO.class, treeVOs);
     }
 
 
     @Override
     @LogError(value = "查询功能按钮key")
     public ResultVO<List<String>> selectFuncKeyListByUserId(@LogErrorParam Integer userId) {
-        List<String> funcKeys = this.funcDAO.selectFuncKeyListByUserId(userId);
-        return ResultUtil.getSuccessList(String.class, funcKeys);
+
+        if (Objects.isNull(userId)) {
+
+            return ResultUtil.getWarn("用户id不能为空！");
+        }
+
+        List<String> buttonKeys = this.funcDAO.selectAllByUserIdAndFuncType(userId, AuthConstant.FUNC_TYPE_FUNC).stream()
+                .map(FuncTreeVO::getFuncKey)
+                .distinct().collect(Collectors.toList());
+
+        return ResultUtil.getSuccessList(String.class, buttonKeys);
     }
 
     @Override

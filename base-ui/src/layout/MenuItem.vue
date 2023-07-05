@@ -1,6 +1,6 @@
 <template>
   <a-menu-item @click="toPage(item)">
-    <component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.funcName}}</span>
+    <component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.title}}</span>
   </a-menu-item>
 </template>
 <script>

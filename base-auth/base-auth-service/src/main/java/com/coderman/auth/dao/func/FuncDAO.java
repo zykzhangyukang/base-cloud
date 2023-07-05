@@ -4,7 +4,6 @@ import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
-import com.coderman.auth.vo.func.MenuVO;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.mybatis.dao.BaseDAO;
@@ -88,28 +87,12 @@ public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
 
 
     /**
-     * 根据用户id获取所有功能
-     *
-     * @param userId
-     * @return
-     */
-    List<FuncModel> selectFuncListByUserId(Integer userId);
-
-
-    /**
      * 根据用户id获取所有目录
      *
      * @param userId
      * @return
      */
-    List<MenuVO> selectAllMenusByUserId(Integer userId);
+    List<FuncTreeVO> selectAllByUserIdAndFuncType(Integer userId,String funcType);
 
 
-    /**
-     * 根据用户id获取所有功能按钮
-     *
-     * @param userId
-     * @return
-     */
-    List<String> selectFuncKeyListByUserId(Integer userId);
 }

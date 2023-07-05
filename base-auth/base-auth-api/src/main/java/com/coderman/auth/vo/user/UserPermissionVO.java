@@ -1,7 +1,7 @@
 package com.coderman.auth.vo.user;
 
 import com.coderman.api.model.BaseModel;
-import com.coderman.auth.vo.func.MenuVO;
+import com.coderman.auth.vo.func.FuncTreeVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author coderman
- * @Title: 用户权限菜单洗洗脑
+ * @Title: 用户权限菜单
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -32,8 +32,8 @@ public class UserPermissionVO extends BaseModel {
     private String realName;
 
     @ApiModelProperty(value = "菜单信息")
-    private List<MenuVO> menus;
+    private List<FuncTreeVO> menus;
 
     @ApiModelProperty(value = "功能key")
-    private List<String> funcKeys;
+    private List<String> buttons;
 }

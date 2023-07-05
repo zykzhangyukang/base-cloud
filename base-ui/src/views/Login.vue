@@ -82,7 +82,7 @@
 
         this.$router.push('/').then(()=>{
 
-          this.$message.success("登录成功！");
+          this.$message.success("用户登录成功！");
         })
 
       }).finally(e=>{
