@@ -17,11 +17,13 @@
             </template>
             <!-- 目录关闭目标 -->
             <template #dir>
-                <img :src="require('@/assets/images/folder.svg')" class="tree-icon">
+<!--                <img :src="require('@/assets/images/folder.svg')" class="tree-icon">-->
+              <FolderOutlined />
             </template>
             <!-- 目录打开图标 -->
             <template #openDir>
-                <img :src="require('@/assets/images/folder-open.svg')" class="tree-icon" >
+<!--                <img :src="require('@/assets/images/folder-open.svg')" class="tree-icon" >-->
+              <FolderOpenOutlined />
             </template>
             <!-- 功能图标 -->
             <template #func>
