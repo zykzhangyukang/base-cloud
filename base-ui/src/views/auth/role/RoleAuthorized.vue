@@ -1,19 +1,22 @@
 <template>
   <a-layout class='role-authorized-container'>
-    <a-affix :offset-top="0">
-      <a-card>
+    <a-card>
+      <a-affix :offset-top="30">
         <div :style="{'textAlign':'right'}">
+          <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">收缩全部</a-button>
+          <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">展开全部</a-button>
           <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
           <a-button type="primary">更新授权</a-button>
         </div>
-      </a-card>
-    </a-affix>
-    <a-card>
-      <role-authorized-tree v-for="item in allTreeList"
-                            :key="item.funcId"
-                            :ref="'roleAuthorizedTreeRef_'+item.funcId"
-                            :tree-data="[item]">
-      </role-authorized-tree>
+      </a-affix>
+      <div style="background-color: #f8f8f9;margin-top: 10px;border: 1px solid #eee"
+           v-for="item in allTreeList"
+           :key="item.funcId">
+        <role-authorized-tree
+                              :ref="'roleAuthorizedTreeRef_'+item.funcId"
+                              :tree-data="[item]">
+        </role-authorized-tree>
+      </div>
     </a-card>
   </a-layout>
 </template>

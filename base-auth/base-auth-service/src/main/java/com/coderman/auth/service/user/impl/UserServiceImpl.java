@@ -422,7 +422,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (AuthConstant.USER_STATUS_ENABLE.equals(dbUserModel.getUserStatus())) {
 
-            return ResultUtil.getFail("启用状态的用户不能删除！");
+            return ResultUtil.getFail("请删除禁用状态的记录！");
         }
 
         // 删除用户-角色关联

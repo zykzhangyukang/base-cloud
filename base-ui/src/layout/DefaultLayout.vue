@@ -9,7 +9,6 @@
         :breadCrumb='breadCrumb' 
         :menuToggle='menuToggle'
         :menuClick='menuClick' 
-        :toggleLanguage='toggleLanguage'
         :avatar='avatar' :loginOut='loginOut'
       ></app-header>
         <a-layout-content class="content">
@@ -28,26 +27,24 @@ import AppAside from './AppAside'
 import AppHeader from './AppHeader'
 import AppFooter from './AppFooter'
 import avatar from '@/assets/images/user.png'
-import { authUserLogout } from '@/api/auth';
-import {$iscode} from '@/utils/app';
-import { nextTick } from 'vue'
+import {authUserLogout} from '@/api/auth';
 //返回除了首页之外的面包屑
 const getBreadCrumb = (pathname,menuTree,crumb) => {
   // 首页返回false
-  if(pathname === '/index') return false;
+  if(pathname === '/dashboard') return false;
   // 递归遍历远端导航菜单tree
   for(let i = 0; i< menuTree.length; i++){
     // 符合则添加到面包屑中
-    if(pathname.search(menuTree[i].key) === 0){
+    if(pathname.search(menuTree[i].funcKey) === 0){
       if(menuTree[i].key === pathname){
-        crumb.unshift(menuTree[i].funcName);
+        crumb.unshift(menuTree[i]);
         return true;
       }else {
         // 不符合如果有子集继续查找
         if(menuTree[i].children && menuTree[i].children.length>0){
           let state = getBreadCrumb(pathname, menuTree[i].children, crumb);
           if(state){
-            crumb.unshift(menuTree[i].funcName);
+            crumb.unshift(menuTree[i]);
             return true;
           }
         }
@@ -89,9 +86,6 @@ export default {
   methods: {
     menuClick() {
       store.setAppMenuToggle(!this.menuToggle);
-    },
-    toggleLanguage(lang){
-      store.setAppLanguage(lang);
     },
     async loginOut() {
       await authUserLogout();

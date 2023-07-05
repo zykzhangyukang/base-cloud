@@ -203,7 +203,7 @@ public class RescServiceImpl implements RescService {
 
         if (count > 0) {
 
-            return ResultUtil.getWarn("资源已被功能引用，无法删除！");
+            return ResultUtil.getWarn("资源已被功能引用 ！");
         }
 
         this.rescDAO.deleteByPrimaryKey(rescId);

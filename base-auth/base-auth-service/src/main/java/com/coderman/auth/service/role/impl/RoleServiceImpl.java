@@ -153,7 +153,7 @@ public class RoleServiceImpl implements RoleService {
 
         if (count > 0) {
 
-            return ResultUtil.getWarn("当前角色已关联用户无法删除");
+            return ResultUtil.getWarn("角色已关联用户 ！");
         }
 
         // 删除角色-功能关联

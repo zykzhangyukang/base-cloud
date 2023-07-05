@@ -1,12 +1,12 @@
 <template>
-  <a-tree
-      :tree-data="treeData"
-      checkable
-      :expandedKeys="expandedKeys"
-      :selectedKeys="selectedKeys"
-      :checkedKeys="checkedKeys"
-  >
-  </a-tree>
+    <a-tree
+        :tree-data="treeData"
+        checkable
+        :expandedKeys="expandedKeys"
+        :selectedKeys="selectedKeys"
+        :checkedKeys="checkedKeys"
+    >
+    </a-tree>
 </template>
 
 <script>

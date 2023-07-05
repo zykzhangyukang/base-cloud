@@ -13,9 +13,6 @@ export default {
   setMenuItem(item, key, value) {
     item[key] = value;
   },
-  setAppLanguage(language) {
-    this.state.app.language = language;
-  },
   setAppMenuToggle(toggle) {
     this.state.app.menuToggle = toggle;
   },

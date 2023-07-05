@@ -69,10 +69,6 @@ export default {
       required: true,
       type: Function
     },
-    toggleLanguage: {
-      required: true,
-      type: Function
-    },
     loginOut: {
       required: true,
       type: Function
@@ -81,7 +77,6 @@ export default {
       required: true,
       type: Boolean
     },
-    language: String,
     avatar: String,
     breadCrumb:Array,
   },
