@@ -9,8 +9,8 @@
              ref="form"
     >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="父级功能">
-                <a-input v-model:value="parentFunc.title"  disabled />
+            <a-form-item v-if="parentFunc.title" label="父级功能">
+                <a-input  v-model:value="parentFunc.title"  disabled />
             </a-form-item>
             <a-form-item label="功能名称">
                 <a-input v-model:value="form.funcName"/>
@@ -102,6 +102,7 @@
             handleClose(){
                 this.visible = false
                 this.confirmLoading = false;
+                this.parentFunc = {};
                 this.form = this.$options.data().form;
             },
             open(parentFunc){

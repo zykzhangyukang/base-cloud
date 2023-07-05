@@ -1,20 +1,19 @@
 <template>
   <a-layout class='role-authorized-container'>
+    <a-affix :offset-top="0">
+      <a-card>
+        <div :style="{'textAlign':'right'}">
+          <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
+          <a-button type="primary">更新授权</a-button>
+        </div>
+      </a-card>
+    </a-affix>
     <a-card>
-      <div :style="{'textAlign':'right'}">
-        <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
-        <a-button type="primary">更新授权</a-button>
-      </div>
-      <!-- 权限树 -->
-      <a-tree
-          checkable
-          :tree-data="treeData"
-          v-model:expandedKeys="expandedKeys"
-          v-model:selectedKeys="selectedKeys"
-          v-model:checkedKeys="checkedKeys"
-      >
-        <template #title0010><span style="color: #1890ff">sss</span></template>
-      </a-tree>
+      <role-authorized-tree v-for="item in allTreeList"
+                            :key="item.funcId"
+                            :ref="'roleAuthorizedTreeRef_'+item.funcId"
+                            :tree-data="[item]">
+      </role-authorized-tree>
     </a-card>
   </a-layout>
 </template>
@@ -22,24 +21,23 @@
 <script>
 
 import {authRoleAuthorizedUpdateInit} from "@/api/auth";
+import RoleAuthorizedTree from "@/views/auth/role/RoleAuthorizedTree";
 
 export default {
   name: "roleAuthorized.vue.vue",
+  components: {
+    RoleAuthorizedTree
+  },
   data() {
     return {
-      treeData: [
-      ],
-      expandedKeys: [],
-      selectedKeys: [],
-      checkedKeys: [],
+      allTreeList: [],
     }
   },
-  methods:{
-    initRoleAuthorizedData(roleId){
-      authRoleAuthorizedUpdateInit(roleId).then(res=>{
-        this.treeData = res.result.allTreeList;
-        this.expandedKeys = ["Root"];
-      }).catch(e=>{
+  methods: {
+    initRoleAuthorizedData(roleId) {
+      authRoleAuthorizedUpdateInit(roleId).then(res => {
+        this.allTreeList = res.result.allTreeList;
+      }).catch(e => {
         this.$router.push('/auth/role')
       })
     }
@@ -51,5 +49,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

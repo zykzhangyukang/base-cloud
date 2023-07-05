@@ -136,11 +136,6 @@ public class FuncServiceImpl implements FuncService {
         String funcDirStatus = funcSaveDTO.getFuncDirStatus();
         String funcIcon = funcSaveDTO.getFuncIcon();
 
-        if (parentId == null) {
-
-            return ResultUtil.getWarn("父级功能不能为空！");
-        }
-
         if (StringUtils.isBlank(funcName) || StringUtils.length(funcName) > 15) {
 
             return ResultUtil.getWarn("功能名称不能为空，且在15个字符之内！");
@@ -177,7 +172,7 @@ public class FuncServiceImpl implements FuncService {
         insert.setFuncKey(funcKey);
         insert.setFuncName(funcName);
         insert.setCreateTime(new Date());
-        insert.setParentId(parentId);
+        insert.setParentId(parentId == null ? 0 : parentId);
         insert.setFuncType(funcType);
         insert.setFuncSort(funcSort);
         insert.setFuncDirStatus(funcDirStatus);

@@ -2,7 +2,7 @@
     <a-table
             size='small'
             ref='table'
-            :scroll='{x: width, y:windowHeight-350}'
+            :scroll='{x: width, y:this.windowHeight-350}'
             v-bind="$attrs"
     >
         <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">

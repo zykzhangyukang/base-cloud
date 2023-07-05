@@ -9,7 +9,7 @@
                 <a-col :span="20">
                     <a-card>
                         <div :style="{'textAlign':'right'}">
-                            <a-button type="danger" @click="handleAdd" :disabled="searchParams.parentId === null">
+                            <a-button type="danger" @click="handleAdd">
                                 添加
                             </a-button>
                         </div>
@@ -267,11 +267,9 @@ export default {
         },
         methods:{
             handleSelectNode(item){
-               let parentId = null;
                 if(item && item.funcId !==null){
                     this.parentFunc = item;
-                    parentId = item.funcId;
-                    this.searchParams.parentId = parentId;
+                    this.searchParams.parentId = item.funcId;
                     this.searchParams.currentPage = 1;
                     this.queryData();
                 }else {
@@ -326,11 +324,7 @@ export default {
                 })
             },
             handleAdd(){
-                if(this.parentFunc){
-                    this.$refs['funcSaveModal'].open(this.parentFunc);
-                }else {
-                    this.$message.warn("请先点击左侧功能树再添加！");
-                }
+              this.$refs['funcSaveModal'].open(this.parentFunc);
             },
             pageSearchChange() {
                 this.searchParams.currentPage = 1
@@ -345,6 +339,7 @@ export default {
                     ...this.$options.data().searchParams,
                     ...page
                 }
+                this.parentFunc = {};
                 this.$refs['funcLeftTree'].resetSelect();
             },
             pageCurrentChange(page, pageSize) {
