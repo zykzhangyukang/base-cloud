@@ -1,12 +1,13 @@
 <template>
-    <a-tree
-        :tree-data="treeData"
-        checkable
-        :expandedKeys="expandedKeys"
-        :selectedKeys="selectedKeys"
-        :checkedKeys="checkedKeys"
-    >
-    </a-tree>
+  <a-tree
+      :tree-data="treeData"
+      @check="checkTreeNode"
+      :checkable="true"
+      :expandedKeys="expandedKeys"
+      :selectedKeys="selectedKeys"
+      :checkedKeys="checkedKeys"
+  >
+  </a-tree>
 </template>
 
 <script>
@@ -29,6 +30,11 @@ export default {
   data() {
     return {}
   },
+  methods:{
+    checkTreeNode(checkedKeys){
+      this.$emit('success',checkedKeys,this.treeData)
+    }
+  }
 }
 </script>
 
