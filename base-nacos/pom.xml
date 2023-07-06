@@ -12,6 +12,7 @@
 
     <artifactId>base-nacos</artifactId>
     <version>${i.cloud.version}</version>
+    <packaging>jar</packaging>
 
     <description>nacos 注册配置中心 </description>
 
