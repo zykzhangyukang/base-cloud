@@ -25,7 +25,7 @@
 
 <script>
 
-import {authRoleAuthorizedUpdateInit} from "@/api/auth";
+import {authRoleAuthorizedInit} from "@/api/auth";
 import RoleAuthorizedTree from "@/views/auth/role/RoleAuthorizedTree";
 
 export default {
@@ -54,9 +54,10 @@ export default {
           })
         }
       })
+
     },
     initRoleAuthorizedData(roleId) {
-      authRoleAuthorizedUpdateInit(roleId).then(res => {
+      authRoleAuthorizedInit(roleId).then(res => {
         this.allTreeList = res.result.allTreeList;
       }).catch(e => {
         this.$router.push('/auth/role')

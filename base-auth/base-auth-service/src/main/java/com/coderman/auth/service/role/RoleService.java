@@ -3,6 +3,7 @@ package com.coderman.auth.service.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.func.RoleAuthorizedDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
@@ -89,11 +90,9 @@ public interface RoleService {
 
     /**
      * 分配功能
-     * @param roleId
-     * @param funcKeyList
      * @return
      */
-    ResultVO<Void> roleFuncUpdate(Integer roleId, List<String> funcKeyList);
+    ResultVO<Void> roleAuthorizedUpdate(RoleAuthorizedDTO roleAuthorizedDTO);
 
 
     /**

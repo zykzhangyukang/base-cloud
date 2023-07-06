@@ -197,4 +197,9 @@
        #{item}
      </foreach>
   </delete>
+
+  <delete id="deleteByRoleId">
+    delete from auth_role_func where role_id  = #{roleId}
+  </delete>
+
 </mapper>

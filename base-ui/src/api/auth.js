@@ -197,9 +197,20 @@ export const authRoleSelectById = (id) => {
 /**
  * 角色授权初始化
  */
-export const authRoleAuthorizedUpdateInit = (id) => {
+export const authRoleAuthorizedInit = (id) => {
     return http({
         url: `/auth/role/authorized/init?roleId=${id}`,
+        method: 'get',
+    })
+}
+
+
+/**
+ * 角色授权初始化
+ */
+export const authRoleAuthorizedUpdate = (id) => {
+    return http({
+        url: `/auth/role/authorized/update?roleId=${id}`,
         method: 'get',
     })
 }

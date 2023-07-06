@@ -10,6 +10,7 @@ import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
+import com.coderman.auth.dto.func.RoleAuthorizedDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
@@ -319,21 +320,30 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @LogError(value = "角色分配功能")
-    public ResultVO<Void> roleFuncUpdate(Integer roleId, List<String> funcKeyList) {
+    public ResultVO<Void> roleAuthorizedUpdate(RoleAuthorizedDTO roleAuthorizedDTO) {
+
+        Integer roleId = roleAuthorizedDTO.getRoleId();
+        List<String> funcKeys = roleAuthorizedDTO.getFuncKeys();
+
+        if (Objects.isNull(roleId)) {
+
+            return ResultUtil.getWarn("角色id不能为空！");
+        }
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
-        if(null == roleModel){
-            throw new BusinessException("角色不存在！");
+        if (null == roleModel) {
+
+            return ResultUtil.getWarn("角色不存在！");
         }
 
         // 删除之前该角色拥有的功能
-        RoleFuncExample example = new RoleFuncExample();
-        example.createCriteria().andRoleIdEqualTo(roleId);
-        this.roleFuncDAO.deleteByExample(example);
+        this.roleFuncDAO.deleteByRoleId(roleId);
+
 
         // 插入角色-功能关联
-        if(CollectionUtils.isNotEmpty(funcKeyList)){
-            this.roleFuncDAO.batchInsertByRoleId(roleId,funcKeyList);
+        if (CollectionUtils.isNotEmpty(funcKeys)) {
+
+            this.roleFuncDAO.batchInsertByRoleId(roleId, funcKeys);
         }
 
         return ResultUtil.getSuccess();

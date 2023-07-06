@@ -2,6 +2,7 @@ package com.coderman.auth.controller.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.auth.dto.func.RoleAuthorizedDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
@@ -75,9 +76,8 @@ public class RoleController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
     })
-    public ResultVO<Void> roleFuncUpdate(@RequestParam(value = "roleId") Integer roleId,
-                                         @RequestParam(value = "funcKeyList") List<String> funcKeyList){
-        return this.roleService.roleFuncUpdate(roleId,funcKeyList);
+    public ResultVO<Void> roleAuthorizedUpdate(@RequestBody RoleAuthorizedDTO roleAuthorizedDTO){
+        return this.roleService.roleAuthorizedUpdate(roleAuthorizedDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "角色分配功能初始化")
