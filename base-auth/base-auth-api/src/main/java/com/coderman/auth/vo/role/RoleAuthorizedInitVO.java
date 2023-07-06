@@ -23,9 +23,14 @@ public class RoleAuthorizedInitVO extends BaseModel {
 
 
     /**
-     * 分配的功能key计划
+     * 分配的功能key集合
      */
     private List<String> funcKeyList;
+
+    /**
+     * 分配的功能id集合
+     */
+    private List<Integer> funcIdList;
 
     /**
      * 所有的功能树

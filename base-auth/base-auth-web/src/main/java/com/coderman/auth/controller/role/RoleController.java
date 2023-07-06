@@ -68,11 +68,7 @@ public class RoleController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能")
-    @PostMapping(value = "/func/update")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色id",required = true),
-            @ApiImplicitParam(name = "funcKeyList",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "功能key计集合",required = true),
-    })
+    @PutMapping(value = "/authorized/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
     })
@@ -87,7 +83,7 @@ public class RoleController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName", "funcKeyList"})
+            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName", "funcIdList"})
     })
     public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@RequestParam(value = "roleId") Integer roleId) {
         return this.roleService.roleAuthorizedInit(roleId);

@@ -285,37 +285,38 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(Integer roleId) {
 
-        if(Objects.isNull(roleId)){
+        if (Objects.isNull(roleId)) {
 
             return ResultUtil.getWarn("角色id不能为空！");
         }
 
-        RoleAuthorizedInitVO roleAuthInitVO = new  RoleAuthorizedInitVO();
-
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
-        if(null == roleModel){
-            throw new BusinessException("角色不存在！");
+        if (Objects.isNull(roleModel)) {
+
+            return ResultUtil.getFail("角色不存在！");
         }
+
+        RoleAuthorizedInitVO roleAuthInitVO = new RoleAuthorizedInitVO();
 
         // 获取所有功能
         List<FuncTreeVO> treeVOList = this.funcService.listTree().getResult();
 
         // 查询该角色拥有的功能
-        RoleFuncExample example = new RoleFuncExample();
-        example.createCriteria().andRoleIdEqualTo(roleId);
-        List<Integer> hasFuncIdList = this.roleFuncDAO.selectByExample(example).stream().map(RoleFuncModel::getFuncId).collect(Collectors.toList());
+        Set<Integer> ownerFuncIdSet = new HashSet<>();
+        List<RoleFuncModel> roleFuncModelList = this.roleFuncDAO.selectAllByRoleId(roleId);
+        if (CollectionUtils.isNotEmpty(roleFuncModelList)) {
 
-
-        // 功能key
-        //List<String> keyList = funcVOList.stream().filter(e -> hasFuncIdList.contains(e.getFuncId())).map(FuncTreeVO::getFuncKey).collect(Collectors.toList());
+            for (RoleFuncModel roleFuncModel : roleFuncModelList) {
+                ownerFuncIdSet.add(roleFuncModel.getFuncId());
+            }
+        }
 
         roleAuthInitVO.setRoleId(roleModel.getRoleId());
         roleAuthInitVO.setRoleName(roleModel.getRoleName());
         roleAuthInitVO.setAllTreeList(treeVOList);
-        //roleAuthInitVO.setFuncKeyList(keyList);
+        roleAuthInitVO.setFuncIdList(new ArrayList<>(ownerFuncIdSet));
 
-        // 回显问题: vue-ant-design
-        return ResultUtil.getSuccess(RoleAuthorizedInitVO.class,roleAuthInitVO);
+        return ResultUtil.getSuccess(RoleAuthorizedInitVO.class, roleAuthInitVO);
     }
 
     @Override

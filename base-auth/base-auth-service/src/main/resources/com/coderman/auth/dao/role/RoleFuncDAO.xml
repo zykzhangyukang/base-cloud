@@ -202,4 +202,11 @@
     delete from auth_role_func where role_id  = #{roleId}
   </delete>
 
+  <select id="selectAllByRoleId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from auth_role_func
+    where role_id  = #{roleId}
+  </select>
+
 </mapper>

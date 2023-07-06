@@ -1,13 +1,16 @@
 <template>
-  <a-tree
-      :tree-data="treeData"
-      @check="checkTreeNode"
-      :checkable="true"
-      :expandedKeys="expandedKeys"
-      :selectedKeys="selectedKeys"
-      :checkedKeys="checkedKeys"
-  >
-  </a-tree>
+  <div style="margin-top: 10px;margin-left: 10px;border: 1px solid #eee;border-radius: 5px;cursor: pointer">
+    <a-tree
+        :selectable="false"
+        :tree-data="treeData"
+        @check="checkTreeNode"
+        :checkable="true"
+        :expandedKeys="expandedKeys"
+        :selectedKeys="selectedKeys"
+        :checkedKeys="checkedKeys"
+    >
+    </a-tree>
+  </div>
 </template>
 
 <script>
@@ -28,11 +31,13 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      businessSelectedRowKeys: [],
+    }
   },
   methods:{
-    checkTreeNode(checkedKeys){
-      this.$emit('success',checkedKeys,this.treeData)
+    checkTreeNode(checkedKeys, info){
+      this.$emit('success',checkedKeys.concat(info.halfCheckedKeys),this.treeData)
     }
   }
 }

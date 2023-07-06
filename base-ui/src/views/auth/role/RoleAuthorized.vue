@@ -9,23 +9,65 @@
           <a-button type="primary" @click="handleAuthorized">更新授权</a-button>
         </div>
       </a-affix>
-      <div style="background-color: #f8f8f9;margin-top: 10px;border: 1px solid #eee"
-           v-for="item in allTreeList"
-           :key="item.funcId">
-        <role-authorized-tree
-                              :ref="'roleAuthorizedTreeRef_'+item.funcId"
-                              :tree-data="[item]"
-                              @success="checkNode"
-        >
-        </role-authorized-tree>
-      </div>
+      <template v-for="(item, i) in allTreeList" >
+        <a-row :gutter="24" :key="i" v-if='i%6 === 0'>
+          <a-col :span="4">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+item.funcId"
+                :tree-data="[item]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+          <a-col :span="4" v-if="i+1 < allTreeList.length">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+allTreeList[i+1].funcId"
+                :tree-data="[allTreeList[i+1]]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+          <a-col :span="4" v-if="i+2 < allTreeList.length">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+allTreeList[i+2].funcId"
+                :tree-data="[allTreeList[i+2]]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+          <a-col :span="4" v-if="i+3 < allTreeList.length">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+allTreeList[i+3].funcId"
+                :tree-data="[allTreeList[i+3]]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+          <a-col :span="4" v-if="i+4 < allTreeList.length">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+allTreeList[i+4].funcId"
+                :tree-data="[allTreeList[i+4]]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+          <a-col :span="4" v-if="i+5 < allTreeList.length">
+            <role-authorized-tree
+                :ref="'roleAuthorizedTreeRef_'+allTreeList[i+5].funcId"
+                :tree-data="[allTreeList[i+5]]"
+                @success="checkNode"
+            >
+            </role-authorized-tree>
+          </a-col>
+        </a-row>
+      </template>
     </a-card>
   </a-layout>
 </template>
 
 <script>
 
-import {authRoleAuthorizedInit} from "@/api/auth";
+import {authRoleAuthorizedInit, authRoleAuthorizedUpdate} from "@/api/auth";
 import RoleAuthorizedTree from "@/views/auth/role/RoleAuthorizedTree";
 
 export default {
@@ -54,7 +96,11 @@ export default {
           })
         }
       })
-
+      const param = {roleId: this.$route.query.roleId , funcKeys: keys}
+      authRoleAuthorizedUpdate(param).then(e=>{
+        this.$message.success("角色授权成功！");
+        this.$router.push('/auth/role');
+      })
     },
     initRoleAuthorizedData(roleId) {
       authRoleAuthorizedInit(roleId).then(res => {

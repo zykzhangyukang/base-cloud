@@ -208,10 +208,11 @@ export const authRoleAuthorizedInit = (id) => {
 /**
  * 角色授权初始化
  */
-export const authRoleAuthorizedUpdate = (id) => {
+export const authRoleAuthorizedUpdate = (data) => {
     return http({
-        url: `/auth/role/authorized/update?roleId=${id}`,
-        method: 'get',
+        url: `/auth/role/authorized/update`,
+        method: 'put',
+        data
     })
 }
 
