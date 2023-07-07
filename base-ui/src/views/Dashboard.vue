@@ -3,7 +3,7 @@
       <a-card >
           <a-result
                   status="info"
-                  title="微服务管理系统，欢迎您!"
+                   :title="'微服务管理系统，欢迎您【'+user.info.username+'】!'"
                   sub-title="企业级微服务后台管理系统，专业的权限系统解决方案！"
           >
               <template #extra>
@@ -16,4 +16,18 @@
 </template>
 
 <script>
+import store from '@/store/index'
+export default {
+  name: "Dashboard..vue",
+  data() {
+    return {
+
+    }
+  },
+  computed:{
+    user() {
+      return store.state.user;
+    }
+  }
+}
 </script>

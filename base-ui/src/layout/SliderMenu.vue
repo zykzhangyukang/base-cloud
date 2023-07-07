@@ -25,19 +25,19 @@ import SubMenu from './SubMenu.vue'
 const getPathName = (pathname, menuTree,parentName) => {
   for(let i = 0; i < menuTree.length; i++){
     //路径包含
-    if (menuTree[i].key) {
+    if (menuTree[i].path) {
       //路径相等
-      if(pathname === menuTree[i].key){
+      if(pathname === menuTree[i].path){
         //隐藏菜单去父路径
         if(menuTree[i].hidden){
           return parentName;
         }else {
           if (parentName) {
-            return menuTree[i].key
+            return menuTree[i].funcId
           } else {
             return {
               opens: [],
-              select: menuTree[i].key
+              select: menuTree[i].funcId
             };
           }
         }
@@ -47,12 +47,12 @@ const getPathName = (pathname, menuTree,parentName) => {
       let str = getPathName(pathname, menuTree[i].children , menuTree[i].key);
       if(typeof str == 'object'){
         return {
-          opens: str.opens.concat([menuTree[i].key]),
+          opens: str.opens.concat([menuTree[i].funcId]),
           select: str.select
         };
       } else if (typeof str == 'string') {
         return {
-          opens: [menuTree[i].key],
+          opens: [menuTree[i].funcId],
           select: str
         };
       }
@@ -124,7 +124,7 @@ export default {
       }
       const latestOpenKey = v[v.length - 1]
       // 这里与定义的路由规则有关
-      if (latestOpenKey.includes(v[0])) {
+      if (latestOpenKey.toString().includes(v[0])) {
           this.openKeys = v;
       } else {
           this.openKeys = [latestOpenKey];

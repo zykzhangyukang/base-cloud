@@ -33,10 +33,10 @@ router.beforeEach(async(to, from, next) => {
     // 有token
     // 路径为登录页则跳转到首页
     if (to.path === '/login') {
-      next({ path: '/index' })
+      next({ path: '/dashboard' })
     } else {
       let userInfo = store.state.user.info;
-      if (userInfo && userInfo.menus && userInfo.menus.length>0) {
+      if (userInfo && userInfo.menus) {
         next()
       } else {
 
