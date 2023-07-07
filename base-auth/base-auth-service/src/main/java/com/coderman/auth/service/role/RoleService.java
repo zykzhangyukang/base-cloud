@@ -85,7 +85,7 @@ public interface RoleService {
      * @param roleId
      * @return
      */
-    ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(Integer roleId);
+    ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(String roleId);
 
 
     /**

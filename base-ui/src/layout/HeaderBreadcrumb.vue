@@ -2,10 +2,10 @@
   <a-breadcrumb>
     <a-breadcrumb-item><router-link to='/index'>首页</router-link></a-breadcrumb-item>
     <template v-for='item of arr'>
-      <a-breadcrumb-item v-if="item.key" :key='item.key'>
-        <router-link :to='item.key'>{{item.title}}</router-link>
+      <a-breadcrumb-item v-if="item.path" :key='item.path'>
+        <router-link :to='item.path'>{{item.funcName}}</router-link>
       </a-breadcrumb-item>
-      <a-breadcrumb-item v-else :key='item' >{{item}}</a-breadcrumb-item>
+      <a-breadcrumb-item v-else :key='item.path' >{{item.funcName}}</a-breadcrumb-item>
     </template>
   </a-breadcrumb>
 </template>

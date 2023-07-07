@@ -83,9 +83,9 @@ public class RoleController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName", "funcIdList"})
+            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName", "funcIdList","halfCheckedMap","allCheckedMap"})
     })
-    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@RequestParam(value = "roleId") Integer roleId) {
+    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@RequestParam(value = "roleId") String roleId) {
         return this.roleService.roleAuthorizedInit(roleId);
     }
 

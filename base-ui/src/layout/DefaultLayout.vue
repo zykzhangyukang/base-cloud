@@ -35,8 +35,8 @@ const getBreadCrumb = (pathname,menuTree,crumb) => {
   // 递归遍历远端导航菜单tree
   for(let i = 0; i< menuTree.length; i++){
     // 符合则添加到面包屑中
-    if(pathname.search(menuTree[i].funcKey) === 0){
-      if(menuTree[i].key === pathname){
+    if(pathname.search(menuTree[i].path) === 0){
+      if(menuTree[i].path === pathname){
         crumb.unshift(menuTree[i]);
         return true;
       }else {

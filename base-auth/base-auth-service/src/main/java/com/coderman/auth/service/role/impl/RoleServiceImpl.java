@@ -1,5 +1,6 @@
 package com.coderman.auth.service.role.impl;
 
+import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.exception.BusinessException;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
@@ -24,6 +25,7 @@ import com.coderman.auth.model.user.UserRoleExample;
 import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.role.RoleService;
+import com.coderman.auth.utils.TreeUtils;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.role.RoleAssignVO;
 import com.coderman.auth.vo.role.RoleAuthCheckVO;
@@ -82,7 +84,7 @@ public class RoleServiceImpl implements RoleService {
             conditionMap.put("roleName", roleName);
         }
 
-        PageUtil.getConditionMap(conditionMap,currentPage,pageSize);
+        PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
 
         List<RoleVO> roleVOS = new ArrayList<>();
 
@@ -198,7 +200,7 @@ public class RoleServiceImpl implements RoleService {
         // 角色名称唯一性校验
         RoleModel roleModel = this.roleDAO.selectByRoleName(roleName);
 
-        if (Objects.nonNull(roleModel) && !Objects.equals(roleModel.getRoleId(),roleId)) {
+        if (Objects.nonNull(roleModel) && !Objects.equals(roleModel.getRoleId(), roleId)) {
 
             return ResultUtil.getWarn("存在重复的角色:" + roleName);
         }
@@ -283,7 +285,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(Integer roleId) {
+    @LogError(value = "角色授权初始化")
+    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@LogErrorParam String roleIdStr) {
+
+        Integer roleId = null;
+
+        try {
+            roleId = Integer.parseInt(roleIdStr);
+        } catch (Exception ignored) {
+        }
 
         if (Objects.isNull(roleId)) {
 
@@ -297,25 +307,51 @@ public class RoleServiceImpl implements RoleService {
         }
 
         RoleAuthorizedInitVO roleAuthInitVO = new RoleAuthorizedInitVO();
+        Map<Integer, Collection<Integer>> halfCheckedMap = new HashMap<>();
+        Map<Integer, Collection<Integer>> allCheckedMap = new HashMap<>();
 
-        // 获取所有功能
-        List<FuncTreeVO> treeVOList = this.funcService.listTree().getResult();
+        // 功能树查询
+        ResultVO<List<FuncTreeVO>> listResultVO = this.funcService.listTree();
+        if (!ResultConstant.RESULT_CODE_200.equals(listResultVO.getCode())) {
 
-        // 查询该角色拥有的功能
-        Set<Integer> ownerFuncIdSet = new HashSet<>();
-        List<RoleFuncModel> roleFuncModelList = this.roleFuncDAO.selectAllByRoleId(roleId);
-        if (CollectionUtils.isNotEmpty(roleFuncModelList)) {
+            return ResultUtil.getWarn(listResultVO.getMsg());
+        }
 
-            for (RoleFuncModel roleFuncModel : roleFuncModelList) {
-                ownerFuncIdSet.add(roleFuncModel.getFuncId());
+        List<FuncTreeVO> treeVOList = listResultVO.getResult();
+        if (CollectionUtils.isNotEmpty(treeVOList)) {
+
+            // 查询该角色拥有的功能
+            List<Integer> ownerFuncIdList = this.roleFuncDAO.selectAllByRoleId(roleId).stream()
+                    .map(RoleFuncModel::getFuncId).distinct().collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(ownerFuncIdList)) {
+                for (FuncTreeVO funcTreeVO : treeVOList) {
+
+                    List<Integer> tempList = new ArrayList<>();
+                    List<Integer> tempList2 = new ArrayList<>();
+
+                    // 半选
+                    TreeUtils.getDeepFuncIdList(tempList, funcTreeVO);
+                    if (CollectionUtils.isNotEmpty(tempList)) {
+                        Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList, ownerFuncIdList);
+                        halfCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
+                    }
+
+                    // 全选
+                    TreeUtils.getAllFuncIdList(tempList2, funcTreeVO);
+                    if (CollectionUtils.isNotEmpty(tempList2)) {
+                        Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList2, ownerFuncIdList);
+                        allCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
+                    }
+                }
             }
         }
 
         roleAuthInitVO.setRoleId(roleModel.getRoleId());
         roleAuthInitVO.setRoleName(roleModel.getRoleName());
         roleAuthInitVO.setAllTreeList(treeVOList);
-        roleAuthInitVO.setFuncIdList(new ArrayList<>(ownerFuncIdSet));
-
+        roleAuthInitVO.setHalfCheckedMap(halfCheckedMap);
+        roleAuthInitVO.setAllCheckedMap(allCheckedMap);
         return ResultUtil.getSuccess(RoleAuthorizedInitVO.class, roleAuthInitVO);
     }
 
@@ -323,13 +359,18 @@ public class RoleServiceImpl implements RoleService {
     @LogError(value = "角色分配功能")
     public ResultVO<Void> roleAuthorizedUpdate(RoleAuthorizedDTO roleAuthorizedDTO) {
 
-        Integer roleId = roleAuthorizedDTO.getRoleId();
-        List<String> funcKeys = roleAuthorizedDTO.getFuncKeys();
+        Integer roleId = null;
+
+        try {
+            roleId = Integer.parseInt(roleAuthorizedDTO.getRoleId());
+        } catch (Exception ignored) {
+        }
 
         if (Objects.isNull(roleId)) {
-
             return ResultUtil.getWarn("角色id不能为空！");
         }
+
+        List<Integer> funcIdList = roleAuthorizedDTO.getFuncIdList();
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
         if (null == roleModel) {
@@ -340,11 +381,10 @@ public class RoleServiceImpl implements RoleService {
         // 删除之前该角色拥有的功能
         this.roleFuncDAO.deleteByRoleId(roleId);
 
-
         // 插入角色-功能关联
-        if (CollectionUtils.isNotEmpty(funcKeys)) {
+        if (CollectionUtils.isNotEmpty(funcIdList)) {
 
-            this.roleFuncDAO.batchInsertByRoleId(roleId, funcKeys);
+            this.roleFuncDAO.batchInsertByRoleId(roleId, funcIdList);
         }
 
         return ResultUtil.getSuccess();
@@ -403,7 +443,7 @@ public class RoleServiceImpl implements RoleService {
         checkVO.setInsertList(new ArrayList<>(addList));
         checkVO.setDelList(new ArrayList<>(delList));
 
-        return ResultUtil.getSuccess(RoleAuthCheckVO.class,checkVO);
+        return ResultUtil.getSuccess(RoleAuthCheckVO.class, checkVO);
     }
 
 }

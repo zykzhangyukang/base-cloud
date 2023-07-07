@@ -16,15 +16,12 @@ import java.util.List;
 @Data
 public class FuncTreeVO extends BaseModel {
 
-    @JsonProperty(value = "value")
     @ApiModelProperty(value = "功能id")
     private Integer funcId;
 
-    @JsonProperty(value = "title")
     @ApiModelProperty(value = "功能名称")
     private String funcName;
 
-    @JsonProperty(value = "key")
     @ApiModelProperty(value = "功能key")
     private String funcKey;
 
@@ -43,9 +40,6 @@ public class FuncTreeVO extends BaseModel {
     @ApiModelProperty(value = "是否显示")
     private String funcDirStatus;
 
-    /**
-     * 子功能
-     */
-    @JsonProperty(value = "children")
-    private List<FuncTreeVO> childrenList;
+    @ApiModelProperty(value = "子级功能")
+    private List<FuncTreeVO> children;
 }

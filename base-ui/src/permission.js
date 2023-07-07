@@ -6,17 +6,17 @@ import {authUserInfo,authConstAll} from './api/auth';
 
 //获取当前用户所有可以访问的路由权限
 const getRoutes = (menuTree) => {
-  let menuList =[];
-  getMenuList(menuTree,menuList);
-  return menuList;
+  let userRouterList =[];
+  getMenuList(menuTree,userRouterList);
+  return userRouterList;
 };
 
 const getMenuList = (menuTree,menuList) => {
   for(let i = 0; i< menuTree.length; i++){
-    let route = ruleRoutes.find(r => r.name === menuTree[i].key);
+    let route = ruleRoutes.find(r => r.name === menuTree[i].funcKey);
     if (route) {
       menuList.push(route);
-      store.setMenuItem(menuTree[i], 'key', route.path);
+      store.setMenuItem(menuTree[i], 'path', route.path);
     }
     if(menuTree[i].children && menuTree[i].children.length>0){
       getMenuList(menuTree[i].children,menuList);
@@ -40,9 +40,11 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
 
-        // 获取用户信息
+        // 保存用户信息
         let res = await authUserInfo();
         store.setUserInfo(res.result);
+
+        // 根据用户权限匹配路由信息
         let routesMap = getRoutes(res.result.menus);
         router.$addRoutes(routesMap);
 

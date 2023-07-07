@@ -343,7 +343,7 @@
     order by
     <choose>
       <when test="parentId!=null">
-        f.func_type asc , f.func_sort asc
+        f.func_id asc , f.func_type asc, f.func_sort asc
       </when>
       <otherwise>
          f.func_sort asc, f.func_type asc

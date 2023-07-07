@@ -3,6 +3,7 @@
         <a-input-search size="small" v-model:value="searchValue" style="margin-bottom: 8px"  placeholder="查询" @change="onChange" />
       <a-spin size="small" :spinning="treeLoading">
         <a-tree
+                :replaceFields="{children:'children', title:'funcName', key:'funcId' }"
                 :show-icon="true"
                 :selectedKeys="selectedKeys"
                 :expanded-keys="expandedKeys"
@@ -27,15 +28,17 @@
             </template>
             <!-- 功能图标 -->
             <template #func>
-                <img :src="require('@/assets/images/func.svg')" class="tree-icon">
+<!--                <img :src="require('@/assets/images/func.svg')" class="tree-icon">-->
+              <FileSearchOutlined />
             </template>
-            <template #title="{ title }">
-                <span v-if="title.indexOf(searchValue) > -1">
-                  {{ title.substr(0, title.indexOf(searchValue)) }}
+            <!-- 自定义树节点渲染 -->
+            <template #funcName="{ funcName }">
+                <span v-if="funcName.indexOf(searchValue) > -1">
+                  {{ funcName.substr(0, funcName.indexOf(searchValue)) }}
                   <b style="color: #ed4014">{{ searchValue }}</b>
-                  {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
+                  {{ funcName.substr(funcName.indexOf(searchValue) + searchValue.length) }}
                 </span>
-                <span v-else>{{ title }}</span>
+                <span v-else>{{ funcName }}</span>
             </template>
         </a-tree>
       </a-spin>
@@ -44,15 +47,15 @@
 
 <script>
     import {authFuncTree} from "@/api/auth";
-    const getParentKey = (key, tree) => {
+    const getParentKey = (funcId, tree) => {
         let parentKey;
         for (let i = 0; i < tree.length; i++) {
             const node = tree[i];
             if (node.children) {
-                if (node.children.some(item => item.key === key)) {
-                    parentKey = node.key;
-                } else if (getParentKey(key, node.children)) {
-                    parentKey = getParentKey(key, node.children);
+                if (node.children.some(item => item.funcId === funcId)) {
+                    parentKey = node.funcId;
+                } else if (getParentKey(funcId, node.children)) {
+                    parentKey = getParentKey(funcId, node.children);
                 }
             }
         }
@@ -62,8 +65,7 @@
     const generateList = data => {
         for (let i = 0; i < data.length; i++) {
             const node = data[i];
-            const key = node.key;
-            dataList.push({ key, title: node.title, funcId: node.value });
+            dataList.push({ funcId: node.funcId, funcName: node.funcName , funcKey: node.funcKey });
             if (node.children) {
                 generateList(node.children);
             }
@@ -89,10 +91,10 @@
             },
             select(e){
                 this.selectedKeys = e;
-                const funcKey = e[0];
+                const funcId = e[0];
                 let item = null;
                 for (let i = 0; i < dataList.length; i++) {
-                    if(dataList[i].key === funcKey){
+                    if(dataList[i].funcId === funcId){
                         item = dataList[i];
                         break;
                     }
@@ -113,7 +115,7 @@
             setTitleSlots(tree){
                 if(tree){
                    tree.forEach(item=>{
-                       item.slots = {title: 'title' , icon:  item.funcType};
+                       item.slots = {title: 'funcName' , icon:  item.funcType};
                        if(item.children && item.children.length > 0){
                            this.setTitleSlots(item.children);
                        }
@@ -135,8 +137,8 @@
             onChange(e) {
                 const value = e.target.value;
                 const expandedKeys = dataList.map(item => {
-                        if (item.title.indexOf(value) > -1) {
-                            return getParentKey(item.key, this.treeData);
+                        if (item.funcName.indexOf(value) > -1) {
+                            return getParentKey(item.funcId, this.treeData);
                         }
                         return null;
                     })
@@ -152,7 +154,6 @@
             this.queryFuncTree().then(tree=>{
                 generateList(tree)
             })
-
         }
     }
 </script>

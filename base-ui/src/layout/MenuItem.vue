@@ -1,6 +1,6 @@
 <template>
   <a-menu-item @click="toPage(item)">
-    <component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.title}}</span>
+    <component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.funcName}}</span>
   </a-menu-item>
 </template>
 <script>
@@ -23,8 +23,8 @@ export default {
   },
   methods:{
     toPage(item){
-      if(item.key){
-        this.$router.push(item.key);
+      if(item && item.path){
+        this.$router.push(item.path);
       }else {
         this.$router.push('/404');
       }

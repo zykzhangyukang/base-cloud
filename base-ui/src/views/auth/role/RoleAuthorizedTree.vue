@@ -2,12 +2,13 @@
   <div style="margin-top: 10px;margin-left: 10px;border: 1px solid #eee;border-radius: 5px;cursor: pointer">
     <a-tree
         :selectable="false"
-        :tree-data="treeData"
-        @check="checkTreeNode"
+        :tree-data="treeDataList"
         :checkable="true"
-        :expandedKeys="expandedKeys"
-        :selectedKeys="selectedKeys"
-        :checkedKeys="checkedKeys"
+        @check="checkTreeNode"
+        @expand="expand"
+        :expandedKeys="expandedKeysList"
+        :checkedKeys="checkedKeysList"
+        :replaceFields="{children:'children', title:'funcName', key:'funcId' }"
     >
     </a-tree>
   </div>
@@ -23,22 +24,35 @@ export default {
     expandedKeys: {
       type: Array
     },
-    selectedKeys: {
+    checkedKeys: {
       type: Array
     },
-    checkedKeys: {
+    bizCheckedKeys: {
       type: Array
     }
   },
   data() {
     return {
-      businessSelectedRowKeys: [],
+      treeDataList: [],
+      expandedKeysList: [],
+      checkedKeysList: [],
+      bizCheckedKeysList: []
     }
   },
   methods:{
     checkTreeNode(checkedKeys, info){
-      this.$emit('success',checkedKeys.concat(info.halfCheckedKeys),this.treeData)
+      this.checkedKeysList = checkedKeys;
+      this.bizCheckedKeysList = checkedKeys.concat(info.halfCheckedKeys);
+    },
+    expand(expandedKeys){
+      this.expandedKeysList = expandedKeys;
     }
+  },
+  created() {
+    this.treeDataList = this.treeData;
+    this.expandedKeysList = this.expandedKeys;
+    this.checkedKeysList = this.checkedKeys;
+    this.bizCheckedKeysList = this.bizCheckedKeys;
   }
 }
 </script>

@@ -13,9 +13,9 @@ public interface RoleFuncDAO extends BaseDAO<RoleFuncModel,RoleFuncExample> {
     /**
      * 批量查询角色-功能关联
      * @param roleId
-     * @param funcKeyList
+     * @param funcIdList
      */
-    void batchInsertByRoleId(@Param(value = "roleId") Integer roleId,@Param(value = "funcKeyList") List<String> funcKeyList);
+    void batchInsertByRoleId(@Param(value = "roleId") Integer roleId,@Param(value = "funcIdList") List<Integer> funcIdList);
 
 
     /**

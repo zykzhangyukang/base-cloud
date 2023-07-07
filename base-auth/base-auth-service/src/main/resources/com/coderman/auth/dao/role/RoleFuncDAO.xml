@@ -181,13 +181,11 @@
 
   <insert id="batchInsertByRoleId">
    insert into auth_role_func(role_id,func_id)
-    select
-       #{roleId},func_id
-    from auth_func
-    where func_key in
-    <foreach collection="funcKeyList" item="item" open="(" close=")" separator=",">
-      #{item}
+   values
+    <foreach collection="funcIdList" item="item" separator=",">
+      (#{roleId} ,  #{item})
     </foreach>
+
   </insert>
 
   <delete id="deleteByFuncIdIn">

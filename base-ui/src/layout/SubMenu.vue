@@ -1,15 +1,15 @@
 <template>
   <a-sub-menu>
     <template v-slot:title>
-      <span><component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.title}}</span></span>
+      <span><component v-if='item.funcIcon' :is="item.funcIcon" ></component><span>{{item.funcName}}</span></span>
     </template>
     <template v-for='(itemChild) of item.children'>
       <sub-menu 
         v-if="itemChild.children && itemChild.children.length > 0 && itemChild.children.filter(v=>v.funcDirStatus === 'hide').length!==itemChild.children.length"
-        :key='itemChild.key'
+        :key='itemChild.funcId'
         :item='itemChild'
       ></sub-menu>
-      <menu-item v-else :key='itemChild.key' :item='itemChild'></menu-item>
+      <menu-item v-else :key='itemChild.funcId' :item='itemChild'></menu-item>
     </template>
   </a-sub-menu>
 </template>

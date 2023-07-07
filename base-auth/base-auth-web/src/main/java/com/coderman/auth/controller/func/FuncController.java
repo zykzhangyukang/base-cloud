@@ -39,7 +39,7 @@ public class FuncController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "FuncVO",value = {"funcTreeVOList","funcVOList"}),
-            @ApiReturnParam(name = "FuncTreeVO",value = {"funcName", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcSort","funcType"})
+            @ApiReturnParam(name = "FuncTreeVO",value = {"funcName", "funcKey", "createTime", "updateTime", "children", "funcId", "parentId","funcSort","funcType"})
     })
     public ResultVO<List<FuncTreeVO>> listTree(){
 
@@ -90,7 +90,7 @@ public class FuncController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"dataList",  "pageRow", "totalRow", "currPage", "totalPage"}),
             @ApiReturnParam(name = "FuncVO",value = {"funcSort","funcDirStatus","userVOList","rescVOList","funcName", "funcKey", "createTime","funcType","funcIcon",
-                    "updateTime", "childrenList", "funcId", "parentId","rescIdList"})
+                    "updateTime", "children", "funcId", "parentId","rescIdList"})
     })
     public ResultVO<PageVO<List<FuncVO>>> page(@RequestBody FuncPageDTO funcPageDTO){
 

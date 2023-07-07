@@ -11,10 +11,10 @@
     <template v-for='(item) of menu'>
       <sub-menu 
         v-if="item.children && item.children.length > 0 && item.children.filter(v=>v.hidden).length!==item.children.length"
-        :key='item.key'
+        :key='item.funcId'
         :item='item'
       ></sub-menu>
-      <menu-item v-else :key='item.key' :item='item'></menu-item>
+      <menu-item v-else :key='item.funcId' :item='item'></menu-item>
     </template>
   </a-menu>
 </template>
