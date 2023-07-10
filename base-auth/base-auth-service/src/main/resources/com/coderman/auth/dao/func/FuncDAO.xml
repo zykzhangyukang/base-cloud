@@ -558,5 +558,24 @@
         f.func_id = #{funcId}
   </select>
 
+  <select id="selectByRoleId" resultMap="BaseResultMap">
+      SELECT
+        f.func_id,
+        f.func_name,
+        f.func_key,
+        f.func_type,
+        f.func_icon,
+        f.func_sort,
+        f.func_dir_status,
+        f.parent_id,
+        f.create_time,
+        f.update_time
+      FROM
+        auth_func f
+          LEFT JOIN auth_role_func rf ON f.func_id = rf.func_id
+      WHERE
+        rf.role_id = #{roleId}
+  </select>
+
 
 </mapper>

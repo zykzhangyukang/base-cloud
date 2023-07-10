@@ -95,4 +95,10 @@ public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
     List<FuncTreeVO> selectAllByUserIdAndFuncType(Integer userId,String funcType);
 
 
+    /**
+     * 根据角色id查询功能列表
+     * @param roleId
+     * @return
+     */
+    List<FuncModel> selectByRoleId(Integer roleId);
 }

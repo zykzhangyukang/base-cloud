@@ -4,7 +4,7 @@ import router from "@/routers";
 
 const http = axios.create({
     baseURL: 'http://127.0.0.1:9870',
-    timeout: 10000,
+    timeout: 20000,
     headers: {
         post: {
             'Content-Type': 'application/json;charset=utf-8'
@@ -60,10 +60,10 @@ http.interceptors.response.use(
 
         if (!error.response) {
 
-            message.error({
+            message.warn({
                 content: '连接服务器失败！',
-                type: 'error',
-                duration: 3 * 1000
+                type: 'warning',
+                duration: 1000
             })
 
         } else {

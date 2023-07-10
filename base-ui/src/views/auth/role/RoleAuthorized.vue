@@ -76,12 +76,24 @@
         </template>
       </a-card>
     </a-spin>
+
+    <a-modal  cancelText="取消" okText="确定" v-model:visible="tipShow"    :confirm-loading="confirmLoading"  :title="null" @ok="handleAuthorizedUpdate" @cancel="this.checkInfo  = {insertList: [],delList: []}">
+      <div v-if="checkInfo.insertList && checkInfo.insertList.length > 0" style="text-align: center">
+        <a-divider>新增功能</a-divider>
+             <a-tag class="mb5" v-for="item in checkInfo.insertList" :key="item.funcId" color="green">{{ item.funcName }}</a-tag>
+        </div>
+      <div v-if="checkInfo.delList && checkInfo.delList.length > 0" style="text-align: center">
+        <a-divider>删除功能</a-divider>
+            <a-tag class="mb5" v-for="item in checkInfo.delList" :key="item.funcId" color="red">{{ item.funcName }}</a-tag>
+        </div>
+    </a-modal>
+
   </a-layout>
 </template>
 
 <script>
 
-import {authRoleAuthorizedInit, authRoleAuthorizedUpdate} from "@/api/auth";
+import {authRoleAuthorizedCheck, authRoleAuthorizedInit, authRoleAuthorizedUpdate} from "@/api/auth";
 import RoleAuthorizedTree from "@/views/auth/role/RoleAuthorizedTree";
 
 export default {
@@ -91,6 +103,12 @@ export default {
   },
   data() {
     return {
+        confirmLoading: false,
+        checkInfo: {
+        insertList: [],
+        delList: []
+      },
+      tipShow: false,
       initLoading: false,
       allTreeList: [],
       funcIdList: [],
@@ -99,9 +117,8 @@ export default {
     }
   },
   methods: {
-    handleAuthorized() {
+    getBizCheckedKeysList(){
       let keys = [];
-      this.initLoading = true;
       this.allTreeList.forEach(e => {
         let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
         if (reference && reference.bizCheckedKeysList) {
@@ -110,12 +127,33 @@ export default {
           })
         }
       })
-      const param = {roleId: this.$route.query.roleId, funcIdList: keys}
+      return keys;
+    },
+    handleAuthorized() {
+      this.initLoading = true;
+      const param = {roleId: this.$route.query.roleId, funcIdList: this.getBizCheckedKeysList()}
+      // 预校验
+      authRoleAuthorizedCheck(param).then(res => {
+        this.checkInfo = res.result;
+        if (this.checkInfo.insertList.length === 0 && this.checkInfo.delList.length === 0) {
+          this.handleAuthorizedUpdate();
+        } else {
+          this.tipShow = true;
+        }
+      }).finally(() => {
+        this.initLoading = false;
+      })
+    },
+    handleAuthorizedUpdate(){
+      this.initLoading = true;
+      this.confirmLoading = true;
+      const param = {roleId: this.$route.query.roleId, funcIdList: this.getBizCheckedKeysList()}
       authRoleAuthorizedUpdate(param).then(e => {
         this.$message.success("角色授权成功！");
         this.$router.push('/auth/role');
       }).finally(() => {
         this.initLoading = false;
+        this.confirmLoading = false;
       })
     },
     initRoleAuthorizedData(roleId) {
@@ -126,7 +164,6 @@ export default {
         this.halfCheckedMap = res.result.halfCheckedMap;
         this.allCheckedMap = res.result.allCheckedMap;
       }).catch(e => {
-        console.log(e)
         this.$router.push('/auth/role')
       }).finally(() => {
         this.initLoading = false;

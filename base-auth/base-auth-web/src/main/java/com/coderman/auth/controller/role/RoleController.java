@@ -91,18 +91,13 @@ public class RoleController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能预先检查")
-    @PostMapping(value = "/func/update/check")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "角色id",required = true),
-            @ApiImplicitParam(name = "funcKeyList",paramType = SwaggerConstant.PARAM_FORM,dataType = SwaggerConstant.DATA_INT,value = "功能key计集合",required = true),
-    })
+    @PostMapping(value = "/authorized/check")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "RoleAuthCheckVO",value = {"insertList", "delList"})
     })
-    public ResultVO<RoleAuthCheckVO> authFuncCheck(@RequestParam(value = "roleId") Integer roleId,
-                                                   @RequestParam(value = "funcKeyList") List<String> funcKeyList){
-        return this.roleService.authFuncCheck(roleId,funcKeyList);
+    public ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(@RequestBody RoleAuthorizedDTO roleAuthorizedDTO){
+        return this.roleService.roleAuthorizedCheck(roleAuthorizedDTO);
     }
 
 

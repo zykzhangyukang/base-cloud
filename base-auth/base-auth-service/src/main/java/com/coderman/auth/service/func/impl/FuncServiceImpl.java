@@ -467,4 +467,16 @@ public class FuncServiceImpl implements FuncService {
 
         return ResultUtil.getSuccess();
     }
+
+    @Override
+    @LogError(value = "根据角色id查询功能列表")
+    public ResultVO<List<FuncModel>> selectByRoleId(@LogErrorParam Integer roleId) {
+
+        if(Objects.isNull(roleId)){
+            return ResultUtil.getWarn("角色id不能为空！");
+        }
+
+        List<FuncModel> funcModelList  = this.funcDAO.selectByRoleId(roleId);
+        return ResultUtil.getSuccessList(FuncModel.class,funcModelList);
+    }
 }

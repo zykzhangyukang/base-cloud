@@ -204,6 +204,16 @@ export const authRoleAuthorizedInit = (id) => {
     })
 }
 
+/**
+ * 角色授权预校验
+ */
+export const authRoleAuthorizedCheck = (data) => {
+    return http({
+        url: `/auth/role/authorized/check`,
+        method: 'post',
+        data
+    })
+}
 
 /**
  * 角色授权初始化

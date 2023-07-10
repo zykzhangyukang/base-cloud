@@ -1,5 +1,6 @@
 package com.coderman.auth.service.user.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
@@ -30,9 +31,7 @@ import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
-import com.coderman.service.util.HttpContextUtil;
-import com.coderman.service.util.MD5Utils;
-import com.coderman.service.util.UUIDUtils;
+import com.coderman.service.util.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -78,7 +77,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     @LogError(value = "用户登录")
-    public ResultVO<UserLoginRespVO> login(@LogErrorParam UserLoginDTO userLoginDTO) throws BusinessException {
+    public ResultVO<UserLoginRespVO> login(@LogErrorParam UserLoginDTO userLoginDTO) {
 
         try {
 
@@ -86,30 +85,31 @@ public class UserServiceImpl extends BaseService implements UserService {
             String password = userLoginDTO.getPassword();
 
             if (StringUtils.isBlank(username)) {
-                return ResultUtil.getWarn("用户名不能为空");
+
+                return ResultUtil.getWarn("用户名不能为空！");
             }
 
             if (StringUtils.isBlank(password)) {
-                return ResultUtil.getWarn("登录密码不能为空");
+
+                return ResultUtil.getWarn("登录密码不能为空！");
             }
 
-            UserExample example = new UserExample();
-            example.createCriteria().andUsernameEqualTo(userLoginDTO.getUsername()).andUserStatusEqualTo(AuthConstant.USER_STATUS_ENABLE);
-            Optional<UserModel> modelOptional = this.userDAO.selectByExample(example).stream().findFirst();
+            UserVO dbUser = this.userDAO.selectByUsernameVos(username);
+            if (Objects.isNull(dbUser)) {
 
-            if (!modelOptional.isPresent()) {
-
-                return ResultUtil.getWarn("用户名或密码错误");
+                return ResultUtil.getWarn("用户名或密码错误！");
             }
-
-            UserModel dbUser = modelOptional.get();
 
             if (!StringUtils.equals(MD5Utils.md5Hex(password.getBytes()), dbUser.getPassword())) {
 
-                return ResultUtil.getWarn("用户名或密码错误");
+                return ResultUtil.getWarn("用户名或密码错误！");
             }
 
-            // 写会话到redis
+            if (Objects.equals(dbUser.getUserStatus(), AuthConstant.USER_STATUS_DISABLE)) {
+
+                return ResultUtil.getWarn("用户已被锁定！");
+            }
+
             String token = RandomStringUtils.randomAlphanumeric(32);
             AuthUserVO authUserVO = new AuthUserVO();
             authUserVO.setUserId(dbUser.getUserId());
@@ -117,19 +117,13 @@ public class UserServiceImpl extends BaseService implements UserService {
             authUserVO.setToken(token);
             authUserVO.setDeptCode(dbUser.getDeptCode());
             authUserVO.setRealName(dbUser.getRealName());
+            authUserVO.setDeptName(dbUser.getDeptName());
             authUserVO.setRescIdList(getUserRescIds(dbUser.getUsername()));
 
-            if (StringUtils.isNotBlank(authUserVO.getDeptCode())) {
-
-                ResultVO<DeptModel> deptModelResultVO = this.deptService.selectDeptByCode(authUserVO.getDeptCode());
-                if (Objects.nonNull(deptModelResultVO.getResult())) {
-                    authUserVO.setDeptName(deptModelResultVO.getResult().getDeptName());
-                }
-            }
-
+            // 写会话到redis
             this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + token, authUserVO, 7 * 24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
-
-            return ResultUtil.getSuccess(UserLoginRespVO.class, this.convertUserLoginRespVO(authUserVO));
+            UserLoginRespVO responseUserLoginVO = this.convertUserLoginRespVO(authUserVO);
+            return ResultUtil.getSuccess(UserLoginRespVO.class, responseUserLoginVO);
 
         } catch (Exception e) {
 
@@ -189,18 +183,21 @@ public class UserServiceImpl extends BaseService implements UserService {
         // 获取会话信息
         ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
         if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
+
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
         }
 
         AuthUserVO authUserVO = resultVO.getResult();
         String username = authUserVO.getUsername();
         if (Objects.isNull(resultVO.getResult())) {
+
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户登录会话已过期！");
         }
 
         // 获取用户信息
         ResultVO<UserVO> voResultVO = this.selectUserByName(username);
         if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode())) {
+
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, voResultVO.getMsg());
         }
 
@@ -233,10 +230,13 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     @LogError(value = "根据token获取用户信息")
     public ResultVO<AuthUserVO> getUserByToken(String token) {
+
         AuthUserVO authUserVO = this.redisService.getObject(AuthConstant.AUTH_TOKEN_NAME + token, AuthUserVO.class, RedisDbConstant.REDIS_DB_AUTH);
+
         if (Objects.isNull(authUserVO)) {
             return ResultUtil.getWarn("用户会话已过期");
         }
+
         return ResultUtil.getSuccess(AuthUserVO.class, authUserVO);
     }
 
@@ -244,10 +244,11 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "用户退出登录")
     public ResultVO<Void> logout(@LogErrorParam String token) {
 
-        // 删除token
         if (StringUtils.isNotBlank(token)) {
+
             this.redisService.expire(AuthConstant.AUTH_TOKEN_NAME + token, 0, RedisDbConstant.REDIS_DB_AUTH);
         }
+
         return ResultUtil.getSuccess();
     }
 

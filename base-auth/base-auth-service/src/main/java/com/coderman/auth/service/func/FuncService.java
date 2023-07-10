@@ -7,6 +7,7 @@ import com.coderman.auth.dto.func.FuncPageDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
 import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
+import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
 
@@ -108,4 +109,13 @@ public interface FuncService {
      * @return
      */
     ResultVO<Void> updateResourceBind(FuncUpdateRescBindDTO rescBindDTO);
+
+
+    /**
+     * 根据角色id查询功能列表
+     *
+     * @param roleId
+     * @return
+     */
+    ResultVO<List<FuncModel>> selectByRoleId(Integer roleId);
 }

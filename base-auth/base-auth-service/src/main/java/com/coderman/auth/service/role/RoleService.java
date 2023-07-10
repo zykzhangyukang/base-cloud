@@ -98,9 +98,8 @@ public interface RoleService {
     /**
      * 分配功能预先检查
      *
-     * @param roleId
-     * @param funcKeyList
+     * @param roleAuthorizedDTO
      * @return
      */
-    ResultVO<RoleAuthCheckVO> authFuncCheck(Integer roleId, List<String> funcKeyList);
+    ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(RoleAuthorizedDTO roleAuthorizedDTO);
 }

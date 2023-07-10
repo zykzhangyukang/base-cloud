@@ -114,7 +114,7 @@ public interface UserService {
      * @param userLoginDTO
      * @return
      */
-    ResultVO<UserLoginRespVO> login(UserLoginDTO userLoginDTO) throws BusinessException;
+    ResultVO<UserLoginRespVO> login(UserLoginDTO userLoginDTO);
 
 
     /**

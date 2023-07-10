@@ -300,10 +300,20 @@
   </sql>
 
   <select id="selectByUsernameVos" resultMap="pageBaseResultMap">
-    select
-    <include refid="Base_Column_List"></include>
-    from auth_user
-    where username = #{username}
+    SELECT
+      u.user_id,
+      u.username,
+      u.real_name,
+      u.`password`,
+      u.user_status,
+      u.create_time,
+      u.update_time,
+      d.dept_code,
+      d.dept_name
+    FROM
+      auth_user u
+    LEFT JOIN auth_dept d ON u.dept_code = d.dept_code
+    WHERE username = #{username}
   </select>
 
 </mapper>

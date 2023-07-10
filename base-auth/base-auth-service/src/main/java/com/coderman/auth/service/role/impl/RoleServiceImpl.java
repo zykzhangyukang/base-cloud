@@ -320,32 +320,35 @@ public class RoleServiceImpl implements RoleService {
         List<FuncTreeVO> treeVOList = listResultVO.getResult();
         if (CollectionUtils.isNotEmpty(treeVOList)) {
 
-            // 查询该角色拥有的功能
-            List<Integer> ownerFuncIdList = this.roleFuncDAO.selectAllByRoleId(roleId).stream()
-                    .map(RoleFuncModel::getFuncId).distinct().collect(Collectors.toList());
+            return ResultUtil.getWarn("暂无可分配的功能！");
+        }
 
-            if (CollectionUtils.isNotEmpty(ownerFuncIdList)) {
-                for (FuncTreeVO funcTreeVO : treeVOList) {
+        // 查询该角色拥有的功能
+        List<Integer> ownerFuncIdList = this.roleFuncDAO.selectAllByRoleId(roleId).stream()
+                .map(RoleFuncModel::getFuncId).distinct().collect(Collectors.toList());
 
-                    List<Integer> tempList = new ArrayList<>();
-                    List<Integer> tempList2 = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(ownerFuncIdList)) {
+            for (FuncTreeVO funcTreeVO : treeVOList) {
 
-                    // 半选
-                    TreeUtils.getDeepFuncIdList(tempList, funcTreeVO);
-                    if (CollectionUtils.isNotEmpty(tempList)) {
-                        Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList, ownerFuncIdList);
-                        halfCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
-                    }
+                List<Integer> tempList = new ArrayList<>();
+                List<Integer> tempList2 = new ArrayList<>();
 
-                    // 全选
-                    TreeUtils.getAllFuncIdList(tempList2, funcTreeVO);
-                    if (CollectionUtils.isNotEmpty(tempList2)) {
-                        Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList2, ownerFuncIdList);
-                        allCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
-                    }
+                // 半选
+                TreeUtils.getDeepFuncIdList(tempList, funcTreeVO);
+                if (CollectionUtils.isNotEmpty(tempList)) {
+                    Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList, ownerFuncIdList);
+                    halfCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
+                }
+
+                // 全选
+                TreeUtils.getAllFuncIdList(tempList2, funcTreeVO);
+                if (CollectionUtils.isNotEmpty(tempList2)) {
+                    Collection<Integer> checkedIdList = CollectionUtils.intersection(tempList2, ownerFuncIdList);
+                    allCheckedMap.putIfAbsent(funcTreeVO.getFuncId(), checkedIdList);
                 }
             }
         }
+
 
         roleAuthInitVO.setRoleId(roleModel.getRoleId());
         roleAuthInitVO.setRoleName(roleModel.getRoleName());
@@ -391,53 +394,42 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResultVO<RoleAuthCheckVO> authFuncCheck(Integer roleId, List<String> funcKeyList) {
+    public ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(RoleAuthorizedDTO roleAuthorizedDTO) {
 
-        // param: [1,2,4] new
-        // db: [1,2,3] old
-        // 交集： [1,2]
+        Integer roleId = null;
+        try {
+            roleId = Integer.parseInt(roleAuthorizedDTO.getRoleId());
+        } catch (Exception ignored) {
+        }
 
-        // 3: 删除 old- 交集 =  差集
-        // 4: 新增 new - 新增
-
+        List<Integer> funcIdList = roleAuthorizedDTO.getFuncIdList();
+        if (Objects.isNull(roleId)) {
+            return ResultUtil.getWarn("角色ID不能为空！");
+        }
 
         // 本次需要分配的功能查出来
         List<FuncModel> needAuthFuncKeyList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(funcKeyList)) {
+        if (CollectionUtils.isNotEmpty(funcIdList)) {
 
             FuncExample example = new FuncExample();
-            example.createCriteria().andFuncKeyIn(funcKeyList);
+            example.createCriteria().andFuncIdIn(funcIdList);
             needAuthFuncKeyList = new ArrayList<>(this.funcDAO.selectByExample(example));
         }
 
-
         // 查出该角色原本有的功能
-        List<FuncModel> historyAuthFuncList = new ArrayList<>();
-        RoleFuncExample example = new RoleFuncExample();
-        example.createCriteria().andRoleIdEqualTo(roleId);
-        List<Integer> funcIds = this.roleFuncDAO.selectByExample(example).stream()
-                .map(RoleFuncModel::getFuncId)
-                .distinct()
-                .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(funcIds)) {
-
-            FuncExample funcModelExample = new FuncExample();
-            funcModelExample.createCriteria().andFuncIdIn(funcIds);
-            historyAuthFuncList = new ArrayList<>(this.funcDAO.selectByExample(funcModelExample));
+        ResultVO<List<FuncModel>> listResultVO = this.funcService.selectByRoleId(roleId);
+        if (!ResultConstant.RESULT_CODE_200.equals(listResultVO.getCode())) {
+            return ResultUtil.getWarn(listResultVO.getMsg());
         }
 
+        List<FuncModel> historyAuthFuncList = listResultVO.getResult();
+
         // 取交集
-        @SuppressWarnings("all")
         Collection<FuncModel> intersection = CollectionUtils.intersection(needAuthFuncKeyList, historyAuthFuncList);
-
         // 新增的
-        @SuppressWarnings("all")
         Collection<FuncModel> addList = CollectionUtils.subtract(needAuthFuncKeyList, intersection);
-
         // 删除的
-        @SuppressWarnings("all")
         Collection<FuncModel> delList = CollectionUtils.subtract(historyAuthFuncList, intersection);
-
 
         RoleAuthCheckVO checkVO = new RoleAuthCheckVO();
         checkVO.setInsertList(new ArrayList<>(addList));
