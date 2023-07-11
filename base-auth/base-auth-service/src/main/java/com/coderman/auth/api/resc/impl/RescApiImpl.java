@@ -1,8 +1,8 @@
 package com.coderman.auth.api.resc.impl;
 
 import com.coderman.api.vo.ResultVO;
-import com.coderman.auth.api.RescApi;
 import com.coderman.auth.service.resc.RescService;
+import com.coderman.erp.api.RescApi;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

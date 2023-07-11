@@ -5,9 +5,9 @@ import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.auth.api.RescApi;
 import com.coderman.auth.service.user.UserService;
-import com.coderman.auth.vo.user.AuthUserVO;
+import com.coderman.erp.api.RescApi;
+import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.service.config.PropertyConfig;
 import com.coderman.service.dict.ConstItems;
 import com.coderman.service.redis.RedisService;
@@ -37,19 +37,11 @@ public class AuthController {
     @Resource
     private RedisService redisService;
 
-
     @Resource
     private RescApi rescApi;
 
-
     @Resource
     private UserService userService;
-
-    @GetMapping(value = "/hello")
-    public ResultVO<String> hello(){
-        String configValue = PropertyConfig.getConfigValue("msg");
-        return ResultUtil.getSuccess(String.class,configValue);
-    }
 
 
     /**
@@ -61,7 +53,7 @@ public class AuthController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "资源信息api")
     @PostMapping(value = "/api/resc/all")
     public ResultVO<Map<String, Set<Integer>>> sysRescAll(@RequestParam(value = "domain") String project,
-                                                          @RequestParam(value = "authSecurityCode", required = false) String authSecurityCode) {
+                                                                                                                          @RequestParam(value = "authSecurityCode", required = false) String authSecurityCode) {
         return this.rescApi.getSystemAllRescMap(project);
     }
 
@@ -73,7 +65,7 @@ public class AuthController {
     })
     @PostMapping(value = "/api/user/info")
     public ResultVO<AuthUserVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME, required = false) String token,
-                                     @RequestHeader(value = "authSecurityCode", required = false) String authSecurityCode) {
+                                                                               @RequestHeader(value = "authSecurityCode", required = false) String authSecurityCode) {
         return this.userService.getUserByToken(token);
     }
 

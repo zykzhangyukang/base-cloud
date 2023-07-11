@@ -23,6 +23,12 @@
             <groupId>com.coderman</groupId>
             <artifactId>base-auth-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.coderman</groupId>
+            <artifactId>base-erp-service</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

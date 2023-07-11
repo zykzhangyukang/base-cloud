@@ -27,6 +27,7 @@ import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.auth.vo.user.*;
+import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
@@ -234,6 +235,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         AuthUserVO authUserVO = this.redisService.getObject(AuthConstant.AUTH_TOKEN_NAME + token, AuthUserVO.class, RedisDbConstant.REDIS_DB_AUTH);
 
         if (Objects.isNull(authUserVO)) {
+
             return ResultUtil.getWarn("用户会话已过期");
         }
 
