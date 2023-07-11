@@ -318,7 +318,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         List<FuncTreeVO> treeVOList = listResultVO.getResult();
-        if (CollectionUtils.isNotEmpty(treeVOList)) {
+        if (CollectionUtils.isEmpty(treeVOList)) {
 
             return ResultUtil.getWarn("暂无可分配的功能！");
         }

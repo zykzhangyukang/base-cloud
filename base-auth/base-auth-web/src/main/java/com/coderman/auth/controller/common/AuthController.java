@@ -1,12 +1,14 @@
-package com.coderman.auth.controller;
+package com.coderman.auth.controller.common;
 
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
+import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.api.RescApi;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.user.AuthUserVO;
+import com.coderman.service.config.PropertyConfig;
 import com.coderman.service.dict.ConstItems;
 import com.coderman.service.redis.RedisService;
 import com.coderman.swagger.annotation.ApiReturnParam;
@@ -42,6 +44,12 @@ public class AuthController {
 
     @Resource
     private UserService userService;
+
+    @GetMapping(value = "/hello")
+    public ResultVO<String> hello(){
+        String configValue = PropertyConfig.getConfigValue("msg");
+        return ResultUtil.getSuccess(String.class,configValue);
+    }
 
 
     /**
