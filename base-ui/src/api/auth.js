@@ -1,14 +1,12 @@
 import http from '../utils/request'
 
-/************************************ 功能 *********************************/
-
 
 /**
  * 根据id获取资源信息
  */
 export const authFuncSelectById = (id) => {
     return http({
-        url: `/auth/func/detail/${id}`,
+        url: `/auth/func/detail?funcId=${id}`,
         method: 'get',
     })
 }
@@ -19,7 +17,7 @@ export const authFuncSelectById = (id) => {
  */
 export const autFuncUserBindDelete = (funcId) => {
     return http({
-        url: `/auth/func/delete/${funcId}/user/bind`,
+        url: `/auth/func/user/remove?funcId=${funcId}`,
         method: 'put',
     })
 }
@@ -29,8 +27,8 @@ export const autFuncUserBindDelete = (funcId) => {
  */
 export const authFuncRescBindDelete = (funcId) => {
     return http({
-        url: `/auth/func/delete/${funcId}/resc/bind`,
-        method: 'put',
+        url: `/auth/func/resc/remove?funcId=${funcId}`,
+        method: 'delete',
     })
 }
 
@@ -40,7 +38,7 @@ export const authFuncRescBindDelete = (funcId) => {
  */
 export const authFuncRescBindUpdate = (data) => {
     return http({
-        url: `/auth/func/update/resc/bind`,
+        url: `/auth/func/resc/update`,
         method: 'put',
         data
     })
@@ -63,7 +61,7 @@ export const authFuncUpdate = (data) => {
  */
 export const authFuncDelete = id => {
     return http({
-        url: `/auth/func/delete/${id}`,
+        url: `/auth/func/delete?funcId=${id}`,
         method: 'delete',
     })
 }
@@ -102,8 +100,6 @@ export const authFuncTree = data => {
 }
 
 
-/************************************ 资源 *********************************/
-
 /**
  * 根据关键字获取资源信息
  */
@@ -120,7 +116,7 @@ export const authRescSearchByKeyword = (keyword) => {
  */
 export const authRescSelectById = (id) => {
     return http({
-        url: `/auth/resc/detail/${id}`,
+        url: `/auth/resc/detail?rescId=${id}`,
         method: 'get',
     })
 }
@@ -142,7 +138,7 @@ export const authRescUpdate = (data) => {
  */
 export const authRescDelete = id => {
     return http({
-        url: `/auth/resc/delete/${id}`,
+        url: `/auth/resc/delete?rescId=${id}`,
         method: 'delete',
     })
 }
@@ -171,8 +167,6 @@ export const authRescPage = data => {
 }
 
 
-/************************************ 角色 *********************************/
-
 /**
  * 更新角色信息
  */
@@ -189,7 +183,7 @@ export const authRoleUpdate = (data) => {
  */
 export const authRoleSelectById = (id) => {
     return http({
-        url: `/auth/role/detail/${id}`,
+        url: `/auth/role/detail?roleId=${id}`,
         method: 'get',
     })
 }
@@ -199,7 +193,7 @@ export const authRoleSelectById = (id) => {
  */
 export const authRoleAuthorizedInit = (id) => {
     return http({
-        url: `/auth/role/authorized/init?roleId=${id}`,
+        url: `/auth/role/func/init?roleId=${id}`,
         method: 'get',
     })
 }
@@ -209,7 +203,7 @@ export const authRoleAuthorizedInit = (id) => {
  */
 export const authRoleAuthorizedCheck = (data) => {
     return http({
-        url: `/auth/role/authorized/check`,
+        url: `/auth/role/func/check`,
         method: 'post',
         data
     })
@@ -220,7 +214,7 @@ export const authRoleAuthorizedCheck = (data) => {
  */
 export const authRoleAuthorizedUpdate = (data) => {
     return http({
-        url: `/auth/role/authorized/update`,
+        url: `/auth/role/func/update`,
         method: 'put',
         data
     })
@@ -232,7 +226,7 @@ export const authRoleAuthorizedUpdate = (data) => {
  */
 export const authRoleDelete = id => {
     return http({
-        url: `/auth/role/delete/${id}`,
+        url: `/auth/role/delete?roleId=${id}`,
         method: 'delete',
     })
 }
@@ -260,14 +254,12 @@ export const authRolePage = data => {
 }
 
 
-/************************************ 用户 *********************************/
-
 /**
  *  用户分配角色初始化
  */
-export const authUserAssignUpdate = (data) => {
+export const authUserRoleUpdate = (data) => {
     return http({
-        url: `/auth/user/assign/update`,
+        url: `/auth/user/role/update`,
         method: 'put',
         data
     })
@@ -277,9 +269,9 @@ export const authUserAssignUpdate = (data) => {
 /**
  *  用户分配角色初始化
  */
-export const authUserAssignInit = (id) => {
+export const authUserRoleInit = (id) => {
     return http({
-        url: `/auth/user/${id}/assign/init`,
+        url: `/auth/user/role/init?userId=${id}`,
         method: 'get',
     })
 }
@@ -289,7 +281,7 @@ export const authUserAssignInit = (id) => {
  */
 export const authUserUpdatePwd = (data) => {
     return http({
-        url: `/auth/user/update/password`,
+        url: `/auth/user/pwd/update`,
         method: 'put',
         data
     })
@@ -313,7 +305,7 @@ export const authUserUpdate = (data) => {
  */
 export const authUserSelectById = (id) => {
     return http({
-        url: `/auth/user/detail/${id}`,
+        url: `/auth/user/detail?userId=${id}`,
         method: 'get',
     })
 }
@@ -323,7 +315,7 @@ export const authUserSelectById = (id) => {
  */
 export const authUserEnable = (id) => {
     return http({
-        url: `/auth/user/${id}/enable`,
+        url: `/auth/user/enable?userId=${id}`,
         method: 'put',
     })
 }
@@ -334,7 +326,7 @@ export const authUserEnable = (id) => {
  */
 export const authUserDisable = (id) => {
     return http({
-        url: `/auth/user/${id}/disable`,
+        url: `/auth/user/disable?userId=${id}`,
         method: 'put',
     })
 }
@@ -356,7 +348,7 @@ export const authDeptList = param => {
  */
 export const authUserDelete = id => {
     return http({
-        url: `/auth/user/delete/${id}`,
+        url: `/auth/user/delete?userId=${id}`,
         method: 'delete',
     })
 }

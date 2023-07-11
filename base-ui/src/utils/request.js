@@ -29,10 +29,6 @@ http.interceptors.response.use(
 
             return Promise.resolve(response.data);
 
-        } else if (response.data.code === 403) {
-
-            message.error('您没有访问该资源的权限！');
-
         } else if (response.data.code === 401) {
 
             localStorage.clear();
@@ -41,10 +37,6 @@ http.interceptors.response.use(
 
                 message.error('用户会话已过期！');
             })
-
-        } else if (response.data.code === 404) {
-
-            message.error('您请求的资源不存在！');
 
         } else if (response.data.code === 405) {
 
@@ -68,7 +60,7 @@ http.interceptors.response.use(
 
         } else {
 
-            if (error.response.data.statusCode === 400) {
+            if (error.response.status === 400) {
 
                 message.error({
                     content: '请求错误！',
@@ -76,9 +68,15 @@ http.interceptors.response.use(
                     duration: 5 * 1000
                 })
 
-            } else {
+            } else if (error.response.status === 403) {
 
-                console.log('err' + error) // for debug
+                message.error({
+                    content: '您没有访问该资源的权限！',
+                    type: 'error',
+                    duration: 1000
+                })
+
+            } else {
 
                 if (error.toString().search('timeout') > -1) {
                     message.error('请求超时，请重试或联系管理员！');
@@ -96,7 +94,6 @@ http.interceptors.response.use(
                 }
             }
         }
-
 
         return Promise.reject(error)
     }

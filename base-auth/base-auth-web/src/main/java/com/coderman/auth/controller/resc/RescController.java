@@ -80,19 +80,19 @@ public class RescController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE, value = "删除资源")
-    @DeleteMapping(value = "/delete/{rescId}")
+    @DeleteMapping(value = "/delete")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rescId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "资源Id", required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> delete(@PathVariable(value = "rescId") Integer rescId) {
+    public ResultVO<Void> delete(@RequestParam(value = "rescId") Integer rescId) {
         return this.rescService.delete(rescId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "获取资源")
-    @GetMapping(value = "/detail/{rescId}")
+    @GetMapping(value = "/detail")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rescId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "资源Id", required = true)
     })
@@ -100,7 +100,7 @@ public class RescController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "RescVO", value = {"rescUrl", "rescName", "rescId", "rescDomain", "createTime", "updateTime", "methodType"})
     })
-    public ResultVO<RescVO> select(@PathVariable(value = "rescId") Integer rescId) {
+    public ResultVO<RescVO> select(@RequestParam(value = "rescId") Integer rescId) {
         return this.rescService.selectById(rescId);
     }
 

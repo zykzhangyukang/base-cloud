@@ -47,34 +47,34 @@ public class FuncController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能解绑用户")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "功能解绑用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
-    @PutMapping(value = "/delete/{funcId}/user/bind")
+    @PutMapping(value = "/user/remove")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> deleteUserBind(@PathVariable(value = "funcId") Integer funcId){
+    public ResultVO<Void> deleteUserBind(@RequestParam(value = "funcId") Integer funcId){
 
         return this.funcService.deleteUserBind(funcId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能解绑资源")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "功能解绑资源")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
-    @PutMapping(value = "/delete/{funcId}/resc/bind")
+    @PutMapping(value = "/resc/remove")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> deleteResourceBind(@PathVariable(value = "funcId") Integer funcId){
+    public ResultVO<Void> deleteResourceBind(@RequestParam(value = "funcId") Integer funcId){
 
         return this.funcService.deleteResourceBind(funcId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能设置资源")
-    @PutMapping(value = "/update/resc/bind")
+    @PutMapping(value = "/resc/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
@@ -119,19 +119,19 @@ public class FuncController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "删除资源")
-    @DeleteMapping(value = "/delete/{funcId}")
+    @DeleteMapping(value = "/delete")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> delete(@PathVariable(value = "funcId") Integer funcId) {
+    public ResultVO<Void> delete(@RequestParam(value = "funcId") Integer funcId) {
         return this.funcService.delete(funcId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取资源")
-    @GetMapping(value = "/detail/{funcId}")
+    @GetMapping(value = "/detail")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "资源Id",required = true)
     })
@@ -140,7 +140,7 @@ public class FuncController {
             @ApiReturnParam(name = "FuncVO",value = {"funcSort","funcDirStatus","userVOList","rescVOList","rescIdList",
                     "funcName","funcIcon", "funcKey", "createTime", "updateTime", "childrenList", "funcId", "parentId","funcType"})
     })
-    public ResultVO<FuncVO> selectById(@PathVariable(value = "funcId") Integer funcId) {
+    public ResultVO<FuncVO> selectById(@RequestParam(value = "funcId") Integer funcId) {
         return this.funcService.selectById(funcId);
     }
 

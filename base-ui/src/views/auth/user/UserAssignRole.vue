@@ -23,8 +23,8 @@
 </template>
 
 <script>
-    import {authUserAssignInit, authUserAssignUpdate} from "@/api/auth";
-    export default {
+import {authUserRoleInit, authUserRoleUpdate} from "@/api/auth";
+export default {
         name: "userAssignRole.vue",
         data() {
             return {
@@ -44,7 +44,7 @@
             handleOk() {
                 this.confirmLoading = true;
                 this.form.roleIdList = this.targetKeys;
-                authUserAssignUpdate(this.form).then(res => {
+                authUserRoleUpdate(this.form).then(res => {
                     this.$message.success("分配角色成功！");
                     this.handleClose();
                 }).finally(e=>{
@@ -62,7 +62,7 @@
             open(userId){
                 this.visible = true;
                 this.form.userId = userId;
-                authUserAssignInit(userId).then(res=>{
+                authUserRoleInit(userId).then(res=>{
                     const { roleList, assignedIdList } = res.result
 
                     const dataList =[];

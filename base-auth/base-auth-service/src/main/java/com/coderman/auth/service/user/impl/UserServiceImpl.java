@@ -169,63 +169,72 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "获取用户信息")
     public ResultVO<UserPermissionVO> info(String token) {
 
-        HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
-        token = StringUtils.defaultString(httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), token);
+        try {
 
-        if (StringUtils.isBlank(token)) {
+            HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
+            token = StringUtils.defaultString(httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), token);
 
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空！");
+            if (StringUtils.isBlank(token)) {
 
-        } else if (StringUtils.length(token.trim()) != 32) {
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空！");
 
-            return ResultUtil.getWarn("非法令牌！");
+            } else if (StringUtils.length(token.trim()) != 32) {
+
+                return ResultUtil.getWarn("非法令牌！");
+            }
+
+            // 获取会话信息
+            ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
+            if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
+
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
+            }
+
+            AuthUserVO authUserVO = resultVO.getResult();
+            String username = authUserVO.getUsername();
+            if (Objects.isNull(resultVO.getResult())) {
+
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户登录会话已过期！");
+            }
+
+            // 获取用户信息
+            ResultVO<UserVO> voResultVO = this.selectUserByName(username);
+            if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode())) {
+
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, voResultVO.getMsg());
+            }
+
+            UserVO userVO = voResultVO.getResult();
+            if (Objects.isNull(userVO)) {
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, String.format("登录用户[%s]不存在！", username));
+            }
+
+            UserPermissionVO userPermissionVO = new UserPermissionVO();
+            userPermissionVO.setUserId(authUserVO.getUserId());
+            userPermissionVO.setUsername(username);
+            userPermissionVO.setDeptCode(authUserVO.getDeptCode());
+            userPermissionVO.setDeptName(authUserVO.getDeptName());
+            userPermissionVO.setRealName(authUserVO.getRealName());
+
+            // 查询菜单
+            ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
+            if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
+
+                return ResultUtil.getFail("获取菜单失败！");
+            }
+
+            userPermissionVO.setMenus(r1.getResult());
+
+            // 查询功能
+            ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
+            userPermissionVO.setButtons(vo.getResult());
+            return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
+
+        } catch (Exception e) {
+
+            logger.error("获取用户信息失败! msg:{}", e.getMessage(), e);
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "获取用户信息失败！");
         }
-
-        // 获取会话信息
-        ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
-        if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
-
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
-        }
-
-        AuthUserVO authUserVO = resultVO.getResult();
-        String username = authUserVO.getUsername();
-        if (Objects.isNull(resultVO.getResult())) {
-
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户登录会话已过期！");
-        }
-
-        // 获取用户信息
-        ResultVO<UserVO> voResultVO = this.selectUserByName(username);
-        if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode())) {
-
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, voResultVO.getMsg());
-        }
-
-        UserVO userVO = voResultVO.getResult();
-        if (Objects.isNull(userVO)) {
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, String.format("登录用户[%s]不存在！", username));
-        }
-
-        UserPermissionVO userPermissionVO = new UserPermissionVO();
-        userPermissionVO.setUserId(authUserVO.getUserId());
-        userPermissionVO.setUsername(username);
-        userPermissionVO.setDeptCode(authUserVO.getDeptCode());
-        userPermissionVO.setDeptName(authUserVO.getDeptName());
-        userPermissionVO.setRealName(authUserVO.getRealName());
-
-        // 查询菜单
-        ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
-        if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
-
-            return ResultUtil.getFail("获取菜单失败！");
-        }
-        userPermissionVO.setMenus(r1.getResult());
-
-        // 查询功能
-        ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
-        userPermissionVO.setButtons(vo.getResult());
-        return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
     }
 
     @Override

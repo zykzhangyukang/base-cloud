@@ -68,7 +68,7 @@ public class RoleController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能")
-    @PutMapping(value = "/authorized/update")
+    @PutMapping(value = "/func/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
     })
@@ -77,7 +77,7 @@ public class RoleController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "角色分配功能初始化")
-    @GetMapping(value = "/authorized/init")
+    @GetMapping(value = "/func/init")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "角色id", required = true),
     })
@@ -91,7 +91,7 @@ public class RoleController {
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能预先检查")
-    @PostMapping(value = "/authorized/check")
+    @PostMapping(value = "/func/check")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "RoleAuthCheckVO",value = {"insertList", "delList"})
@@ -132,19 +132,19 @@ public class RoleController {
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE,value = "删除角色")
-    @DeleteMapping(value = "/delete/{roleId}")
+    @DeleteMapping(value = "/delete")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> delete(@PathVariable(value = "roleId") Integer roleId) {
+    public ResultVO<Void> delete(@RequestParam(value = "roleId") Integer roleId) {
         return this.roleService.delete(roleId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET,value = "获取角色")
-    @GetMapping(value = "/detail/{roleId}")
+    @GetMapping(value = "/detail")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "角色Id",required = true)
     })
@@ -152,7 +152,7 @@ public class RoleController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "RoleVO",value = {"roleName","roleDesc","roleId"})
     })
-    public ResultVO<RoleVO> selectRoleById(@PathVariable(value = "roleId") Integer roleId) {
+    public ResultVO<RoleVO> selectRoleById(@RequestParam(value = "roleId") Integer roleId) {
         return this.roleService.selectRoleById(roleId);
     }
 
