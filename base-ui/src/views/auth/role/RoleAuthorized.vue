@@ -7,7 +7,7 @@
             <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">收缩全部</a-button>
             <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">展开全部</a-button>
             <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
-            <a-button type="primary" @click="handleAuthorized">更新授权</a-button>
+            <a-button type="primary" @click="handleAuthorized" :loading="loading">更新授权</a-button>
           </div>
         </a-affix>
         <template v-for="(item, i) in allTreeList">
@@ -103,6 +103,7 @@ export default {
   },
   data() {
     return {
+        loading: false,
         confirmLoading: false,
         checkInfo: {
         insertList: [],
@@ -130,7 +131,7 @@ export default {
       return keys;
     },
     handleAuthorized() {
-      this.initLoading = true;
+      this.loading = true;
       const param = {roleId: this.$route.query.roleId, funcIdList: this.getBizCheckedKeysList()}
       // 预校验
       authRoleAuthorizedCheck(param).then(res => {
@@ -140,9 +141,9 @@ export default {
         } else {
           this.tipShow = true;
         }
-      }).finally(() => {
-        this.initLoading = false;
-      })
+      }).finally(()=>{
+         this.loading = false;
+      });
     },
     handleAuthorizedUpdate(){
       this.initLoading = true;
