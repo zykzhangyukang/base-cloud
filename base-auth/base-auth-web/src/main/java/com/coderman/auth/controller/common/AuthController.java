@@ -3,12 +3,12 @@ package com.coderman.auth.controller.common;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.util.ResultUtil;
+import com.coderman.api.exception.BusinessException;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.erp.api.RescApi;
+import com.coderman.erp.config.AuthErpConfig;
 import com.coderman.erp.vo.AuthUserVO;
-import com.coderman.service.config.PropertyConfig;
 import com.coderman.service.dict.ConstItems;
 import com.coderman.service.redis.RedisService;
 import com.coderman.swagger.annotation.ApiReturnParam;
@@ -16,11 +16,13 @@ import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,32 +45,44 @@ public class AuthController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private AuthErpConfig authErpConfig;
 
-    /**
-     * 获取权限系统所有资源信息
-     *
-     * @param project 项目名称
-     * @return
-     */
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "资源信息api")
+
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取资源信息")
     @PostMapping(value = "/api/resc/all")
     public ResultVO<Map<String, Set<Integer>>> sysRescAll(@RequestParam(value = "domain") String project,
-                                                                                                                          @RequestParam(value = "authSecurityCode", required = false) String authSecurityCode) {
+                                                                                                                                     @RequestParam(value = "authSecurityCode") String authSecurityCode) {
+
+        this.checkSecurityCode(authSecurityCode);
+
         return this.rescApi.getSystemAllRescMap(project);
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户信息api")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取用户信息")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "AuthUserVO", value = {"realName", "rescIdList", "deptCode", "username", "token"}),
     })
     @PostMapping(value = "/api/user/info")
     public ResultVO<AuthUserVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME, required = false) String token,
-                                                                               @RequestHeader(value = "authSecurityCode", required = false) String authSecurityCode) {
+                                                                                      @RequestHeader(value = "authSecurityCode") String authSecurityCode) {
+
+        this.checkSecurityCode(authSecurityCode);
+
         return this.userService.getUserByToken(token);
     }
 
+    private void checkSecurityCode(String authSecurityCode){
+        Assert.notNull(authSecurityCode , "authSecurityCode is null");
+        String code = authErpConfig.getAuthSecurityCode();
+        if(StringUtils.isNotBlank(code)){
+            if(!StringUtils.equals(code,authSecurityCode)){
+                throw new BusinessException("权限系统秘钥错误！");
+            }
+        }
+    }
 
     /**
      * 系统常量获取
@@ -107,7 +121,6 @@ public class AuthController {
                 return null;
             }
         });
-
 
         ResultVO<Map<String, List<ConstItems>>> resultVO = new ResultVO<>();
         resultVO.setCode(ResultConstant.RESULT_CODE_200);
