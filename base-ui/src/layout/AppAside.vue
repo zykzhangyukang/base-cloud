@@ -30,7 +30,7 @@ export default {
   data(){
     return {
       Logo,
-      theme: 'dark'
+      theme: 'light'
     }
   }
 }

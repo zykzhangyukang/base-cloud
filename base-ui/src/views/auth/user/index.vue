@@ -2,7 +2,7 @@
     <a-layout class='user-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd">添加</a-button>
+                <a-button type="danger" @click="handleAdd" v-permission="'auth:user:add'">添加</a-button>
             </div>
             <a-form
                     ref='form'
@@ -21,7 +21,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'auth:user:page'">搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -43,14 +43,14 @@
                 <template #action="{ record }">
                     <span>
                       <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small" @click="handleUpdate(record.userId)"><EditOutlined/>编辑</a>
+                       <a href="#" class="btn-text-small" v-permission="'auth:user:update'" @click="handleUpdate(record.userId)" ><EditOutlined/>编辑</a>
                        <a-divider type="vertical"/>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.userId)">
-                               <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
+                               <a href="#" class="btn-text-small"  v-permission="'auth:user:delete'"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
                         <a-divider type="vertical"/>
                         <a-dropdown :trigger="['click']">
@@ -60,16 +60,16 @@
                             <template #overlay>
                               <a-menu>
                                 <a-menu-item>
-                                  <a href="javascript:;" @click="handleEnable(record.userId)">启用账号</a>
+                                  <a href="javascript:;" @click="handleEnable(record.userId)" v-permission="'auth:user:enable'">启用账号</a>
                                 </a-menu-item>
                                 <a-menu-item>
-                                  <a href="javascript:;" @click="handleDisable(record.userId)">禁用账号</a>
+                                  <a href="javascript:;" @click="handleDisable(record.userId)" v-permission="'auth:user:disable'">禁用账号</a>
                                 </a-menu-item>
                                      <a-menu-item>
-                                  <a href="javascript:;" @click="handleUpdatePwd(record.userId)">修改密码</a>
+                                  <a href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:updatePwd'">修改密码</a>
                                 </a-menu-item>
-                                  <a-menu-item>
-                                  <a href="javascript:;" @click="handleAssignRole(record.userId)">分配角色</a>
+                                <a-menu-item>
+                                  <a href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:assignRole'">分配角色</a>
                                 </a-menu-item>
                               </a-menu>
                             </template>

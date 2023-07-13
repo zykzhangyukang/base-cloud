@@ -1,7 +1,7 @@
-import router from './routers'
-import ruleRoutes from './routers/ruleRoutes'
-import store from './store'
-import {authUserInfo,authConstAll} from './api/auth';
+import router from '@/routers'
+import ruleRoutes from '@/routers/ruleRoutes'
+import store from '@/store'
+import {authUserInfo,authConstAll} from '@/api/auth';
 
 
 //获取当前用户所有可以访问的路由权限
@@ -65,10 +65,30 @@ router.beforeEach(async(to, from, next) => {
 })
 
 router.afterEach(async(to, from) => {
-  // finish progress bar
   if (to.path === '/login') {
-    // 跳转登录页清除仓库用户信息，token取自localStorage，需要先行删除
     store.setUserToken('');
     store.setUserInfo(null);
   }
 })
+
+
+export default {
+  install(app) {
+    app.directive('permission', {
+      mounted(el, binding) {
+        const permission = binding.value;
+        const hasPermission = checkPermission(permission);
+        if (!hasPermission) {
+          el.disabled = true;
+          el.style.display = 'none';
+        }
+      },
+    });
+  },
+};
+
+function checkPermission(permission) {
+  let userInfo = store.state.user.info;
+  console.log(userInfo.buttons)
+  return userInfo && userInfo.buttons && userInfo.buttons.length > 0 && userInfo.buttons.indexOf(permission) !== -1
+}
