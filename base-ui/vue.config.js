@@ -28,8 +28,8 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            // antd-design-vue 库样式定制
-            // 'primary-color': '#2d8cf0',
+            'primary-color': '#1890ff', // 主色调
+            'link-color': '#1890ff', // 链接颜色
           },
           javascriptEnabled: true,
         },

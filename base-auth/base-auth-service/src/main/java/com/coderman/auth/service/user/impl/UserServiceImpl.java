@@ -245,7 +245,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (Objects.isNull(authUserVO)) {
 
-            return ResultUtil.getWarn("用户会话已过期");
+            return ResultUtil.getWarn("用户会话已过期！");
         }
 
         return ResultUtil.getSuccess(AuthUserVO.class, authUserVO);
@@ -267,41 +267,42 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "用户刷新登录")
     public ResultVO<String> refreshLogin(String token) {
 
+        Assert.isTrue(StringUtils.isNotBlank(token), "token不能为空");
+
         ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
 
         if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
-            return ResultUtil.getFail(resultVO.getMsg());
+
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
         }
 
         AuthUserVO oldAuthUserVO = resultVO.getResult();
         if (oldAuthUserVO == null) {
+
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "会话已过期,请重新登录");
         }
 
-        // 删除当前token
-        this.redisService.expire(AuthConstant.AUTH_TOKEN_NAME + oldAuthUserVO.getToken(), 0, RedisDbConstant.REDIS_DB_AUTH);
+        // 用户存在并且是启用状态
+        UserVO dbUser = this.userDAO.selectByUsernameVos(oldAuthUserVO.getUsername());
 
-        UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(oldAuthUserVO.getUsername()).andUserStatusEqualTo(AuthConstant.USER_STATUS_ENABLE);
-        Optional<UserModel> first = this.userDAO.selectByExample(example).stream().findFirst();
+        if (Objects.isNull(dbUser) || !AuthConstant.USER_STATUS_ENABLE.equals(dbUser.getUserStatus())) {
 
-
-        // 签发新的token
-        String newToken = UUIDUtils.getPrimaryValue();
-
-        if (!first.isPresent()) {
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户信息不存在");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "刷新登录失败！");
         }
 
-        UserModel dbUser = first.get();
-
+        String newToken = RandomStringUtils.randomAlphanumeric(32);
         AuthUserVO newAuthUserVo = new AuthUserVO();
         newAuthUserVo.setUsername(dbUser.getUsername());
         newAuthUserVo.setDeptCode(dbUser.getDeptCode());
         newAuthUserVo.setRealName(dbUser.getRealName());
         newAuthUserVo.setToken(newToken);
         newAuthUserVo.setRescIdList(getUserRescIds(dbUser.getUsername()));
+
+        // 签发新的token
         this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + newToken, newAuthUserVo, 7 * 24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
+        // 删除当前token
+        this.redisService.expire(AuthConstant.AUTH_TOKEN_NAME + oldAuthUserVO.getToken(), 0, RedisDbConstant.REDIS_DB_AUTH);
+
         return ResultUtil.getSuccess(String.class, newToken);
     }
 

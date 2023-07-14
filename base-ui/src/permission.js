@@ -89,6 +89,5 @@ export default {
 
 function checkPermission(permission) {
   let userInfo = store.state.user.info;
-  console.log(userInfo.buttons)
   return userInfo && userInfo.buttons && userInfo.buttons.length > 0 && userInfo.buttons.indexOf(permission) !== -1
 }

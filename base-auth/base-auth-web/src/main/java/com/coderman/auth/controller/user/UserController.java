@@ -50,7 +50,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "刷新会话")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "刷新会话")
     @PostMapping(value = "/refresh/login")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),

@@ -18,7 +18,7 @@
                     <a-input v-model:value="searchParams.rescName" :style="{width:'200px'}" placeholder="资源名称输入框"></a-input>
                 </a-form-item>
                 <a-form-item label="资源URL" >
-                    <a-input v-model:value="searchParams.rescUrl" :style="{width:'280px'}" placeholder="资源URL输入框"></a-input>
+                    <a-input v-model:value="searchParams.rescUrl" :style="{width:'200px'}" placeholder="资源URL输入框"></a-input>
                 </a-form-item>
                 <a-form-item label="方法类型" >
                     <a-select v-model:value="searchParams.methodType" :style="{width:'180px'}" placeholder="请求方法类型">

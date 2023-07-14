@@ -296,7 +296,7 @@ public class FuncServiceImpl implements FuncService {
             userRoleModelExample.createCriteria().andRoleIdIn(roleIds);
             List<UserRoleModel> userRoleModels = this.userRoleDAO.selectByExample(userRoleModelExample);
             if (userRoleModels.size() > 0) {
-                return ResultUtil.getWarn("功能已经授权给了用户,请先解绑用户！");
+                return ResultUtil.getWarn("请先解绑用户！");
             }
         }
 

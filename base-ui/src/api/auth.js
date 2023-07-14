@@ -387,6 +387,16 @@ export const authUserLogin = data => {
 }
 
 /**
+ * 根据id获取资源信息
+ */
+export const authUserRefreshLogin = () => {
+    return http({
+        url: `/auth/user/refresh/login`,
+        method: 'post',
+    })
+}
+
+/**
  * 用户列表
  */
 export const authUserPage = data => {

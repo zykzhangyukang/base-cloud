@@ -52,29 +52,17 @@ http.interceptors.response.use(
 
         if (!error.response) {
 
-            message.warn({
-                content: '连接服务器失败！',
-                type: 'warning',
-                duration: 1000
-            })
+            message.error('无法连接到服务器，请检查您的网络连接！');
 
         } else {
 
             if (error.response.status === 400) {
 
-                message.error({
-                    content: '请求错误！',
-                    type: 'error',
-                    duration: 5 * 1000
-                })
+                message.error('请求方式不支持，请使用正确的请求方式！');
 
             } else if (error.response.status === 403) {
 
-                message.error({
-                    content: '您没有访问该资源的权限！',
-                    type: 'error',
-                    duration: 1000
-                })
+                message.error('您没有访问该资源的权限！');
 
             } else {
 
