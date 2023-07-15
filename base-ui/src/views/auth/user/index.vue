@@ -179,6 +179,7 @@ export default {
                     },
                     {
                         title: '操作',
+                        align: 'center',
                         key: 'action',
                         width: '200px',
                         slots: { customRender: 'action' },

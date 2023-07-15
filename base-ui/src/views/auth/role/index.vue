@@ -109,6 +109,7 @@
                     {
                         title: '操作',
                         key: 'action',
+                        align: 'center',
                         width: '200px',
                         slots: { customRender: 'action' },
                     },

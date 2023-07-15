@@ -69,7 +69,7 @@
                         })
                     })
                     .catch(() => {
-                        this.$message.warn('表单验证失败，请填写正确的信息！');
+                        this.$message.warn('表单验证失败！');
                     });
             },
             handleClose(){

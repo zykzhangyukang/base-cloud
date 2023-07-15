@@ -1,15 +1,14 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="新增用户"
+             title="添加用户"
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"
              cancelText="取消"
              okText="提交"
-             ref="form"
     >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol"  ref="formRef" :rules="formRules">
-            <a-form-item label="用户名" name="username">
+            <a-form-item label="登录账号" name="username">
                 <a-input v-model:value="form.username" autocomplete="off" />
             </a-form-item>
             <a-form-item label="登录密码"  name="password">
@@ -89,7 +88,7 @@
                         })
                     })
                     .catch(() => {
-                        this.$message.warn('表单验证失败，请填写正确的信息！');
+                        this.$message.warn('表单验证失败！');
                     });
             },
             handleClose(){

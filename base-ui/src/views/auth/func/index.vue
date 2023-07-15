@@ -74,6 +74,7 @@
                             </template>
                             <template #action="{ record }">
                                 <div class="action-btns">
+                                    <!-- 常用按钮 -->
                                     <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.funcId)" v-permission="'auth:func:update'"><EditOutlined/>编辑</a>
                                     <a  class="btn-text-mini" href="javascript:;"  @click="handleBindResc(record.funcId)" v-permission="'auth:func:rescUpdate'"><SettingOutlined /> 资源</a>
                                     <a-popconfirm
@@ -83,8 +84,22 @@
                                             @confirm="handleDelete(record.funcId)">
                                         <a class="btn-text-mini" href="javascript:;" v-permission="'auth:func:delete'"><DeleteOutlined/>删除</a>
                                     </a-popconfirm>
-                                    <a  class="btn-text-mini" href="javascript:;"  @click="handleDeleteResourceBind(record.funcId)" v-permission="'auth:func:rescRemove'"> <ClearOutlined /> 解绑资源</a>
-                                    <a  class="btn-text-mini" href="javascript:;"   @click="handleDeleteUserBind(record.funcId)" v-permission="'auth:func:userRemove'"><FileExcelOutlined />  清空用户</a>
+                                    <!-- 更多选项按钮 -->
+                                    <a-dropdown :trigger="['click']">
+                                        <a class="btn-text-mini" href="javascript:;">
+                                            更多 <DownOutlined />
+                                        </a>
+                                        <template #overlay>
+                                            <a-menu>
+                                                <a-menu-item>
+                                                    <a  class="btn-text-mini" href="javascript:;"  @click="handleDeleteResourceBind(record.funcId)" v-permission="'auth:func:rescRemove'"> <ClearOutlined /> 解绑资源</a>
+                                                </a-menu-item>
+                                                <a-menu-item>
+                                                    <a  class="btn-text-mini" href="javascript:;"   @click="handleDeleteUserBind(record.funcId)" v-permission="'auth:func:userRemove'"><FileExcelOutlined />  清空用户</a>
+                                                </a-menu-item>
+                                            </a-menu>
+                                        </template>
+                                    </a-dropdown>
                                 </div>
                             </template>
                         </HTable>
@@ -95,7 +110,6 @@
                                 @change="pageCurrentChange"
                                 @showSizeChange="pageSizeChange">
                         </HPage>
-
                         <!-- 新增功能 -->
                         <func-save-modal ref="funcSaveModal" @success="queryData"></func-save-modal>
                         <!-- 更新功能 -->
@@ -224,6 +238,7 @@ export default {
                     {
                         title: '操作',
                         key: 'action',
+                        align: 'center',
                         width: '200px',
                         slots: {customRender: 'action'},
                         fixed: 'right',
