@@ -106,27 +106,20 @@
 </template>
 
 <script>
-    import {
-        authUserDelete,
-        authUserDisable,
-        authUserEnable,
-        authUserPage,
-        authUserRefreshLogin,
-        authUserSwitchLogin
-    } from "@/api/auth"
-import userSaveModal from '@/views/auth/user/UserSaveModal'
-import userUpdateModal from "@/views/auth/user/UserUpdateModal";
-import userAssignRole from "@/views/auth/user/UserAssignRole";
-import updatePwd from "@/views/auth/user/UpdatePwd";
-import HPage from "@/components/pagination/HPage";
-import HTable from "@/components/table/HTable";
-import {authDomain, formatConst, getConst} from "@/utils/constant";
-import { ExclamationCircleOutlined} from '@ant-design/icons-vue';
-import {Modal} from 'ant-design-vue';
-import {createVNode} from 'vue';
+    import {authUserDelete, authUserDisable, authUserEnable, authUserPage, authUserSwitchLogin} from "@/api/auth"
+    import userSaveModal from '@/views/auth/user/UserSaveModal'
+    import userUpdateModal from "@/views/auth/user/UserUpdateModal";
+    import userAssignRole from "@/views/auth/user/UserAssignRole";
+    import updatePwd from "@/views/auth/user/UpdatePwd";
+    import HPage from "@/components/pagination/HPage";
+    import HTable from "@/components/table/HTable";
+    import {authDomain, formatConst, getConst} from "@/utils/constant";
+    import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
+    import {Modal} from 'ant-design-vue';
+    import {createVNode} from 'vue';
     import store from "@/store";
 
-export default {
+    export default {
         name: "User.vue",
         components: {
             userSaveModal,
@@ -228,7 +221,8 @@ export default {
             },
             handleSwitchLogin(username){
                 let _this = this;
-                Modal.info({
+                Modal.confirm({
+                    icon: createVNode(ExclamationCircleOutlined),
                     title: '切换账号登录',
                     content: '您确定切换用户登录，风险操作请慎用！',
                     okText: '确认',

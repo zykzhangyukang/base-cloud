@@ -46,6 +46,9 @@ export default {
     },
     expand(expandedKeys){
       this.expandedKeysList = expandedKeys;
+    },
+    setExpandedKeys(expandedKeys){
+      this.expandedKeysList = expandedKeys;
     }
   },
   created() {

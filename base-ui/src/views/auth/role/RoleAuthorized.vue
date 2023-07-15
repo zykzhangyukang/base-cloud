@@ -4,8 +4,8 @@
       <a-card>
         <a-affix :offset-top="30">
           <div :style="{'textAlign':'right'}">
-            <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">收缩全部</a-button>
-            <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">展开全部</a-button>
+            <a-button :style="{'marginRight': '10px'}" @click="handleCloseAll">收缩全部</a-button>
+            <a-button :style="{'marginRight': '10px'}" @click="handleExpandAll">展开全部</a-button>
             <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
             <a-button type="primary" @click="handleAuthorized" :loading="loading">更新授权</a-button>
           </div>
@@ -118,6 +118,30 @@ export default {
     }
   },
   methods: {
+    handleExpandAll(){
+      this.allTreeList.forEach(e => {
+        let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
+        reference.setExpandedKeys(this.getAllNodeKeys(e))
+      })
+    },
+    handleCloseAll(){
+      this.allTreeList.forEach(e => {
+        let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
+        reference.setExpandedKeys([e.funcId])
+      })
+    },
+    getAllNodeKeys(nodes) {
+      let keys = [];
+      if(nodes && nodes.funcId){
+        keys.push(nodes.funcId);
+        if(nodes.children && nodes.children.length > 0){
+          for (let node of nodes.children) {
+            keys = keys.concat(this.getAllNodeKeys(node));
+          }
+        }
+      }
+      return keys;
+    },
     getBizCheckedKeysList(){
       let keys = [];
       this.allTreeList.forEach(e => {
