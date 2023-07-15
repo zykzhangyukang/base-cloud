@@ -10,10 +10,10 @@
                     layout='inline'
             >
                 <a-form-item label="用户名">
-                    <a-input v-model:value="searchParams.username" :style="{width:'180px'}" placeholder="用户名输入框"></a-input>
+                    <a-input v-model:value="searchParams.username" :style="{width:'180px'}" placeholder="用户名输入框"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="真实姓名">
-                    <a-input v-model:value="searchParams.realName" :style="{width:'180px'}" placeholder="真实姓名输入框"></a-input>
+                    <a-input v-model:value="searchParams.realName" :style="{width:'180px'}" placeholder="真实姓名输入框"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="用户状态">
                     <a-select v-model:value="searchParams.userStatus" :style="{width:'180px'}" placeholder="用户状态">
@@ -78,7 +78,7 @@
                                     <a class="btn-text-mini" href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:roleUpdate'"><CopyOutlined />分配角色</a>
                                 </a-menu-item>
                                 <a-menu-item>
-                                    <a class="btn-text-mini" href="javascript:;" v-permission="'auth:user:switchLogin'"><SecurityScanOutlined /> 登录账号</a>
+                                    <a class="btn-text-mini" href="javascript:;" @click="handleSwitchLogin(record.username)" v-permission="'auth:user:switchLogin'"><SecurityScanOutlined /> 登录账号</a>
                                 </a-menu-item>
                             </a-menu>
                             </template>
@@ -106,7 +106,14 @@
 </template>
 
 <script>
-import {authUserDelete, authUserDisable, authUserEnable, authUserPage} from "@/api/auth"
+    import {
+        authUserDelete,
+        authUserDisable,
+        authUserEnable,
+        authUserPage,
+        authUserRefreshLogin,
+        authUserSwitchLogin
+    } from "@/api/auth"
 import userSaveModal from '@/views/auth/user/UserSaveModal'
 import userUpdateModal from "@/views/auth/user/UserUpdateModal";
 import userAssignRole from "@/views/auth/user/UserAssignRole";
@@ -117,6 +124,7 @@ import {authDomain, formatConst, getConst} from "@/utils/constant";
 import { ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import {Modal} from 'ant-design-vue';
 import {createVNode} from 'vue';
+    import store from "@/store";
 
 export default {
         name: "User.vue",
@@ -217,6 +225,25 @@ export default {
             },
             handleAssignRole(userId){
                 this.$refs['userAssignRole'].open(userId);
+            },
+            handleSwitchLogin(username){
+                let _this = this;
+                Modal.info({
+                    title: '切换账号登录',
+                    content: '您确定切换用户登录，风险操作请慎用！',
+                    okText: '确认',
+                    cancelText: '取消',
+                    onOk() {
+                        let msg = _this.$message.loading("正在切换账号登录...", 0.8);
+                        authUserSwitchLogin({ username: username }).then(res=>{
+                            msg.then(e=>{
+                                localStorage.setItem('token', res.result.token);
+                                store.setUserToken(res.result.token);
+                                window.location.reload();
+                            })
+                        })
+                    },
+                });
             },
             handleDisable(userId){
                 const _this = this;

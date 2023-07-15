@@ -46,6 +46,17 @@ public class UserController {
     }
 
 
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "切换登录")
+    @PostMapping(value = "/switch/login")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+            @ApiReturnParam(name = "UserLoginRespVO", value = {"realName", "deptCode", "username", "token", "deptName"})
+    })
+    public ResultVO<UserLoginRespVO> switchLogin(@RequestBody UserSwitchLoginDTO userSwitchLoginDTO) {
+        return this.userService.switchLogin(userSwitchLoginDTO);
+    }
+
+
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "刷新会话")
     @PostMapping(value = "/refresh/login")
     @ApiReturnParams({

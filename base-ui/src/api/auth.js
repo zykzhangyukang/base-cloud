@@ -397,6 +397,17 @@ export const authUserRefreshLogin = () => {
 }
 
 /**
+ * 根据id获取资源信息
+ */
+export const authUserSwitchLogin = (data) => {
+    return http({
+        url: `/auth/user/switch/login`,
+        method: 'post',
+        data
+    })
+}
+
+/**
  * 用户列表
  */
 export const authUserPage = data => {

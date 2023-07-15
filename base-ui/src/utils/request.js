@@ -63,6 +63,10 @@ http.interceptors.response.use(
 
                 message.error('您没有访问该资源的权限！');
 
+            } else if (error.response.status === 404) {
+
+                message.error(' 您访问的资源不存在！（404）');
+
             } else {
 
                 if (error.toString().search('timeout') > -1) {

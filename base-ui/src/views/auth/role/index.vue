@@ -10,7 +10,7 @@
                     layout='inline'
             >
                 <a-form-item label="角色名称" name='realName'>
-                    <a-input v-model:value="searchParams.roleName" :style="{width:'180px'}" placeholder="角色名称输入框"></a-input>
+                    <a-input v-model:value="searchParams.roleName" :style="{width:'180px'}" placeholder="角色名称输入框"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'auth:role:page'">搜索</a-button>

@@ -105,6 +105,11 @@
                 isScreenFull: false,
             }
         },
+        computed:{
+            user() {
+                return store.state.user;
+            }
+        },
         methods: {
             handleRefreshLogin() {
                 let _this = this;
@@ -122,8 +127,6 @@
                                store.setUserToken(res.result);
                                window.location.reload();
                            })
-                       }).finally(()=>{
-                           msg.hide();
                        })
                     },
                 });

@@ -25,6 +25,7 @@ import com.coderman.auth.vo.user.UserAssignVO;
 import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
 import com.coderman.auth.vo.user.UserVO;
+import com.coderman.erp.util.AuthUtil;
 import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
@@ -76,6 +77,72 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 
     @Override
+    @LogError(value = "切换用户登录")
+    public ResultVO<UserLoginRespVO> switchLogin(@LogErrorParam UserSwitchLoginDTO userSwitchLoginDTO) {
+
+        String username = userSwitchLoginDTO.getUsername();
+        AuthUserVO current = AuthUtil.getCurrent();
+
+        Assert.isTrue(StringUtils.isNotBlank(username), "登录账号不能为空！");
+
+        ResultVO<UserVO> resultVO = this.selectUserByName(username);
+        if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
+
+            return ResultUtil.getFail(resultVO.getMsg());
+        }
+
+        UserVO dbUser = resultVO.getResult();
+
+        if (Objects.isNull(dbUser)) {
+
+            return ResultUtil.getWarn("用户不存在！");
+        }
+
+        if (!AuthConstant.USER_STATUS_ENABLE.equals(dbUser.getUserStatus())) {
+            
+            return ResultUtil.getWarn("用户已被锁定！");
+        }
+
+        UserLoginRespVO response = this.generateAndStoreToken(dbUser);
+
+        // 删除当前token
+        this.redisService.del(this.getRedisKey(current.getToken()), RedisDbConstant.REDIS_DB_AUTH);
+
+        return ResultUtil.getSuccess(UserLoginRespVO.class, response);
+    }
+
+    /**
+     * 签发token并保存到redis中
+     *
+     * @param dbUser
+     * @return
+     */
+    private UserLoginRespVO generateAndStoreToken(UserVO dbUser) {
+
+        Assert.isTrue(Objects.nonNull(dbUser), "userVO is null");
+
+        int expiredSecond = AuthConstant.AUTH_EXPIRED_SECOND;
+
+        String token = RandomStringUtils.randomAlphanumeric(32);
+
+        AuthUserVO authUserVO = new AuthUserVO();
+        authUserVO.setToken(token);
+        authUserVO.setUserId(dbUser.getUserId());
+        authUserVO.setUsername(dbUser.getUsername());
+        authUserVO.setDeptCode(dbUser.getDeptCode());
+        authUserVO.setRealName(dbUser.getRealName());
+        authUserVO.setDeptName(dbUser.getDeptName());
+        authUserVO.setRescIdList(getUserRescIds(dbUser.getUsername()));
+        authUserVO.setExpiredTime(DateUtils.addSeconds(new Date(), expiredSecond).getTime());
+
+        // 写会话到redis
+        this.redisService.setObject(this.getRedisKey(token), authUserVO, expiredSecond, RedisDbConstant.REDIS_DB_AUTH);
+
+        // 组装响应给前台的对象
+        return this.assembleUserInfo(authUserVO);
+    }
+
+    @Override
     @LogError(value = "用户登录")
     public ResultVO<UserLoginRespVO> login(@LogErrorParam UserLoginDTO userLoginDTO) {
 
@@ -110,23 +177,10 @@ public class UserServiceImpl extends BaseService implements UserService {
                 return ResultUtil.getWarn("用户已被锁定！");
             }
 
-            int expiredSecond = AuthConstant.AUTH_EXPIRED_SECOND;
+            // 签发token
+            UserLoginRespVO response = this.generateAndStoreToken(dbUser);
 
-            String token = RandomStringUtils.randomAlphanumeric(32);
-            AuthUserVO authUserVO = new AuthUserVO();
-            authUserVO.setUserId(dbUser.getUserId());
-            authUserVO.setUsername(username);
-            authUserVO.setToken(token);
-            authUserVO.setDeptCode(dbUser.getDeptCode());
-            authUserVO.setRealName(dbUser.getRealName());
-            authUserVO.setDeptName(dbUser.getDeptName());
-            authUserVO.setRescIdList(getUserRescIds(dbUser.getUsername()));
-            authUserVO.setExpiredTime(DateUtils.addSeconds(new Date(), expiredSecond).getTime());
-
-            // 写会话到redis
-            this.redisService.setObject(this.getRedisKey(token), authUserVO, expiredSecond, RedisDbConstant.REDIS_DB_AUTH);
-
-            return ResultUtil.getSuccess(UserLoginRespVO.class, this.convertUserLoginRespVO(authUserVO));
+            return ResultUtil.getSuccess(UserLoginRespVO.class, response);
 
         } catch (Exception e) {
 
@@ -137,10 +191,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     }
 
-    private UserLoginRespVO convertUserLoginRespVO(AuthUserVO authUserVO) {
+    /**
+     * 组装响应给前台的用户信息
+     *
+     * @param authUserVO
+     * @return
+     */
+    private UserLoginRespVO assembleUserInfo(AuthUserVO authUserVO) {
 
         Assert.notNull(authUserVO, "authUserVO is null");
-
         UserLoginRespVO userLoginRespVO = new UserLoginRespVO();
         userLoginRespVO.setUsername(authUserVO.getUsername());
         userLoginRespVO.setToken(authUserVO.getToken());
@@ -148,7 +207,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         userLoginRespVO.setToken(authUserVO.getToken());
         userLoginRespVO.setRealName(authUserVO.getRealName());
         userLoginRespVO.setDeptName(authUserVO.getDeptName());
-
         return userLoginRespVO;
     }
 
@@ -278,27 +336,16 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         UserPermissionVO userPermissionVO = permissionByToken.getResult();
 
-        // 生成新token
-        String newToken = RandomStringUtils.randomAlphanumeric(32);
+        UserVO userVO = this.userDAO.selectByUsernameVos(userPermissionVO.getUsername());
 
-        int expiredSecond = AuthConstant.AUTH_EXPIRED_SECOND;
+        Assert.isTrue(Objects.nonNull(userVO), "userVO is null");
 
-        AuthUserVO authUserVO = new AuthUserVO();
-        authUserVO.setUserId(userPermissionVO.getUserId());
-        authUserVO.setDeptName(userPermissionVO.getDeptName());
-        authUserVO.setUsername(userPermissionVO.getUsername());
-        authUserVO.setDeptCode(userPermissionVO.getDeptCode());
-        authUserVO.setRealName(userPermissionVO.getRealName());
-        authUserVO.setRescIdList(getUserRescIds(userPermissionVO.getUsername()));
-        authUserVO.setToken(newToken);
-        authUserVO.setExpiredTime(DateUtils.addSeconds(new Date(), expiredSecond).getTime());
-
-        // 签发新的token
-        this.redisService.setObject(this.getRedisKey(newToken), authUserVO, expiredSecond, RedisDbConstant.REDIS_DB_AUTH);
+        // 签发token
+        UserLoginRespVO response = this.generateAndStoreToken(userVO);
         // 删除当前token
         this.redisService.del(this.getRedisKey(oldToken), RedisDbConstant.REDIS_DB_AUTH);
 
-        return ResultUtil.getSuccess(String.class, newToken);
+        return ResultUtil.getSuccess(String.class, response.getToken());
     }
 
     private String getRedisKey(String userToken) {

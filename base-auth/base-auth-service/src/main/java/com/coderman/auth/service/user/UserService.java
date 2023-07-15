@@ -121,6 +121,15 @@ public interface UserService {
 
 
     /**
+     * 用户切换登录
+     *
+     * @param userSwitchLoginDTO
+     * @return
+     */
+    ResultVO<UserLoginRespVO> switchLogin(UserSwitchLoginDTO userSwitchLoginDTO);
+
+
+    /**
      * 获取用户信息
      *
      * @return
