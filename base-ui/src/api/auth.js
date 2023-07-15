@@ -368,7 +368,7 @@ export const authUserSave = data => {
 /**
  * 加载常量
  */
-export const authConstAll = data => {
+export const authConstAll = () => {
     return http({
         url: `/auth/const/all`,
         method: 'get',

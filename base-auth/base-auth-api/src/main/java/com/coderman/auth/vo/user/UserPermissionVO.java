@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,9 @@ public class UserPermissionVO extends BaseModel {
 
     @ApiModelProperty(value = "真实名称")
     private String realName;
+
+    @ApiModelProperty(value = "会话过期时间")
+    private Date expiredTime;
 
     @ApiModelProperty(value = "菜单信息")
     private List<FuncTreeVO> menus;

@@ -29,15 +29,6 @@ http.interceptors.response.use(
 
             return Promise.resolve(response.data);
 
-        } else if (response.data.code === 401) {
-
-            localStorage.clear();
-
-            router.push('/login').then(() => {
-
-                message.error('用户会话已过期！');
-            })
-
         } else if (response.data.code === 405) {
 
             message.warn(response.data.msg);
@@ -52,13 +43,21 @@ http.interceptors.response.use(
 
         if (!error.response) {
 
-            message.error('无法连接到服务器，请检查您的网络连接！');
+            message.error('请检查您的网络连接！');
 
         } else {
 
             if (error.response.status === 400) {
 
                 message.error('请求方式不支持，请使用正确的请求方式！');
+
+            } else if (error.response.status === 401) {
+
+                // 清空token
+                localStorage.clear();
+                router.push('/login').then(() => {
+                    message.error('会话已过期，请重新登录！');
+                })
 
             } else if (error.response.status === 403) {
 

@@ -1,10 +1,8 @@
 package com.coderman.auth.service.user.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.exception.BusinessException;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
@@ -14,34 +12,38 @@ import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
 import com.coderman.auth.dto.user.*;
-import com.coderman.auth.model.dept.DeptModel;
 import com.coderman.auth.model.role.RoleModel;
-import com.coderman.auth.model.user.UserExample;
 import com.coderman.auth.model.user.UserModel;
 import com.coderman.auth.model.user.UserRoleExample;
 import com.coderman.auth.model.user.UserRoleModel;
-import com.coderman.auth.service.dept.DeptService;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.service.user.UserService;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.resc.RescVO;
-import com.coderman.auth.vo.user.*;
+import com.coderman.auth.vo.user.UserAssignVO;
+import com.coderman.auth.vo.user.UserLoginRespVO;
+import com.coderman.auth.vo.user.UserPermissionVO;
+import com.coderman.auth.vo.user.UserVO;
 import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
-import com.coderman.service.util.*;
+import com.coderman.service.util.HttpContextUtil;
+import com.coderman.service.util.MD5Utils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,9 +73,6 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Resource
     private FuncService funcService;
-
-    @Resource
-    private DeptService deptService;
 
 
     @Override
@@ -111,6 +110,8 @@ public class UserServiceImpl extends BaseService implements UserService {
                 return ResultUtil.getWarn("用户已被锁定！");
             }
 
+            int expiredSecond = AuthConstant.AUTH_EXPIRED_SECOND;
+
             String token = RandomStringUtils.randomAlphanumeric(32);
             AuthUserVO authUserVO = new AuthUserVO();
             authUserVO.setUserId(dbUser.getUserId());
@@ -120,11 +121,12 @@ public class UserServiceImpl extends BaseService implements UserService {
             authUserVO.setRealName(dbUser.getRealName());
             authUserVO.setDeptName(dbUser.getDeptName());
             authUserVO.setRescIdList(getUserRescIds(dbUser.getUsername()));
+            authUserVO.setExpiredTime(DateUtils.addSeconds(new Date(), expiredSecond).getTime());
 
             // 写会话到redis
-            this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + token, authUserVO, 7 * 24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
-            UserLoginRespVO responseUserLoginVO = this.convertUserLoginRespVO(authUserVO);
-            return ResultUtil.getSuccess(UserLoginRespVO.class, responseUserLoginVO);
+            this.redisService.setObject(this.getRedisKey(token), authUserVO, expiredSecond, RedisDbConstant.REDIS_DB_AUTH);
+
+            return ResultUtil.getSuccess(UserLoginRespVO.class, this.convertUserLoginRespVO(authUserVO));
 
         } catch (Exception e) {
 
@@ -169,45 +171,56 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "获取用户信息")
     public ResultVO<UserPermissionVO> info(String token) {
 
+        HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
+        HttpServletResponse httpServletResponse = HttpContextUtil.getHttpServletResponse();
+
         try {
 
-            HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
             token = StringUtils.defaultString(httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), token);
 
-            if (StringUtils.isBlank(token)) {
+            if (StringUtils.isBlank(token) || StringUtils.length(token.trim()) != 32) {
 
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "访问令牌为空！");
-
-            } else if (StringUtils.length(token.trim()) != 32) {
-
-                return ResultUtil.getWarn("非法令牌！");
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , "登录令牌不存在！");
             }
 
             // 获取会话信息
             ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
-            if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
-
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
-            }
-
             AuthUserVO authUserVO = resultVO.getResult();
-            String username = authUserVO.getUsername();
-            if (Objects.isNull(resultVO.getResult())) {
+            if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode()) || Objects.isNull(authUserVO)) {
 
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "用户登录会话已过期！");
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , resultVO.getMsg());
             }
+
+            String username = authUserVO.getUsername();
 
             // 获取用户信息
             ResultVO<UserVO> voResultVO = this.selectUserByName(username);
-            if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode())) {
-
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, voResultVO.getMsg());
-            }
-
             UserVO userVO = voResultVO.getResult();
-            if (Objects.isNull(userVO)) {
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, String.format("登录用户[%s]不存在！", username));
+
+            if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode()) || Objects.isNull(userVO)) {
+
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , String.format("登录用户[%s]不存在！", username));
             }
+
+            // 查询菜单
+            ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
+            if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
+
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , "获取菜单失败！");
+            }
+
+            // 查询功能
+            ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
+            if (!ResultConstant.RESULT_CODE_200.equals(vo.getCode())) {
+
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , "获取功能失败！");
+            }
+
 
             UserPermissionVO userPermissionVO = new UserPermissionVO();
             userPermissionVO.setUserId(authUserVO.getUserId());
@@ -215,25 +228,18 @@ public class UserServiceImpl extends BaseService implements UserService {
             userPermissionVO.setDeptCode(authUserVO.getDeptCode());
             userPermissionVO.setDeptName(authUserVO.getDeptName());
             userPermissionVO.setRealName(authUserVO.getRealName());
-
-            // 查询菜单
-            ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
-            if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
-
-                return ResultUtil.getFail("获取菜单失败！");
-            }
-
+            userPermissionVO.setExpiredTime(new Date(authUserVO.getExpiredTime()));
             userPermissionVO.setMenus(r1.getResult());
-
-            // 查询功能
-            ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
             userPermissionVO.setButtons(vo.getResult());
+
             return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
 
         } catch (Exception e) {
 
             logger.error("获取用户信息失败! msg:{}", e.getMessage(), e);
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "获取用户信息失败！");
+
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401 , "获取用户信息失败！");
         }
     }
 
@@ -241,11 +247,11 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "根据token获取用户信息")
     public ResultVO<AuthUserVO> getUserByToken(String token) {
 
-        AuthUserVO authUserVO = this.redisService.getObject(AuthConstant.AUTH_TOKEN_NAME + token, AuthUserVO.class, RedisDbConstant.REDIS_DB_AUTH);
+        AuthUserVO authUserVO = this.redisService.getObject(this.getRedisKey(token) , AuthUserVO.class, RedisDbConstant.REDIS_DB_AUTH);
 
         if (Objects.isNull(authUserVO)) {
 
-            return ResultUtil.getWarn("用户会话已过期！");
+            return ResultUtil.getWarn("用户登录会话已过期！");
         }
 
         return ResultUtil.getSuccess(AuthUserVO.class, authUserVO);
@@ -257,7 +263,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         if (StringUtils.isNotBlank(token)) {
 
-            this.redisService.expire(AuthConstant.AUTH_TOKEN_NAME + token, 0, RedisDbConstant.REDIS_DB_AUTH);
+            this.redisService.del(this.getRedisKey(token), RedisDbConstant.REDIS_DB_AUTH);
         }
 
         return ResultUtil.getSuccess();
@@ -283,29 +289,43 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         // 用户存在并且是启用状态
-        UserVO dbUser = this.userDAO.selectByUsernameVos(oldAuthUserVO.getUsername());
+        String username = oldAuthUserVO.getUsername();
+        String oldToken = oldAuthUserVO.getToken();
+
+        UserVO dbUser = this.userDAO.selectByUsernameVos(username);
 
         if (Objects.isNull(dbUser) || !AuthConstant.USER_STATUS_ENABLE.equals(dbUser.getUserStatus())) {
 
             return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "刷新登录失败！");
         }
 
+        int expiredSecond = AuthConstant.AUTH_EXPIRED_SECOND;
         String newToken = RandomStringUtils.randomAlphanumeric(32);
+
         AuthUserVO newAuthUserVo = new AuthUserVO();
+        newAuthUserVo.setUserId(dbUser.getUserId());
+        newAuthUserVo.setDeptName(dbUser.getDeptName());
         newAuthUserVo.setUsername(dbUser.getUsername());
         newAuthUserVo.setDeptCode(dbUser.getDeptCode());
         newAuthUserVo.setRealName(dbUser.getRealName());
         newAuthUserVo.setToken(newToken);
         newAuthUserVo.setRescIdList(getUserRescIds(dbUser.getUsername()));
+        newAuthUserVo.setExpiredTime(DateUtils.addSeconds(new Date(), expiredSecond).getTime());
 
         // 签发新的token
-        this.redisService.setObject(AuthConstant.AUTH_TOKEN_NAME + newToken, newAuthUserVo, 7 * 24 * 60 * 60, RedisDbConstant.REDIS_DB_AUTH);
+        this.redisService.setObject(this.getRedisKey(newToken), newAuthUserVo, expiredSecond, RedisDbConstant.REDIS_DB_AUTH);
         // 删除当前token
-        this.redisService.expire(AuthConstant.AUTH_TOKEN_NAME + oldAuthUserVO.getToken(), 0, RedisDbConstant.REDIS_DB_AUTH);
+        this.redisService.del(this.getRedisKey(oldToken), RedisDbConstant.REDIS_DB_AUTH);
 
         return ResultUtil.getSuccess(String.class, newToken);
     }
 
+    private String getRedisKey(String userToken){
+
+        Assert.isTrue(StringUtils.isNotBlank(userToken) , "userToken is blank");
+
+        return AuthConstant.AUTH_TOKEN_NAME + userToken;
+    }
 
     /**
      * 用户列表
