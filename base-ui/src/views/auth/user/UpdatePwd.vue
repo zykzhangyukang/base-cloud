@@ -1,23 +1,25 @@
 <template>
     <a-modal v-model:visible="visible"
              :confirm-loading="confirmLoading"
-             title="设置密码"
+             title="重置密码"
              @ok="handleOk"
              @cancel="handleClose"
              cancelText="取消"
              okText="提交"
-             ref="form"
     >
-        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="登录密码">
-                <a-input v-model:value="form.password"  />
+        <a-form :model="form" ref="form"  :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-form-item label="新密码" name="password" :rules="passwordRules">
+                <a-input-password  v-model:value="form.password"   />
+            </a-form-item>
+            <a-form-item label="确认密码" name="confirmPassword" :rules="confirmPasswordRules">
+                <a-input-password v-model:value="form.confirmPassword"  />
             </a-form-item>
         </a-form>
     </a-modal>
 </template>
 
 <script>
-    import {authUserUpdatePwd} from "@/api/auth";
+    import {authUserSave, authUserUpdatePwd} from "@/api/auth";
 
     export default {
         name: "userUpdatePwd.vue",
@@ -30,28 +32,51 @@
                 wrapperCol: { span: 18 },
                 form:{
                     password: '',
+                    confirmPassword: '',
                     userId: null,
                 },
+                passwordRules: [
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                ],
+                confirmPasswordRules: [
+                    { required: true, message: '请再次输入密码', trigger: 'blur' },
+                    { validator: this.validateConfirmPassword, trigger: 'blur' },
+                ],
             }
         },
         methods:{
+            validateConfirmPassword(rule, value, callback) {
+                if (value && value !== this.form.password) {
+                    return Promise.reject(new Error('两次输入的密码不一致'));
+                } else {
+                    return Promise.resolve();
+                }
+            },
             open(userId){
                 this.visible = true;
                 this.form.userId = userId;
             },
             handleOk() {
-                this.confirmLoading  = true;
-                authUserUpdatePwd(this.form).then(res=>{
-                    this.$message.success("设置密码成功");
-                    this.handleClose();
-                }).finally(e=>{
-                    this.confirmLoading = false;
-                })
+                this.$refs.form
+                    .validate()
+                    .then(() => {
+                        this.confirmLoading  = true;
+                        authUserUpdatePwd({userId: this.form.userId , password: this.form.password}).then(res=>{
+                            this.$message.success("重置密码成功");
+                            this.handleClose();
+                        }).finally(e=>{
+                            this.confirmLoading = false;
+                        })
+                    })
+                    .catch(() => {
+                        this.$message.warn('表单验证失败，请填写正确的信息！');
+                    });
             },
             handleClose(){
                 this.visible = false
                 this.confirmLoading = false;
                 this.form = this.$options.data().form;
+                this.$refs.form.resetFields();
             },
         }
     }

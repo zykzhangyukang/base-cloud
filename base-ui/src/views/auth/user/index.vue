@@ -9,10 +9,10 @@
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
-                <a-form-item label="用户名" name='username'>
+                <a-form-item label="用户名">
                     <a-input v-model:value="searchParams.username" :style="{width:'180px'}" placeholder="用户名输入框"></a-input>
                 </a-form-item>
-                <a-form-item label="真实姓名" name='realName'>
+                <a-form-item label="真实姓名">
                     <a-input v-model:value="searchParams.realName" :style="{width:'180px'}" placeholder="真实姓名输入框"></a-input>
                 </a-form-item>
                 <a-form-item label="用户状态">
@@ -42,19 +42,47 @@
                 </template>
                 <template #action="{ record }">
                     <div class="action-btns">
-                        <a  class="btn-text-mini" href="javascript:;" v-permission="'auth:user:switchLogin'"><SecurityScanOutlined /> 登录</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleEnable(record.userId)" v-permission="'auth:user:enable'"><UnlockOutlined />启用</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleDisable(record.userId)" v-permission="'auth:user:disable'"><LockOutlined />锁定</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:pwdUpdate'"><SettingOutlined />密码</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:roleUpdate'"><CopyOutlined />角色</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.userId)" v-permission="'auth:user:update'"><FormOutlined />编辑</a>
-                         <a-popconfirm
-                                 title="您确定要删除该用户吗?"
-                                 ok-text="确定"
-                                 cancel-text="取消"
-                                 @confirm="handleDelete(record.userId)">
-                               <a class="btn-text-small"   href="javascript:;"   v-permission="'auth:user:delete'"><DeleteOutlined/>删除</a>
-                          </a-popconfirm>
+                        <!-- 常用按钮 -->
+                        <a class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.userId)" v-permission="'auth:user:update'"><FormOutlined />编辑</a>
+                        <a-popconfirm
+                                title="您确定要删除该用户吗?"
+                                ok-text="确定"
+                                cancel-text="取消"
+                                @confirm="handleDelete(record.userId)"
+                        >
+                            <a class="btn-text-mini" href="javascript:;" v-permission="'auth:user:delete'"><DeleteOutlined/>删除</a>
+                        </a-popconfirm>
+                        <a class="btn-text-mini" href="javascript:;" @click="handleEnable(record.userId)"
+                           v-if="record.userStatus === 0"
+                           v-permission="'auth:user:statusUpdate'"
+                        >
+                            <UnlockOutlined />启用
+                        </a>
+                        <a class="btn-text-mini" href="javascript:;" @click="handleDisable(record.userId)"
+                           v-if="record.userStatus === 1"
+                           v-permission="'auth:user:statusUpdate'"
+                        >
+                            <LockOutlined />锁定
+                        </a>
+                        <!-- 更多选项按钮 -->
+                        <a-dropdown :trigger="['click']">
+                            <a class="btn-text-mini" href="javascript:;">
+                                更多 <DownOutlined />
+                            </a>
+                            <template #overlay>
+                                <a-menu>
+                                <a-menu-item>
+                                    <a class="btn-text-mini" href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:pwdUpdate'"><SettingOutlined />重置密码</a>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a class="btn-text-mini" href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:roleUpdate'"><CopyOutlined />分配角色</a>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a class="btn-text-mini" href="javascript:;" v-permission="'auth:user:switchLogin'"><SecurityScanOutlined /> 登录账号</a>
+                                </a-menu-item>
+                            </a-menu>
+                            </template>
+                        </a-dropdown>
                     </div>
                 </template>
             </HTable>

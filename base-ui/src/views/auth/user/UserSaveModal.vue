@@ -8,22 +8,22 @@
              okText="提交"
              ref="form"
     >
-        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="用户名">
-                <a-input v-model:value="form.username" />
+        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol"  ref="formRef" :rules="formRules">
+            <a-form-item label="用户名" name="username">
+                <a-input v-model:value="form.username" autocomplete="off" />
             </a-form-item>
-            <a-form-item label="登录密码">
-                <a-input v-model:value="form.password" />
+            <a-form-item label="登录密码"  name="password">
+                <a-input-password v-model:value="form.password" :visibility-toggle="true" autocomplete="off" />
             </a-form-item>
-            <a-form-item label="真实姓名">
-                <a-input v-model:value="form.realName" />
+            <a-form-item label="真实姓名" name="realName">
+                <a-input v-model:value="form.realName" autocomplete="off" />
             </a-form-item>
-            <a-form-item label="所属部门">
-                <a-select v-model:value="form.deptCode" placeholder="请选择部门" :style="{width:'200px'}">
+            <a-form-item label="所属部门"  name="deptCode">
+                <a-select v-model:value="form.deptCode" placeholder="请选择部门" :style="{width:'200px'}" autocomplete="off">
                     <a-select-option v-for="item in deptList" :value="item.deptCode" :key="item.deptId">{{item.deptName}}</a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="状态">
+            <a-form-item label="账号状态"  name="userStatus">
                 <a-radio-group v-model:value="form.userStatus">
                     <a-radio v-for="item in userStatusG" :value="item.code" :key="item.code">{{userStatusGName[item.code]}}</a-radio>
                 </a-radio-group>
@@ -39,6 +39,20 @@
         name: "userSaveModal.vue",
         data() {
             return {
+                formRules: {
+                    username: [
+                        { required: true, message: '请填写用户名', trigger: 'blur' },
+                    ],
+                    password: [
+                        { required: true, message: '请填写密码', trigger: 'blur' },
+                    ],
+                    realName: [
+                        { required: true, message: '请填写真实姓名', trigger: 'blur' },
+                    ],
+                    deptCode: [
+                        { required: true, message: '请选择所属部门', trigger: 'change' },
+                    ]
+                },
                 deptList: [],
                 confirmLoading: false,
                 visible: false,
@@ -62,19 +76,27 @@
         },
         methods:{
             handleOk() {
-                this.confirmLoading = true;
-                authUserSave(this.form).then(res => {
-                    this.$message.success("新增用户成功");
-                    this.handleClose();
-                    this.$emit('success')
-                }).finally(e=>{
-                    this.confirmLoading = false;
-                })
+                this.$refs.formRef
+                    .validate()
+                    .then(() => {
+                        this.confirmLoading = true;
+                        authUserSave(this.form).then(res => {
+                            this.$message.success("新增用户成功");
+                            this.handleClose();
+                            this.$emit('success')
+                        }).finally(e=>{
+                            this.confirmLoading = false;
+                        })
+                    })
+                    .catch(() => {
+                        this.$message.warn('表单验证失败，请填写正确的信息！');
+                    });
             },
             handleClose(){
                 this.visible = false
                 this.confirmLoading = false;
                 this.form = this.$options.data().form;
+                this.$refs.formRef.resetFields();
             },
             open(){
                 this.visible = true;
