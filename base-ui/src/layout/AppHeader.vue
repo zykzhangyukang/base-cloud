@@ -115,12 +115,15 @@
                     okText: '确认',
                     cancelText: '取消',
                     onOk() {
+                        let msg = _this.$message.loading("正在刷新登录...", 0.8);
                        authUserRefreshLogin().then(res=>{
-                           _this.$message.loading("正在刷新登录...", 0.8).then(e=>{
+                           msg.then(e=>{
                                localStorage.setItem('token', res.result);
                                store.setUserToken(res.result);
                                window.location.reload();
                            })
+                       }).finally(()=>{
+                           msg.hide();
                        })
                     },
                 });

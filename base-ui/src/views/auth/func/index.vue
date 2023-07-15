@@ -9,7 +9,7 @@
                 <a-col :span="20">
                     <a-card>
                         <div :style="{'textAlign':'right'}">
-                            <a-button type="danger" @click="handleAdd">
+                            <a-button type="danger" @click="handleAdd" v-permission="'auth:func:add'">
                                 添加
                             </a-button>
                         </div>
@@ -38,13 +38,14 @@
                                 </a-select>
                             </a-form-item>
                             <a-form-item>
-                                <a-button type="primary" @click="pageSearchChange">搜索</a-button>
+                                <a-button type="primary" @click="pageSearchChange" v-permission="'auth:func:page'">搜索</a-button>
                             </a-form-item>
                             <a-form-item>
                                 <a-button type="default" @click="pageSearchReset">重置</a-button>
                             </a-form-item>
                         </a-form>
                         <HTable
+                                bordered
                                 rowKey='funcId'
                                 :pagination='false'
                                 :loading='tableLoading'
@@ -72,40 +73,19 @@
                                     </span>
                             </template>
                             <template #action="{ record }">
-                                <span>
-                                    <a-divider type="vertical"/>
-                                    <a href="#" class="btn-text-small" @click="handleUpdate(record.funcId)"><EditOutlined/>编辑</a>
-                                        <a-divider type="vertical"/>
-                                          <a-popconfirm
-                                                  title="您确定要删除该功能吗?"
-                                                  ok-text="确定"
-                                                  cancel-text="取消"
-                                                  @confirm="handleDelete(record.funcId)">
-                                        <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
-                                      </a-popconfirm>
-                                     <a-divider type="vertical"/>
-                                    <a-dropdown :trigger="['click']">
-                                        <a class="ant-dropdown-link btn-text-small" @click.prevent>
-                                          <SettingOutlined/>设置
-                                        </a>
-                                        <template #overlay>
-                                          <a-menu>
-                                            <a-menu-item>
-                                                <a href="#" class="btn-text-small"
-                                                   @click="handleBindResc(record.funcId)">绑定资源</a>
-                                            </a-menu-item>
-                                            <a-menu-item>
-                                               <a href="#" class="btn-text-small"
-                                                  @click="handleDeleteResourceBind(record.funcId)">清空资源</a>
-                                            </a-menu-item>
-                                              <a-menu-item>
-                                               <a href="#" class="btn-text-small"
-                                                  @click="handleDeleteUserBind(record.funcId)">清空用户</a>
-                                            </a-menu-item>
-                                          </a-menu>
-                                        </template>
-                                      </a-dropdown>
-                                </span>
+                                <div class="action-btns">
+                                    <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.funcId)" v-permission="'auth:func:update'"><EditOutlined/>编辑</a>
+                                    <a  class="btn-text-mini" href="javascript:;"  @click="handleBindResc(record.funcId)" v-permission="'auth:func:rescUpdate'"><SettingOutlined /> 资源</a>
+                                    <a-popconfirm
+                                            title="您确定要删除该功能吗?"
+                                            ok-text="确定"
+                                            cancel-text="取消"
+                                            @confirm="handleDelete(record.funcId)">
+                                        <a class="btn-text-mini" href="javascript:;" v-permission="'auth:func:delete'"><DeleteOutlined/>删除</a>
+                                    </a-popconfirm>
+                                    <a  class="btn-text-mini" href="javascript:;"  @click="handleDeleteResourceBind(record.funcId)" v-permission="'auth:func:rescRemove'"> <ClearOutlined /> 解绑资源</a>
+                                    <a  class="btn-text-mini" href="javascript:;"   @click="handleDeleteUserBind(record.funcId)" v-permission="'auth:func:userRemove'"><FileExcelOutlined />  清空用户</a>
+                                </div>
                             </template>
                         </HTable>
                         <HPage
@@ -369,5 +349,12 @@ export default {
     }
 </script>
 
+
 <style scoped>
+    .action-btns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
 </style>

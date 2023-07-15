@@ -64,7 +64,7 @@ public class FuncController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "funcId",paramType = SwaggerConstant.PARAM_PATH,dataType = SwaggerConstant.DATA_INT,value = "功能id",required = true)
     })
-    @PutMapping(value = "/resc/remove")
+    @DeleteMapping(value = "/resc/remove")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })

@@ -2,7 +2,7 @@
     <a-layout class='role-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd">添加</a-button>
+                <a-button type="danger" @click="handleAdd" v-permission="'auth:role:add'">添加</a-button>
             </div>
             <a-form
                     ref='form'
@@ -13,7 +13,7 @@
                     <a-input v-model:value="searchParams.roleName" :style="{width:'180px'}" placeholder="角色名称输入框"></a-input>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'auth:role:page'">搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -29,26 +29,17 @@
                     :data-source='tableData'
             >
                 <template #action="{ record }">
-                    <span>
-
-                        <!--编辑-->
-                      <a href="#" class="btn-text-small" @click="handleUpdate(record.roleId)"><EditOutlined/>编辑</a>
-                      <a-divider type="vertical"/>
-
-                        <!--设置-->
+                    <div class="action-btns">
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.roleId)" v-permission="'auth:role:update'"><EditOutlined/>编辑 </a>
                        <a-popconfirm
                                title="您确定要删除该角色吗?"
                                ok-text="确定"
                                cancel-text="取消"
                                @confirm="handleDelete(record.roleId)">
-                           <a href="#" class="btn-text-small" type="link"><DeleteOutlined/>删除</a>
+                               <a class="btn-text-mini" href="javascript:;" v-permission="'auth:role:delete'" ><DeleteOutlined/>删除</a>
                         </a-popconfirm>
-
-                        <!--授权-->
-                       <a-divider type="vertical"/>
-                      <a href="#" class="btn-text-small"
-                         @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)"><LockOutlined/>授权</a>
-                    </span>
+                        <a  class="btn-text-mini" href="javascript:;" @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)" v-permission="'auth:role:funcUpdate'"><LockOutlined/>授权</a>
+                    </div>
                 </template>
             </HTable>
             <HPage
@@ -182,5 +173,10 @@
 </script>
 
 <style scoped>
-
+    .action-btns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
 </style>

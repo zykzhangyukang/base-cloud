@@ -2,7 +2,7 @@
     <a-layout class='resc-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd">添加</a-button>
+                <a-button type="danger" @click="handleAdd" v-permission="'auth:resc:add'">添加</a-button>
             </div>
             <a-form
                     ref='form'
@@ -26,13 +26,14 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'auth:resc:page'">搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
             </a-form>
             <HTable
+                    bordered
                     rowKey='rescId'
                     :pagination='false'
                     :loading='tableLoading'
@@ -46,18 +47,16 @@
                     {{ methodTypeGName[text] }}
                 </template>
                 <template #action="{ record }">
-                    <span>
-                         <a-divider type="vertical"/>
-                         <a href="#" class="btn-text-small" @click="handleUpdate(record.rescId)"><EditOutlined/>编辑</a>
-                       <a-divider type="vertical"/>
+                    <div class="action-btns">
+                         <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.rescId)" v-permission="'auth:resc:update'"><EditOutlined/>编辑</a>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.rescId)">
-                             <a href="#" class="btn-text-small"><DeleteOutlined/>删除</a>
+                             <a class="btn-text-mini" href="javascript:;" v-permission="'auth:resc:delete'"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
-                    </span>
+                    </div>
                 </template>
             </HTable>
             <HPage
@@ -67,7 +66,6 @@
                     @change="pageCurrentChange"
                     @showSizeChange="pageSizeChange">
             </HPage>
-
             <!-- 新增资源 -->
             <resc-save-modal ref="rescSaveModal" @success="queryData"></resc-save-modal>
             <!-- 更新资源 -->
@@ -226,5 +224,10 @@
 </script>
 
 <style scoped>
-
+    .action-btns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
 </style>

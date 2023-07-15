@@ -41,40 +41,21 @@
                     </a-tag>
                 </template>
                 <template #action="{ record }">
-                    <span>
-                      <a-divider type="vertical"/>
-                       <a href="#" class="btn-text-small" v-permission="'auth:user:update'" @click="handleUpdate(record.userId)" ><EditOutlined/>编辑</a>
-                       <a-divider type="vertical"/>
+                    <div class="action-btns">
+                        <a  class="btn-text-mini" href="javascript:;" v-permission="'auth:user:switchLogin'"><SecurityScanOutlined /> 登录</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleEnable(record.userId)" v-permission="'auth:user:enable'"><UnlockOutlined />启用</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleDisable(record.userId)" v-permission="'auth:user:disable'"><LockOutlined />锁定</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:pwdUpdate'"><SettingOutlined />密码</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:roleUpdate'"><CopyOutlined />角色</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.userId)" v-permission="'auth:user:update'"><FormOutlined />编辑</a>
                          <a-popconfirm
                                  title="您确定要删除该用户吗?"
                                  ok-text="确定"
                                  cancel-text="取消"
                                  @confirm="handleDelete(record.userId)">
-                               <a href="#" class="btn-text-small"  v-permission="'auth:user:delete'"><DeleteOutlined/>删除</a>
+                               <a class="btn-text-small"   href="javascript:;"   v-permission="'auth:user:delete'"><DeleteOutlined/>删除</a>
                           </a-popconfirm>
-                        <a-divider type="vertical"/>
-                        <a-dropdown :trigger="['click']">
-                            <a class="ant-dropdown-link btn-text-small" @click.prevent>
-                              <SettingOutlined/>设置
-                            </a>
-                            <template #overlay>
-                              <a-menu>
-                                <a-menu-item>
-                                  <a href="javascript:;" @click="handleEnable(record.userId)" v-permission="'auth:user:enable'">启用账号</a>
-                                </a-menu-item>
-                                <a-menu-item>
-                                  <a href="javascript:;" @click="handleDisable(record.userId)" v-permission="'auth:user:disable'">禁用账号</a>
-                                </a-menu-item>
-                                     <a-menu-item>
-                                  <a href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:updatePwd'">修改密码</a>
-                                </a-menu-item>
-                                <a-menu-item>
-                                  <a href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:assignRole'">分配角色</a>
-                                </a-menu-item>
-                              </a-menu>
-                            </template>
-                          </a-dropdown>
-                    </span>
+                    </div>
                 </template>
             </HTable>
             <HPage
@@ -105,7 +86,7 @@ import updatePwd from "@/views/auth/user/UpdatePwd";
 import HPage from "@/components/pagination/HPage";
 import HTable from "@/components/table/HTable";
 import {authDomain, formatConst, getConst} from "@/utils/constant";
-import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, SettingOutlined} from '@ant-design/icons-vue';
+import { ExclamationCircleOutlined} from '@ant-design/icons-vue';
 import {Modal} from 'ant-design-vue';
 import {createVNode} from 'vue';
 
@@ -115,9 +96,6 @@ export default {
             userSaveModal,
             userUpdateModal,
             updatePwd,
-            EditOutlined,
-            DeleteOutlined,
-            SettingOutlined,
             userAssignRole,
             HPage,
             HTable
@@ -281,5 +259,10 @@ export default {
 </script>
 
 <style scoped>
-
+    .action-btns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
 </style>

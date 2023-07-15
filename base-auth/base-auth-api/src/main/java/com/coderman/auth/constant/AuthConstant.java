@@ -14,9 +14,9 @@ import com.coderman.api.anntation.ConstList;
 public interface AuthConstant {
 
     /**
-     * 登录会话过期时间 - 2个小时
+     * 登录会话过期时间 - 12个小时
      */
-    Integer AUTH_EXPIRED_SECOND = 10;  // 60 * 60 * 2
+    Integer AUTH_EXPIRED_SECOND = 60 * 60 * 12;  // 60 * 60 * 2
 
     /**
      * 用户会话redis key 前缀
