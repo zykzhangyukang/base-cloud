@@ -288,6 +288,8 @@ public class PlanServiceImpl implements PlanService {
         String descDb = planPageDTO.getDescDb();
         String sortField = planPageDTO.getSortField();
         String sortOrder = planPageDTO.getSortOrder();
+        String srcProject = planPageDTO.getSrcProject();
+        String destProject = planPageDTO.getDestProject();
 
         StringBuilder countSql = new StringBuilder("select count(1) ");
         StringBuilder realSql = new StringBuilder("select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
@@ -328,6 +330,18 @@ public class PlanServiceImpl implements PlanService {
 
             sql.append(" and dest_db=?");
             params.add(descDb);
+        }
+
+        if (StringUtils.isNotBlank(srcProject)) {
+
+            sql.append(" and src_project=?");
+            params.add(srcProject);
+        }
+
+        if (StringUtils.isNotBlank(destProject)) {
+
+            sql.append(" and dest_project=?");
+            params.add(destProject);
         }
 
         // 总条数

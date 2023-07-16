@@ -8,6 +8,9 @@ export function getConst(group,domain) {
     if (!group) {
         return [];
     }
+    if(!store.state.const[domain]){
+        return [];
+    }
     const arr = store.state.const[domain].filter(e => e.group === group);
     if (arr.length) {
         return arr[0].itemList;

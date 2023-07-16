@@ -3,7 +3,7 @@ import {message} from 'ant-design-vue'
 import router from "@/routers";
 
 const http = axios.create({
-    baseURL: 'http://127.0.0.1:8000',
+    baseURL: 'http://127.0.0.1:8080',
     timeout: 20000,
     headers: {
         post: {
@@ -66,6 +66,10 @@ http.interceptors.response.use(
             } else if (error.response.status === 404) {
 
                 message.error(' 您访问的资源不存在！（404）');
+
+            } else if (error.response.status === 503) {
+
+                message.error(' 网关转发异常，请稍后再试！');
 
             } else {
 

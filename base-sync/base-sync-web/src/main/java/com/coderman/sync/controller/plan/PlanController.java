@@ -11,6 +11,7 @@ import com.coderman.sync.service.plan.PlanService;
 import com.coderman.sync.vo.PlanVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +49,10 @@ public class PlanController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划列表")
     @PostMapping(value = "/page")
     @ApiReturnParams({
-            @ApiReturnParam(name = "PlanVO", value = {"srcProject", "destDb", "destProject", "planContent", "updateTime", "createTime", "srcDb", "uuid", "planCode", "status"}),
+            @ApiReturnParam(name = "ResultVO", value = {"result", "code","msg"}),
+            @ApiReturnParam(name = "PageVO", value = {"pageRow", "totalPage", "currPage", "totalRow", "dataList"}),
+            @ApiReturnParam(name = "PlanVO", value = {"srcProject", "destDb", "destProject", "planContent", "updateTime", "createTime", "srcDb", "uuid", "planCode", "status","description"}),
     })
-    @ApiReturnIgnore
     public ResultVO<PageVO<List<PlanVO>>> page(@RequestBody PlanPageDTO planPageDTO) {
 
         return this.planService.page(planPageDTO);

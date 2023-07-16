@@ -15,6 +15,12 @@
 
     <dependencies>
 
+        <!-- 接入权限系统 -->
+<!--        <dependency>-->
+<!--            <groupId>com.coderman</groupId>-->
+<!--            <artifactId>base-erp-service</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.coderman</groupId>
             <artifactId>base-sync-api</artifactId>

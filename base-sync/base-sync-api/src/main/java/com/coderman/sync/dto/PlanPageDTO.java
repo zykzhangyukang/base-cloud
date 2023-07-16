@@ -27,6 +27,12 @@ public class PlanPageDTO extends BaseModel {
     @ApiModelProperty(value = "目标数据库")
     private String descDb;
 
+    @ApiModelProperty(value = "源系统")
+    private String srcProject;
+
+    @ApiModelProperty(value = "目标系统")
+    private String destProject;
+
     @ApiModelProperty(value = "排序字段")
     private String sortField;
 
