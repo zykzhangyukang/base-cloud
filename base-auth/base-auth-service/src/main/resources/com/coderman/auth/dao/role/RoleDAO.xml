@@ -216,7 +216,7 @@
 
 
   <select id="selectUserByRoleId" resultType="java.lang.String">
-       select distinct u.real_name as realName
+       select distinct u.username
        from auth_user_role ur
        inner join auth_user u on ur.user_id = u.user_id
        where ur.role_id = #{roleId}

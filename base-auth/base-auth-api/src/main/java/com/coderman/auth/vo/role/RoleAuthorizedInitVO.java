@@ -1,11 +1,15 @@
 package com.coderman.auth.vo.role;
 
 import com.coderman.api.model.BaseModel;
+import com.coderman.auth.model.user.UserModel;
 import com.coderman.auth.vo.func.FuncTreeVO;
+import com.coderman.auth.vo.user.UserVO;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,33 +17,31 @@ import java.util.Map;
 @Data
 public class RoleAuthorizedInitVO extends BaseModel {
 
-    /**
-     * 角色id
-     */
+    @ApiModelProperty(value = "角色id")
     private Integer roleId;
 
-    /**
-     * 角色名称
-     */
+    @ApiModelProperty(value = "角色名称")
     private String roleName;
 
+    @ApiModelProperty(value = "角色描述")
+    private String roleDesc;
 
-    /**
-     * 分配的功能id集合
-     */
-    private List<Integer> funcIdList;
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
 
-    /**
-     * 每个根节点选中项
-     */
-    // 半选
+    @ApiModelProperty(value = "更新时间")
+    private Date updateTime;
+
+    @ApiModelProperty(value = "半选")
     private Map<Integer, Collection<Integer>> halfCheckedMap;
-    // 全选
+
+    @ApiModelProperty(value = "全选")
     private Map<Integer, Collection<Integer>> allCheckedMap;
 
-    /**
-     * 所有的功能树
-     */
+    @ApiModelProperty(value = "功能树")
     private List<FuncTreeVO> allTreeList;
+
+    @ApiModelProperty(value = "用户列表")
+    private List<String> usernameList;
 
 }

@@ -317,18 +317,17 @@ public class RoleServiceImpl implements RoleService {
             return ResultUtil.getWarn(listResultVO.getMsg());
         }
 
-        List<FuncTreeVO> treeVOList = listResultVO.getResult();
-        if (CollectionUtils.isEmpty(treeVOList)) {
+        List<FuncTreeVO> treeVoList = listResultVO.getResult();
+        if (CollectionUtils.isEmpty(treeVoList)) {
 
             return ResultUtil.getWarn("暂无可分配的功能！");
         }
 
         // 查询该角色拥有的功能
-        List<Integer> ownerFuncIdList = this.roleFuncDAO.selectAllByRoleId(roleId).stream()
-                .map(RoleFuncModel::getFuncId).distinct().collect(Collectors.toList());
+        List<Integer> ownerFuncIdList = this.roleFuncDAO.selectAllByRoleId(roleId).stream().map(RoleFuncModel::getFuncId).distinct().collect(Collectors.toList());
 
         if (CollectionUtils.isNotEmpty(ownerFuncIdList)) {
-            for (FuncTreeVO funcTreeVO : treeVOList) {
+            for (FuncTreeVO funcTreeVO : treeVoList) {
 
                 List<Integer> tempList = new ArrayList<>();
                 List<Integer> tempList2 = new ArrayList<>();
@@ -349,10 +348,16 @@ public class RoleServiceImpl implements RoleService {
             }
         }
 
+        // 查询拥有该角色的用户
+        List<String> nameList = this.roleDAO.selectUserByRoleId(roleId);
 
+        roleAuthInitVO.setUsernameList(nameList);
         roleAuthInitVO.setRoleId(roleModel.getRoleId());
         roleAuthInitVO.setRoleName(roleModel.getRoleName());
-        roleAuthInitVO.setAllTreeList(treeVOList);
+        roleAuthInitVO.setRoleDesc(roleModel.getRoleDesc());
+        roleAuthInitVO.setCreateTime(roleModel.getCreateTime());
+        roleAuthInitVO.setUpdateTime(roleModel.getUpdateTime());
+        roleAuthInitVO.setAllTreeList(treeVoList);
         roleAuthInitVO.setHalfCheckedMap(halfCheckedMap);
         roleAuthInitVO.setAllCheckedMap(allCheckedMap);
         return ResultUtil.getSuccess(RoleAuthorizedInitVO.class, roleAuthInitVO);

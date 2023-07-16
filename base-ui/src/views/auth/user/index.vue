@@ -72,7 +72,7 @@
                             <template #overlay>
                                 <a-menu>
                                 <a-menu-item>
-                                    <a class="btn-text-mini" href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:pwdUpdate'"><SettingOutlined />重置密码</a>
+                                    <a class="btn-text-mini" href="javascript:;" @click="handleUpdatePwd(record.userId)" v-permission="'auth:user:pwdUpdate'"><SettingOutlined />修改密码</a>
                                 </a-menu-item>
                                 <a-menu-item>
                                     <a class="btn-text-mini" href="javascript:;" @click="handleAssignRole(record.userId)" v-permission="'auth:user:roleUpdate'"><CopyOutlined />分配角色</a>

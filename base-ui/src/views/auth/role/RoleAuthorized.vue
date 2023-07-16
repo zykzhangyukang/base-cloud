@@ -6,10 +6,19 @@
           <div :style="{'textAlign':'right'}">
             <a-button :style="{'marginRight': '10px'}" @click="handleCloseAll">收缩全部</a-button>
             <a-button :style="{'marginRight': '10px'}" @click="handleExpandAll">展开全部</a-button>
-            <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
+            <a-button type="dashed"  :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
             <a-button type="primary" @click="handleAuthorized" :loading="loading">更新授权</a-button>
           </div>
         </a-affix>
+        <a-descriptions title="角色信息" bordered size="small">
+          <a-descriptions-item label="角色名称">{{roleInfo.roleName}}</a-descriptions-item>
+          <a-descriptions-item label="角色描述">{{roleInfo.roleDesc}}</a-descriptions-item>
+          <a-descriptions-item label="创建时间">{{roleInfo.createTime}}</a-descriptions-item>
+          <a-descriptions-item label="修改时间">{{roleInfo.updateTime}}</a-descriptions-item>
+          <a-descriptions-item label="用户列表">
+                <a-tag class="mr15" color="blue" v-for="item in roleInfo.usernameList" :key="item">{{item}}</a-tag>
+          </a-descriptions-item>
+        </a-descriptions>
         <template v-for="(item, i) in allTreeList">
           <a-row :gutter="24" :key="i" v-if='i%6 === 0'>
             <a-col :span="4">
@@ -115,6 +124,7 @@ export default {
       funcIdList: [],
       halfCheckedMap: {},
       allCheckedMap: {},
+      roleInfo: {},
     }
   },
   methods: {
@@ -184,6 +194,7 @@ export default {
     initRoleAuthorizedData(roleId) {
       this.initLoading = true;
       authRoleAuthorizedInit(roleId).then(res => {
+        this.roleInfo  = res.result;
         this.allTreeList = res.result.allTreeList;
         this.funcIdList = res.result.funcIdList;
         this.halfCheckedMap = res.result.halfCheckedMap;

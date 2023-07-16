@@ -1,7 +1,7 @@
 <template>
     <a-modal v-model:visible="visible"
              :confirm-loading="confirmLoading"
-             title="重置密码"
+             title="修改密码"
              @ok="handleOk"
              @cancel="handleClose"
              cancelText="取消"
@@ -62,7 +62,7 @@
                     .then(() => {
                         this.confirmLoading  = true;
                         authUserUpdatePwd({userId: this.form.userId , password: this.form.password}).then(res=>{
-                            this.$message.success("重置密码成功");
+                            this.$message.success("修改密码成功");
                             this.handleClose();
                         }).finally(e=>{
                             this.confirmLoading = false;

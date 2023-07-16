@@ -49,6 +49,9 @@ public interface AuthConstant {
     @ConstList(group = project_domain, name = "同步系统")
     String PROJECT_DOMAIN_SYNC = "sync";
 
+    @ConstList(group = project_domain, name = "社区系统")
+    String PROJECT_DOMAIN_HUB = "hub";
+
     /**
      * 方法常量
      */
