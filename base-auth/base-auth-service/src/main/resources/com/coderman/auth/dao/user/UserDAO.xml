@@ -263,21 +263,31 @@
 
   <!-- 用户列表 -->
   <select id="selectPage" resultMap="pageBaseResultMap">
-      select
-      u.user_id, u.username, u.real_name, u.password, u.dept_code, u.user_status, u.create_time, u.update_time,d.dept_name
-      from auth_user u
-      left join auth_dept d on u.dept_code  = d.dept_code
+      SELECT
+      u.user_id,
+      u.username,
+      u.real_name,
+      u.`password`,
+      u.dept_code,
+      u.user_status,
+      u.create_time,
+      u.update_time,
+      d.dept_name
+      FROM
+      auth_user u
+      LEFT JOIN auth_dept d ON u.dept_code = d.dept_code
       <include refid="pageCondition"/>
-      order by u.create_time desc
+      ORDER BY u.create_time DESC
       limit #{offset}, #{size}
   </select>
 
 
   <select id="countPage" resultType="java.lang.Long">
-    select
-    count(1)
-    from auth_user u
-    left join auth_dept d on u.dept_code = d.dept_code
+      SELECT
+      count( 1 )
+      FROM
+      auth_user u
+      LEFT JOIN auth_dept d ON u.dept_code = d.dept_code
     <include refid="pageCondition"/>
   </select>
 

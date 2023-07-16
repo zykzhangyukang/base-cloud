@@ -1,18 +1,22 @@
 package com.coderman.sync.service.plan.impl;
 
+import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.service.anntation.LogError;
+import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.util.UUIDUtils;
 import com.coderman.sync.config.PlanRefreshConfig;
 import com.coderman.sync.constant.PlanConstant;
+import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.plan.meta.PlanMeta;
 import com.coderman.sync.plan.parser.MetaParser;
 import com.coderman.sync.service.plan.PlanService;
 import com.coderman.sync.vo.PlanVO;
 import com.google.common.base.CaseFormat;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class PlanServiceImpl implements PlanService {
 
     @Resource
@@ -268,13 +273,21 @@ public class PlanServiceImpl implements PlanService {
 
 
     /**
-     * @param currentPage 当前页
-     * @param pageSize    分页大小
-     * @param queryVO     查询参数
+     * @param planPageDTO     查询参数
      * @return
      */
     @Override
-    public ResultVO<PageVO<List<PlanVO>>> page(Integer currentPage, Integer pageSize, String sort, String order, PlanVO queryVO) {
+    @LogError(value = "同步计划列表查询")
+    public ResultVO<PageVO<List<PlanVO>>> page(@LogErrorParam PlanPageDTO planPageDTO) {
+
+        Integer currentPage = planPageDTO.getCurrentPage();
+        Integer pageSize = planPageDTO.getPageSize();
+        String planCode = planPageDTO.getPlanCode();
+        String status = planPageDTO.getStatus();
+        String srcDb = planPageDTO.getSrcDb();
+        String descDb = planPageDTO.getDescDb();
+        String sortField = planPageDTO.getSortField();
+        String sortOrder = planPageDTO.getSortOrder();
 
         StringBuilder countSql = new StringBuilder("select count(1) ");
         StringBuilder realSql = new StringBuilder("select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
@@ -287,91 +300,78 @@ public class PlanServiceImpl implements PlanService {
 
         if (pageSize == null) {
 
-            pageSize = 10;
+            pageSize = CommonConstant.SYS_PAGE_SIZE;
         }
 
         // 参数
         List<Object> params = new ArrayList<>();
 
-
-        if (StringUtils.isNotBlank(queryVO.getPlanCode())) {
+        if (StringUtils.isNotBlank(planCode)) {
 
             sql.append(" and plan_code like ?");
-            params.add("%" + queryVO.getPlanCode() + "%");
+            params.add("%" + planCode + "%");
         }
 
-        if (StringUtils.isNotBlank(queryVO.getStatus())) {
+        if (StringUtils.isNotBlank(status)) {
 
             sql.append(" and status=?");
-            params.add(queryVO.getStatus());
+            params.add(status);
         }
 
-        if (StringUtils.isNotBlank(queryVO.getSrcDb())) {
+        if (StringUtils.isNotBlank(srcDb)) {
 
             sql.append(" and src_db=?");
-            params.add(queryVO.getSrcDb());
+            params.add(srcDb);
         }
 
-        if (StringUtils.isNotBlank(queryVO.getDestDb())) {
+        if (StringUtils.isNotBlank(descDb)) {
 
             sql.append(" and dest_db=?");
-            params.add(queryVO.getDestDb());
+            params.add(descDb);
         }
-
-        if (StringUtils.isNotBlank(queryVO.getStatus())) {
-
-            sql.append(" and status=?");
-            params.add(queryVO.getStatus());
-        }
-
-        countSql.append(sql);
 
         // 总条数
+        countSql.append(sql);
         Integer count = jdbcTemplate.queryForObject(countSql.toString(), Integer.class, params.toArray());
 
-        realSql.append(sql);
-
         // 驼峰转下划线
+        realSql.append(sql);
         String dbField = StringUtils.EMPTY;
 
-        if (StringUtils.isNotBlank(sort)) {
+        if (StringUtils.isNotBlank(sortField)) {
 
-            dbField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sort);
+            dbField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
         }
 
         if (StringUtils.equals(dbField, "create_time")) {
 
-            realSql.append(" order by create_time ").append(order);
+            realSql.append(" order by create_time ").append(sortOrder);
 
         } else if (StringUtils.equals(dbField, "update_time")) {
 
-            realSql.append(" order by update_time ").append(order);
+            realSql.append(" order by update_time ").append(sortOrder);
 
         } else {
             realSql.append(" order by create_time ").append("desc");
         }
 
         realSql.append(" limit ?,? ");
-
         params.add((currentPage - 1) * pageSize);
         params.add(pageSize);
-
         List<PlanVO> list = this.jdbcTemplate.query(realSql.toString(), new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
 
         try {
+
             if (CollectionUtils.isNotEmpty(list)) {
-
                 for (PlanVO planVO : list) {
-
                     if (StringUtils.isNotBlank(planVO.getPlanContent())) {
-
                         String desc = MetaParser.parse(planVO.getPlanContent()).getName();
                         planVO.setDescription(desc);
                     }
                 }
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            log.error("解析同步计划失败:{}",e.getMessage(),e);
         }
 
         Assert.notNull(count, "count is null");

@@ -267,16 +267,14 @@ public class UserServiceImpl extends BaseService implements UserService {
             ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
             if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
 
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "获取菜单失败！");
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取菜单失败！");
             }
 
             // 查询功能
             ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
             if (!ResultConstant.RESULT_CODE_200.equals(vo.getCode())) {
 
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "获取功能失败！");
+                return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取功能失败！");
             }
 
             UserPermissionVO userPermissionVO = new UserPermissionVO();
@@ -294,8 +292,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
             logger.error("获取用户信息异常:{},token:{}", e.getMessage(), token, e);
 
-            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "获取用户信息异常！");
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取用户信息异常！");
         }
     }
 
@@ -617,6 +614,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserModel updateModel = new UserModel();
         updateModel.setUserId(userId);
         updateModel.setUserStatus(AuthConstant.USER_STATUS_ENABLE);
+        updateModel.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(updateModel);
         return ResultUtil.getSuccess();
     }
@@ -639,6 +637,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserModel updateModel = new UserModel();
         updateModel.setUserId(userId);
         updateModel.setUserStatus(AuthConstant.USER_STATUS_DISABLE);
+        updateModel.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(updateModel);
         return ResultUtil.getSuccess();
     }
@@ -742,6 +741,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserModel record = new UserModel();
         record.setUserId(userId);
         record.setPassword(PasswordUtils.encryptSHA256(password));
+        record.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(record);
         return ResultUtil.getSuccess();
     }

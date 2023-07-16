@@ -1,0 +1,14 @@
+server:
+  port: 8000
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: BASE-AUTH-ROUTER
+          uri: https://www.baidu.com
+          predicates:
+            - Path=/auth/**
+        - id: BASE-SYNC-ROUTER
+          uri: lb://base-sync
+          predicates:
+            - Path=/sync/**

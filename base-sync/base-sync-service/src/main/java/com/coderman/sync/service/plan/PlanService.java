@@ -2,6 +2,7 @@ package com.coderman.sync.service.plan;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
+import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.vo.PlanVO;
 
 import java.util.List;
@@ -11,14 +12,10 @@ public interface PlanService {
     /**
      * 同步计划分页查询
      *
-     * @param currentPage 当前页
-     * @param pageSize    分页大小
-     * @param sort        排序列
-     * @param order       排序方式
-     * @param queryVO     查询参数
+     * @param planPageDTO 查询参数
      * @return
      */
-    ResultVO<PageVO<List<PlanVO>>> page(Integer currentPage, Integer pageSize, String sort, String order, PlanVO queryVO);
+    ResultVO<PageVO<List<PlanVO>>> page(PlanPageDTO planPageDTO);
 
 
     /**

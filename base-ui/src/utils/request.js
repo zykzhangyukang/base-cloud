@@ -3,7 +3,7 @@ import {message} from 'ant-design-vue'
 import router from "@/routers";
 
 const http = axios.create({
-    baseURL: 'http://127.0.0.1:9870',
+    baseURL: 'http://127.0.0.1:8000',
     timeout: 20000,
     headers: {
         post: {

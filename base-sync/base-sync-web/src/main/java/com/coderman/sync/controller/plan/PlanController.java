@@ -6,10 +6,12 @@ import com.coderman.swagger.annotation.ApiReturnIgnore;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
+import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.service.plan.PlanService;
 import com.coderman.sync.vo.PlanVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,22 +45,15 @@ public class PlanController {
     }
 
 
-    @GetMapping(value = "/page")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_INT, value = "当前页", required = true),
-            @ApiImplicitParam(name = "limit", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_INT, value = "分页大小", required = true),
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划列表")
+    @PostMapping(value = "/page")
     @ApiReturnParams({
-            @ApiReturnParam(name = "PlanVO", value = {"srcProject", "destDb", "destProject", "planContent", "updateTime", "createTime", "srcDb",
-                    "uuid", "planCode", "status"}),
+            @ApiReturnParam(name = "PlanVO", value = {"srcProject", "destDb", "destProject", "planContent", "updateTime", "createTime", "srcDb", "uuid", "planCode", "status"}),
     })
     @ApiReturnIgnore
-    public ResultVO<PageVO<List<PlanVO>>> page(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                               @RequestParam(value = "limit", defaultValue = "30") Integer limit, PlanVO queryVO,
-                                               @RequestParam(value = "sort",required = false) String sort,
-                                               @RequestParam(value = "order",required = false) String order) {
+    public ResultVO<PageVO<List<PlanVO>>> page(@RequestBody PlanPageDTO planPageDTO) {
 
-        return this.planService.page(page, limit,sort,order, queryVO);
+        return this.planService.page(planPageDTO);
     }
 
 
