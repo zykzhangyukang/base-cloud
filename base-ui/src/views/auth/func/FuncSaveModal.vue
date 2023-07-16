@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="新增功能"
+             title="添加功能"
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"
@@ -8,22 +8,22 @@
              okText="提交"
              ref="form"
     >
-        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form :model="form" ref="formRef" :rules="formRules" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item v-if="parentFunc.funcName" label="父级功能">
                 <a-input  v-model:value="parentFunc.funcName"  disabled />
             </a-form-item>
-            <a-form-item label="功能名称">
+            <a-form-item label="功能名称" name="funcName">
                 <a-input v-model:value="form.funcName"/>
             </a-form-item>
-            <a-form-item label="功能Key">
+            <a-form-item label="功能Key" name="funcKey">
                 <a-input v-model:value="form.funcKey" />
             </a-form-item>
-            <a-form-item label="功能类型">
+            <a-form-item label="功能类型" name="funcType">
                 <a-select v-model:value="form.funcType"   >
                     <a-select-option v-for="item in funcTypeG"  :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="是否隐藏" v-if="form.funcType === 'dir'">
+            <a-form-item label="是否隐藏" v-if="form.funcType === 'dir'" name="funcDirStatus">
                 <a-select v-model:value="form.funcDirStatus"   >
                     <a-select-option v-for="item in funcDirStatusG"  :value="item.code" :key="item.code">{{funcDirStatusGName[item.code]}}</a-select-option>
                 </a-select>
@@ -68,6 +68,20 @@
                     funcSort: 0,
                     funcDirStatus: 'show',
                 },
+                formRules: {
+                    funcName: [
+                        { required: true, message: '请填写功能名称', trigger: 'blur' },
+                    ],
+                    funcKey: [
+                        { required: true, message: '请填写功能key', trigger: 'blur' },
+                    ],
+                    funcType: [
+                        { required: true, message: '请填写功能类型', trigger: 'blur' },
+                    ],
+                    funcDirStatus: [
+                        { required: true, message: '请填写是否隐藏', trigger: 'blur' },
+                    ],
+                },
             }
         },
         computed:{
@@ -90,20 +104,28 @@
                 this.$refs['funcIconPicker'].close();
             },
             handleOk() {
-                this.confirmLoading = true;
-                authFucSave(this.form).then(res => {
-                    this.$message.success("新增功能成功");
-                    this.handleClose();
-                    this.$emit('success')
-                }).finally(e=>{
-                    this.confirmLoading = false;
-                })
+                this.$refs.formRef
+                    .validate()
+                    .then(() => {
+                        this.confirmLoading = true;
+                        authFucSave(this.form).then(res => {
+                            this.$message.success("新增功能成功");
+                            this.handleClose();
+                            this.$emit('success')
+                        }).finally(e=>{
+                            this.confirmLoading = false;
+                        })
+                    })
+                    .catch(() => {
+                        this.$message.warn('表单验证失败！');
+                    });
             },
             handleClose(){
                 this.visible = false
                 this.confirmLoading = false;
                 this.parentFunc = {};
                 this.form = this.$options.data().form;
+                this.$refs.formRef.resetFields();
             },
             open(parentFunc){
                 this.visible = true;

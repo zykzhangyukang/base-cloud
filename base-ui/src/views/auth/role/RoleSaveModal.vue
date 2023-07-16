@@ -6,13 +6,12 @@
              :confirm-loading="confirmLoading"
              cancelText="取消"
              okText="提交"
-             ref="form"
     >
-        <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="角色名称">
+        <a-form :model="form"  ref="formRef" :rules="formRules"  :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-form-item label="角色名称" name="roleName">
                 <a-input v-model:value="form.roleName" />
             </a-form-item>
-            <a-form-item label="角色描述" >
+            <a-form-item label="角色描述"  name="roleDesc">
                 <a-textarea v-model:value="form.roleDesc" />
             </a-form-item>
         </a-form>
@@ -20,7 +19,7 @@
 </template>
 
 <script>
-    import {authRoleSave} from "@/api/auth";
+    import {authRoleSave, authUserUpdate} from "@/api/auth";
 
     export default {
         name: "roleSaveModel.vue",
@@ -34,25 +33,41 @@
                     roleName: '',
                     roleDesc: '',
                 },
+                formRules: {
+                    roleName: [
+                        { required: true, message: '请填写角色名称', trigger: 'blur' },
+                    ],
+                    roleDesc: [
+                        { required: true, message: '请填写角色备注', trigger: 'blur' },
+                    ],
+                },
             }
         },
         computed:{
         },
         methods:{
             handleOk() {
-                this.confirmLoading = true;
-                authRoleSave(this.form).then(res => {
-                    this.$message.success("新增角色成功！");
-                    this.handleClose();
-                    this.$emit('success')
-                }).finally(e=>{
-                    this.confirmLoading =false;
-                })
+                this.$refs.formRef
+                    .validate()
+                    .then(() => {
+                        this.confirmLoading = true;
+                        authRoleSave(this.form).then(res => {
+                            this.$message.success("新增角色成功！");
+                            this.handleClose();
+                            this.$emit('success')
+                        }).finally(e=>{
+                            this.confirmLoading =false;
+                        })
+                    })
+                    .catch(() => {
+                        this.$message.warn('表单验证失败！');
+                    });
             },
             handleClose(){
                 this.confirmLoading = false;
                 this.visible = false
                 this.form = this.$options.data().form;
+                this.$refs.formRef.resetFields();
             },
             open(){
                 this.visible = true;

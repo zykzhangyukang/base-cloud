@@ -89,6 +89,7 @@
                 this.visible = false
                 this.confirmLoading = false;
                 this.form = this.$options.data().form;
+                this.$refs.formRef.resetFields();
             },
             open(userId){
                 authUserSelectById(userId).then(res=>{

@@ -5,7 +5,6 @@
                 <a-button type="danger" @click="handleAdd" v-permission="'auth:role:add'">添加</a-button>
             </div>
             <a-form
-                    ref='form'
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >

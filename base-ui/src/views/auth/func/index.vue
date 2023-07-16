@@ -14,7 +14,6 @@
                             </a-button>
                         </div>
                         <a-form
-                                ref='form'
                                 :style="{'marginBottom':'10px'}"
                                 layout='inline'
                         >
