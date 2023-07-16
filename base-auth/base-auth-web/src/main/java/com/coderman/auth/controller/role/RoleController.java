@@ -2,14 +2,14 @@ package com.coderman.auth.controller.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.auth.dto.func.RoleAuthorizedDTO;
+import com.coderman.auth.dto.func.RoleFuncUpdateDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
 import com.coderman.auth.service.role.RoleService;
-import com.coderman.auth.vo.role.RoleAssignVO;
-import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
+import com.coderman.auth.vo.role.RoleFuncCheckVO;
+import com.coderman.auth.vo.role.RoleFuncInitVO;
+import com.coderman.auth.vo.role.RoleUserInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
@@ -47,9 +47,9 @@ public class RoleController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> roleUserUpdate(@RequestParam(value = "roleId") Integer roleId,
+    public ResultVO<Void> updateRoleUser(@RequestParam(value = "roleId") Integer roleId,
                                      @RequestParam(value = "assignedIdList") List<Integer> assignedIdList){
-        return this.roleService.roleUserUpdate(roleId,assignedIdList);
+        return this.roleService.updateRoleUser(roleId,assignedIdList);
     }
 
 
@@ -60,20 +60,20 @@ public class RoleController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAssignVO",value = {"assignedIdList", "userList", "roleId"})
+            @ApiReturnParam(name = "RoleUserInitVO",value = {"assignedIdList", "userList", "roleId"})
     })
-    public ResultVO<RoleAssignVO> roleUserUpdateInit(@RequestParam(value = "roleId") Integer roleId){
-        return this.roleService.roleUserUpdateInit(roleId);
+    public ResultVO<RoleUserInitVO> selectRoleUserInit(@RequestParam(value = "roleId") Integer roleId){
+        return this.roleService.selectRoleUserInit(roleId);
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色绑定功能")
     @PutMapping(value = "/func/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
     })
-    public ResultVO<Void> roleAuthorizedUpdate(@RequestBody RoleAuthorizedDTO roleAuthorizedDTO){
-        return this.roleService.roleAuthorizedUpdate(roleAuthorizedDTO);
+    public ResultVO<Void> updateRoleFunc(@RequestBody RoleFuncUpdateDTO roleFuncUpdateDTO){
+        return this.roleService.updateRoleFunc(roleFuncUpdateDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "角色分配功能初始化")
@@ -83,22 +83,22 @@ public class RoleController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAuthorizedInitVO", value = {"allTreeList", "roleId", "roleName","roleDesc","createTime",
+            @ApiReturnParam(name = "RoleFuncInitVO", value = {"allTreeList", "roleId", "roleName","roleDesc","createTime",
                     "updateTime", "funcIdList","halfCheckedMap","usernameList","allCheckedMap"})
     })
-    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@RequestParam(value = "roleId") String roleId) {
-        return this.roleService.roleAuthorizedInit(roleId);
+    public ResultVO<RoleFuncInitVO> selectRoleFuncInit(@RequestParam(value = "roleId") String roleId) {
+        return this.roleService.selectRoleFuncInit(roleId);
     }
 
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色分配功能预先检查")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST,value = "角色绑定功能预先检查")
     @PostMapping(value = "/func/check")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "RoleAuthCheckVO",value = {"insertList", "delList"})
+            @ApiReturnParam(name = "RoleFuncCheckVO",value = {"insertList", "delList"})
     })
-    public ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(@RequestBody RoleAuthorizedDTO roleAuthorizedDTO){
-        return this.roleService.roleAuthorizedCheck(roleAuthorizedDTO);
+    public ResultVO<RoleFuncCheckVO> roleFuncBeforeCheck(@RequestBody RoleFuncUpdateDTO roleFuncUpdateDTO){
+        return this.roleService.roleFuncBeforeCheck(roleFuncUpdateDTO);
     }
 
 

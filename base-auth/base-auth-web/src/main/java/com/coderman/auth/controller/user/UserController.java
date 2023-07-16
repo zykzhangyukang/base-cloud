@@ -5,9 +5,9 @@ import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.user.*;
 import com.coderman.auth.service.user.UserService;
-import com.coderman.auth.vo.user.UserAssignVO;
 import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
+import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
@@ -90,17 +90,17 @@ public class UserController {
         return this.userService.info(token);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户分配初始化")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户分配角色初始化")
     @GetMapping(value = "/role/init")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "UserAssignVO", value = {"assignedIdList", "roleList", "userId"})
+            @ApiReturnParam(name = "UserRoleInitVO", value = {"assignedIdList", "roleList", "userId"})
     })
-    public ResultVO<UserAssignVO> selectAssignInit(@RequestParam(value = "userId") Integer userId) {
-        return this.userService.selectAssignInit(userId);
+    public ResultVO<UserRoleInitVO> selectUserRoleInit(@RequestParam(value = "userId") Integer userId) {
+        return this.userService.selectUserRoleInit(userId);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "用户分配角色")
@@ -108,8 +108,8 @@ public class UserController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> updateAssign(@RequestBody UserAssignDTO userAssignDTO) {
-        return this.userService.updateAssign(userAssignDTO);
+    public ResultVO<Void> updateUserRole(@RequestBody UserRoleUpdateDTO userRoleUpdateDTO) {
+        return this.userService.updateUserRole(userRoleUpdateDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "根据ID获取用户信息")
@@ -143,9 +143,9 @@ public class UserController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
     })
-    public ResultVO<Void> updatePassword(@RequestBody UserUpdatePwdDTO userUpdatePwdDTO) {
+    public ResultVO<Void> updateUserPwd(@RequestBody UserPwdUpdateDTO userPwdUpdateDTO) {
 
-        return this.userService.updatePassword(userUpdatePwdDTO);
+        return this.userService.updateUserPwd(userPwdUpdateDTO);
     }
 
 
@@ -169,7 +169,7 @@ public class UserController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> disable(@RequestParam(value = "userId") Integer userId) {
+    public ResultVO<Void> updateDisable(@RequestParam(value = "userId") Integer userId) {
         return this.userService.updateDisable(userId);
     }
 

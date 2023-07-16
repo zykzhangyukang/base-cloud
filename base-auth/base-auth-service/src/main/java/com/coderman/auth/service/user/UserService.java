@@ -4,9 +4,9 @@ package com.coderman.auth.service.user;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.user.*;
-import com.coderman.auth.vo.user.UserAssignVO;
 import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
+import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.erp.vo.AuthUserVO;
 
@@ -88,19 +88,19 @@ public interface UserService {
 
 
     /**
-     * 用户分配初始化
+     * 用户分配角色初始化
      *
      * @param userId
      * @return
      */
-    ResultVO<UserAssignVO> selectAssignInit(Integer userId);
+    ResultVO<UserRoleInitVO> selectUserRoleInit(Integer userId);
 
     /**
      * 用户分配角色
      *
      * @return
      */
-    ResultVO<Void> updateAssign(UserAssignDTO userAssignDTO);
+    ResultVO<Void> updateUserRole(UserRoleUpdateDTO userRoleUpdateDTO);
 
 
     /**
@@ -108,7 +108,7 @@ public interface UserService {
      *
      * @return
      */
-    ResultVO<Void> updatePassword(UserUpdatePwdDTO userUpdatePwdDTO);
+    ResultVO<Void> updateUserPwd(UserPwdUpdateDTO userPwdUpdateDTO);
 
 
     /**

@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 切换用户登录DTO
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserSwitchLoginDTO extends BaseModel {

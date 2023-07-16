@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserAssignVO extends BaseModel {
+public class UserRoleInitVO extends BaseModel {
 
     /**
      * 所有角色

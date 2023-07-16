@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 用户列表查询DTO
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserPageDTO extends BaseModel {

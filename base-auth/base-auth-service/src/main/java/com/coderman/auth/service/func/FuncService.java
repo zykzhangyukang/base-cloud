@@ -4,9 +4,9 @@ package com.coderman.auth.service.func;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncRescUpdateDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
-import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
@@ -103,12 +103,12 @@ public interface FuncService {
 
 
     /**
-     * 功能设置资源
+     * 功能绑定资源
      *
-     * @param rescBindDTO
+     * @param funcRescUpdateDTO
      * @return
      */
-    ResultVO<Void> updateResourceBind(FuncUpdateRescBindDTO rescBindDTO);
+    ResultVO<Void> updateFuncResc(FuncRescUpdateDTO funcRescUpdateDTO);
 
 
     /**

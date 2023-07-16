@@ -3,13 +3,13 @@ package com.coderman.auth.service.role;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.auth.dto.func.RoleAuthorizedDTO;
+import com.coderman.auth.dto.func.RoleFuncUpdateDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
-import com.coderman.auth.vo.role.RoleAssignVO;
-import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
+import com.coderman.auth.vo.role.RoleFuncCheckVO;
+import com.coderman.auth.vo.role.RoleFuncInitVO;
+import com.coderman.auth.vo.role.RoleUserInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 
 import java.util.List;
@@ -63,11 +63,11 @@ public interface RoleService {
 
 
     /**
-     * 角色分配初始化
+     * 角色分配用户 - 初始化
      * @param roleId
      * @return
      */
-    ResultVO<RoleAssignVO> roleUserUpdateInit(Integer roleId);
+    ResultVO<RoleUserInitVO> selectRoleUserInit(Integer roleId);
 
     /**
      * 角色分配用户
@@ -75,31 +75,31 @@ public interface RoleService {
      * @param assignedIdList
      * @return
      */
-    ResultVO<Void> roleUserUpdate(Integer roleId, List<Integer> assignedIdList);
-
+    ResultVO<Void> updateRoleUser(Integer roleId, List<Integer> assignedIdList);
 
 
 
     /**
-     * 分配功能初始化
+     * 角色分配功能 - 初始化
      * @param roleId
      * @return
      */
-    ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(String roleId);
+    ResultVO<RoleFuncInitVO> selectRoleFuncInit(String roleId);
 
 
     /**
-     * 分配功能
-     * @return
-     */
-    ResultVO<Void> roleAuthorizedUpdate(RoleAuthorizedDTO roleAuthorizedDTO);
-
-
-    /**
-     * 分配功能预先检查
+     * 角色分配功能
      *
-     * @param roleAuthorizedDTO
      * @return
      */
-    ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(RoleAuthorizedDTO roleAuthorizedDTO);
+    ResultVO<Void> updateRoleFunc(RoleFuncUpdateDTO roleFuncUpdateDTO);
+
+
+    /**
+     * 角色分配功能预先检查
+     *
+     * @param roleFuncUpdateDTO
+     * @return
+     */
+    ResultVO<RoleFuncCheckVO> roleFuncBeforeCheck(RoleFuncUpdateDTO roleFuncUpdateDTO);
 }

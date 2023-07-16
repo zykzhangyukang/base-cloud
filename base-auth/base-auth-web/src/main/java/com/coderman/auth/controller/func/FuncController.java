@@ -3,9 +3,9 @@ package com.coderman.auth.controller.func;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncRescUpdateDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
-import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.func.FuncVO;
@@ -73,14 +73,14 @@ public class FuncController {
         return this.funcService.deleteResourceBind(funcId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能设置资源")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT,value = "功能绑定资源")
     @PutMapping(value = "/resc/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
     })
-    public ResultVO<Void> updateResourceBind(@RequestBody FuncUpdateRescBindDTO rescBindDTO){
+    public ResultVO<Void> updateFuncResc(@RequestBody FuncRescUpdateDTO funcRescUpdateDTO){
 
-        return this.funcService.updateResourceBind(rescBindDTO);
+        return this.funcService.updateFuncResc(funcRescUpdateDTO);
     }
 
 

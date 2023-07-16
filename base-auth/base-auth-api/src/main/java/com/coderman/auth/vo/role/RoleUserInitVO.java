@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RoleAssignVO extends BaseModel {
+public class RoleUserInitVO extends BaseModel {
 
     /**
      * 角色id

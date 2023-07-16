@@ -11,9 +11,9 @@ import com.coderman.auth.dao.func.FuncRescDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
 import com.coderman.auth.dto.func.FuncPageDTO;
+import com.coderman.auth.dto.func.FuncRescUpdateDTO;
 import com.coderman.auth.dto.func.FuncSaveDTO;
 import com.coderman.auth.dto.func.FuncUpdateDTO;
-import com.coderman.auth.dto.func.FuncUpdateRescBindDTO;
 import com.coderman.auth.model.func.FuncExample;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.model.role.RoleFuncExample;
@@ -274,7 +274,7 @@ public class FuncServiceImpl implements FuncService {
         Long childrenCount = this.funcDAO.countChildrenByParentId(funcId);
         if (childrenCount > 0) {
 
-            return ResultUtil.getWarn("功能存在子功能,无法删除！");
+            return ResultUtil.getWarn("存在子功能！");
         }
 
         // 校验是否有功能-资源关联
@@ -444,10 +444,10 @@ public class FuncServiceImpl implements FuncService {
     }
 
     @Override
-    @LogError(value = "功能设置资源")
-    public ResultVO<Void> updateResourceBind(@LogErrorParam FuncUpdateRescBindDTO rescBindDTO) {
+    @LogError(value = "功能绑定资源")
+    public ResultVO<Void> updateFuncResc(@LogErrorParam FuncRescUpdateDTO rescBindDTO) {
 
-        List<FuncUpdateRescBindDTO.RescBindItem> rescVOList = rescBindDTO.getRescVOList();
+        List<FuncRescUpdateDTO.FuncRescUpdateItem> rescVOList = rescBindDTO.getRescVOList();
         Integer funcId = rescBindDTO.getFuncId();
 
         if (Objects.isNull(funcId)) {
@@ -459,8 +459,8 @@ public class FuncServiceImpl implements FuncService {
 
         if (CollectionUtils.isNotEmpty(rescVOList)) {
 
-            List<Integer> rescIdList = rescVOList.stream().map(FuncUpdateRescBindDTO.RescBindItem::getKey).distinct()
-                    .collect(Collectors.toList());
+            List<Integer> rescIdList = rescVOList.stream()
+                    .map(FuncRescUpdateDTO.FuncRescUpdateItem::getKey).distinct().collect(Collectors.toList());
 
             this.funcRescDAO.insertBatchByFuncId(funcId, rescIdList);
         }

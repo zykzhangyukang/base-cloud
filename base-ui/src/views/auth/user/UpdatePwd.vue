@@ -9,10 +9,10 @@
     >
         <a-form :model="form" ref="form"  :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="新密码" name="password" :rules="passwordRules">
-                <a-input-password  v-model:value="form.password"   />
+                <a-input-password  v-model:value="form.password"  autocomplete="off"  />
             </a-form-item>
             <a-form-item label="确认密码" name="confirmPassword" :rules="confirmPasswordRules">
-                <a-input-password v-model:value="form.confirmPassword"  />
+                <a-input-password v-model:value="form.confirmPassword" autocomplete="off"  />
             </a-form-item>
         </a-form>
     </a-modal>

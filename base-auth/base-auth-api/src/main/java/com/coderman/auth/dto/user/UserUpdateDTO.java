@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 用户更新DTO
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserUpdateDTO extends BaseModel {

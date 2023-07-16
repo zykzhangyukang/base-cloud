@@ -5,9 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 用户修改密码DTO
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserUpdatePwdDTO extends BaseModel {
+public class UserPwdUpdateDTO extends BaseModel {
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;

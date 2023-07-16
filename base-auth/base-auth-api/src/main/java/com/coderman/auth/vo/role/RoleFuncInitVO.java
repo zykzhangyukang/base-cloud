@@ -1,9 +1,7 @@
 package com.coderman.auth.vo.role;
 
 import com.coderman.api.model.BaseModel;
-import com.coderman.auth.model.user.UserModel;
 import com.coderman.auth.vo.func.FuncTreeVO;
-import com.coderman.auth.vo.user.UserVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +13,7 @@ import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RoleAuthorizedInitVO extends BaseModel {
+public class RoleFuncInitVO extends BaseModel {
 
     @ApiModelProperty(value = "角色id")
     private Integer roleId;

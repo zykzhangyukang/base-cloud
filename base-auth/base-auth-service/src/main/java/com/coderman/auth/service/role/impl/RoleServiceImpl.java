@@ -11,7 +11,7 @@ import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.role.RoleFuncDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
-import com.coderman.auth.dto.func.RoleAuthorizedDTO;
+import com.coderman.auth.dto.func.RoleFuncUpdateDTO;
 import com.coderman.auth.dto.role.RolePageDTO;
 import com.coderman.auth.dto.role.RoleSaveDTO;
 import com.coderman.auth.dto.role.RoleUpdateDTO;
@@ -27,9 +27,9 @@ import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.role.RoleService;
 import com.coderman.auth.utils.TreeUtils;
 import com.coderman.auth.vo.func.FuncTreeVO;
-import com.coderman.auth.vo.role.RoleAssignVO;
-import com.coderman.auth.vo.role.RoleAuthCheckVO;
-import com.coderman.auth.vo.role.RoleAuthorizedInitVO;
+import com.coderman.auth.vo.role.RoleFuncCheckVO;
+import com.coderman.auth.vo.role.RoleFuncInitVO;
+import com.coderman.auth.vo.role.RoleUserInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
@@ -235,20 +235,20 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @LogError(value = "角色分配用户初始化")
-    public ResultVO<RoleAssignVO> roleUserUpdateInit(Integer roleId) {
+    public ResultVO<RoleUserInitVO> selectRoleUserInit(@LogErrorParam Integer roleId) {
 
-        RoleAssignVO roleAssignVO = new RoleAssignVO();
+        RoleUserInitVO roleUserInitVO = new RoleUserInitVO();
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
         if (roleModel == null) {
             throw new BusinessException("需要分配的角色不存在!");
         }
 
-        roleAssignVO.setRoleId(roleId);
+        roleUserInitVO.setRoleId(roleId);
 
         // 查询全部角色信息
         List<UserModel> userModelList = this.userDAO.selectByExample(null);
-        roleAssignVO.setUserList(userModelList);
+        roleUserInitVO.setUserList(userModelList);
 
         // 查询角色已有的用户
         UserRoleExample example = new UserRoleExample();
@@ -256,14 +256,14 @@ public class RoleServiceImpl implements RoleService {
         List<UserRoleModel> userRoleModels = this.userRoleDAO.selectByExample(example);
         List<Integer> roleUserIds = userRoleModels.stream().map(UserRoleModel::getUserId).collect(Collectors.toList());
 
-        roleAssignVO.setAssignedIdList(roleUserIds);
+        roleUserInitVO.setAssignedIdList(roleUserIds);
 
-        return ResultUtil.getSuccess(RoleAssignVO.class, roleAssignVO);
+        return ResultUtil.getSuccess(RoleUserInitVO.class, roleUserInitVO);
     }
 
     @Override
     @LogError(value = "角色分配用户")
-    public ResultVO<Void> roleUserUpdate(Integer roleId, List<Integer> assignedIdList) {
+    public ResultVO<Void> updateRoleUser(Integer roleId, List<Integer> assignedIdList) {
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
         if (roleModel == null) {
@@ -285,8 +285,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @LogError(value = "角色授权初始化")
-    public ResultVO<RoleAuthorizedInitVO> roleAuthorizedInit(@LogErrorParam String roleIdStr) {
+    @LogError(value = "角色分配功能初始化")
+    public ResultVO<RoleFuncInitVO> selectRoleFuncInit(@LogErrorParam String roleIdStr) {
 
         Integer roleId = null;
 
@@ -306,7 +306,7 @@ public class RoleServiceImpl implements RoleService {
             return ResultUtil.getFail("角色不存在！");
         }
 
-        RoleAuthorizedInitVO roleAuthInitVO = new RoleAuthorizedInitVO();
+        RoleFuncInitVO roleFuncInitVO = new RoleFuncInitVO();
         Map<Integer, Collection<Integer>> halfCheckedMap = new HashMap<>();
         Map<Integer, Collection<Integer>> allCheckedMap = new HashMap<>();
 
@@ -351,26 +351,26 @@ public class RoleServiceImpl implements RoleService {
         // 查询拥有该角色的用户
         List<String> nameList = this.roleDAO.selectUserByRoleId(roleId);
 
-        roleAuthInitVO.setUsernameList(nameList);
-        roleAuthInitVO.setRoleId(roleModel.getRoleId());
-        roleAuthInitVO.setRoleName(roleModel.getRoleName());
-        roleAuthInitVO.setRoleDesc(roleModel.getRoleDesc());
-        roleAuthInitVO.setCreateTime(roleModel.getCreateTime());
-        roleAuthInitVO.setUpdateTime(roleModel.getUpdateTime());
-        roleAuthInitVO.setAllTreeList(treeVoList);
-        roleAuthInitVO.setHalfCheckedMap(halfCheckedMap);
-        roleAuthInitVO.setAllCheckedMap(allCheckedMap);
-        return ResultUtil.getSuccess(RoleAuthorizedInitVO.class, roleAuthInitVO);
+        roleFuncInitVO.setUsernameList(nameList);
+        roleFuncInitVO.setRoleId(roleModel.getRoleId());
+        roleFuncInitVO.setRoleName(roleModel.getRoleName());
+        roleFuncInitVO.setRoleDesc(roleModel.getRoleDesc());
+        roleFuncInitVO.setCreateTime(roleModel.getCreateTime());
+        roleFuncInitVO.setUpdateTime(roleModel.getUpdateTime());
+        roleFuncInitVO.setAllTreeList(treeVoList);
+        roleFuncInitVO.setHalfCheckedMap(halfCheckedMap);
+        roleFuncInitVO.setAllCheckedMap(allCheckedMap);
+        return ResultUtil.getSuccess(RoleFuncInitVO.class, roleFuncInitVO);
     }
 
     @Override
     @LogError(value = "角色分配功能")
-    public ResultVO<Void> roleAuthorizedUpdate(RoleAuthorizedDTO roleAuthorizedDTO) {
+    public ResultVO<Void> updateRoleFunc(@LogErrorParam RoleFuncUpdateDTO roleFuncUpdateDTO) {
 
         Integer roleId = null;
 
         try {
-            roleId = Integer.parseInt(roleAuthorizedDTO.getRoleId());
+            roleId = Integer.parseInt(roleFuncUpdateDTO.getRoleId());
         } catch (Exception ignored) {
         }
 
@@ -378,7 +378,7 @@ public class RoleServiceImpl implements RoleService {
             return ResultUtil.getWarn("角色id不能为空！");
         }
 
-        List<Integer> funcIdList = roleAuthorizedDTO.getFuncIdList();
+        List<Integer> funcIdList = roleFuncUpdateDTO.getFuncIdList();
 
         RoleModel roleModel = this.roleDAO.selectByPrimaryKey(roleId);
         if (null == roleModel) {
@@ -398,8 +398,10 @@ public class RoleServiceImpl implements RoleService {
         return ResultUtil.getSuccess();
     }
 
+
     @Override
-    public ResultVO<RoleAuthCheckVO> roleAuthorizedCheck(RoleAuthorizedDTO roleAuthorizedDTO) {
+    @LogError(value = "角色分配功能预先检查")
+    public ResultVO<RoleFuncCheckVO> roleFuncBeforeCheck(RoleFuncUpdateDTO roleAuthorizedDTO) {
 
         Integer roleId = null;
         try {
@@ -436,11 +438,10 @@ public class RoleServiceImpl implements RoleService {
         // 删除的
         Collection<FuncModel> delList = CollectionUtils.subtract(historyAuthFuncList, intersection);
 
-        RoleAuthCheckVO checkVO = new RoleAuthCheckVO();
+        RoleFuncCheckVO checkVO = new RoleFuncCheckVO();
         checkVO.setInsertList(new ArrayList<>(addList));
         checkVO.setDelList(new ArrayList<>(delList));
-
-        return ResultUtil.getSuccess(RoleAuthCheckVO.class, checkVO);
+        return ResultUtil.getSuccess(RoleFuncCheckVO.class, checkVO);
     }
 
 }

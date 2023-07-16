@@ -7,9 +7,12 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+/**
+ * 角色分配用户DTO
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserAssignDTO extends BaseModel {
+public class UserRoleUpdateDTO extends BaseModel {
 
     @ApiModelProperty(value = "用户id")
     private Integer userId;

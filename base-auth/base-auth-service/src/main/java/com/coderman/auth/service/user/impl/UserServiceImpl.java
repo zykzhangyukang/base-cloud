@@ -19,11 +19,12 @@ import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.service.user.UserService;
+import com.coderman.auth.utils.PasswordUtils;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.resc.RescVO;
-import com.coderman.auth.vo.user.UserAssignVO;
 import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
+import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.erp.util.AuthUtil;
 import com.coderman.erp.vo.AuthUserVO;
@@ -32,7 +33,7 @@ import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.service.BaseService;
 import com.coderman.service.util.HttpContextUtil;
-import com.coderman.service.util.MD5Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -55,6 +56,7 @@ import java.util.stream.Collectors;
  * @date 2022/2/2711:41
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends BaseService implements UserService {
 
     @Resource
@@ -167,7 +169,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                 return ResultUtil.getWarn("用户名或密码错误！");
             }
 
-            if (!StringUtils.equals(MD5Utils.md5Hex(password.getBytes()), dbUser.getPassword())) {
+            if (!StringUtils.equals(PasswordUtils.encryptSHA256(password), dbUser.getPassword())) {
 
                 return ResultUtil.getWarn("用户名或密码错误！");
             }
@@ -471,7 +473,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserModel insertModel = new UserModel();
         insertModel.setUsername(username);
         insertModel.setRealName(realName);
-        insertModel.setPassword(MD5Utils.md5Hex(password.getBytes()));
+        insertModel.setPassword(PasswordUtils.encryptSHA256(password));
         insertModel.setCreateTime(currentDate);
         insertModel.setUpdateTime(currentDate);
         insertModel.setUserStatus(userStatus);
@@ -642,21 +644,23 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    @LogError(value = "用户分配初始化")
-    public ResultVO<UserAssignVO> selectAssignInit(@LogErrorParam Integer userId) {
-        UserAssignVO userAssignVO = new UserAssignVO();
+    @LogError(value = "用户分配角色初始化")
+    public ResultVO<UserRoleInitVO> selectUserRoleInit(@LogErrorParam Integer userId) {
 
+        Assert.isTrue(Objects.nonNull(userId) , "userId is null");
+
+        UserRoleInitVO userRoleInitVO = new UserRoleInitVO();
         UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
         if (Objects.isNull(userModel)) {
 
             return ResultUtil.getFail("用户不存在！");
         }
 
-        userAssignVO.setUserId(userId);
+        userRoleInitVO.setUserId(userId);
 
         // 查询全部角色信息
         List<RoleModel> roleModels = this.roleDAO.selectByExample(null);
-        userAssignVO.setRoleList(roleModels);
+        userRoleInitVO.setRoleList(roleModels);
 
         // 查询用户已有的角色
         UserRoleExample example = new UserRoleExample();
@@ -664,17 +668,17 @@ public class UserServiceImpl extends BaseService implements UserService {
         List<UserRoleModel> userRoleModels = this.userRoleDAO.selectByExample(example);
         List<Integer> userRoleIds = userRoleModels.stream().map(UserRoleModel::getRoleId).collect(Collectors.toList());
 
-        userAssignVO.setAssignedIdList(userRoleIds);
+        userRoleInitVO.setAssignedIdList(userRoleIds);
 
-        return ResultUtil.getSuccess(UserAssignVO.class, userAssignVO);
+        return ResultUtil.getSuccess(UserRoleInitVO.class, userRoleInitVO);
     }
 
     @Override
     @LogError(value = "用户分配角色")
-    public ResultVO<Void> updateAssign(@LogErrorParam UserAssignDTO userAssignDTO) {
+    public ResultVO<Void> updateUserRole(@LogErrorParam UserRoleUpdateDTO userRoleUpdateDTO) {
 
-        Integer userId = userAssignDTO.getUserId();
-        List<Integer> roleIdList = userAssignDTO.getRoleIdList();
+        Integer userId = userRoleUpdateDTO.getUserId();
+        List<Integer> roleIdList = userRoleUpdateDTO.getRoleIdList();
 
         if (Objects.isNull(userId)) {
 
@@ -703,10 +707,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     @LogError(value = "用户更新密码")
-    public ResultVO<Void> updatePassword(@LogErrorParam UserUpdatePwdDTO userUpdatePwdDTO) {
+    public ResultVO<Void> updateUserPwd(@LogErrorParam UserPwdUpdateDTO userPwdUpdateDTO) {
 
-        Integer userId = userUpdatePwdDTO.getUserId();
-        String password = userUpdatePwdDTO.getPassword();
+        Integer userId = userPwdUpdateDTO.getUserId();
+        String password = userPwdUpdateDTO.getPassword();
 
         if (Objects.isNull(userId)) {
 
@@ -737,7 +741,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         UserModel record = new UserModel();
         record.setUserId(userId);
-        record.setPassword(MD5Utils.md5Hex(password.getBytes()));
+        record.setPassword(PasswordUtils.encryptSHA256(password));
         this.userDAO.updateByPrimaryKeySelective(record);
         return ResultUtil.getSuccess();
     }

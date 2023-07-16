@@ -16,7 +16,7 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RoleAuthCheckVO extends BaseModel {
+public class RoleFuncCheckVO extends BaseModel {
 
     @ApiModelProperty(value = "本次新增")
     private List<FuncModel> insertList;
