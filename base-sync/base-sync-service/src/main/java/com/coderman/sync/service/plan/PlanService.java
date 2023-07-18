@@ -24,7 +24,7 @@ public interface PlanService {
      * @param uuid uuid
      * @return
      */
-    ResultVO<String> selectContent(String uuid);
+    ResultVO<PlanVO> selectPlanByUuid(String uuid);
 
 
     /**
@@ -51,7 +51,7 @@ public interface PlanService {
      * @param planVO 参数对象
      * @return
      */
-    ResultVO<Void> savePlan(PlanVO planVO);
+    ResultVO<Void> save(PlanVO planVO);
 
 
     /**

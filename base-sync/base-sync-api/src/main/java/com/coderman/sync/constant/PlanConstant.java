@@ -7,6 +7,11 @@ import com.coderman.api.anntation.Constant;
 public interface PlanConstant {
 
     /**
+     * 同步计划刷新key
+     */
+    public static final String PLAN_REFRESH_KEY = "plan_refresh_key";
+
+    /**
      * 计划状态
      */
     @ConstList(group = "plan_status",name = "正常")

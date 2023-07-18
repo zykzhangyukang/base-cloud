@@ -8,7 +8,6 @@ import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.redis.RedisService;
 import com.coderman.service.util.UUIDUtils;
-import com.coderman.sync.config.PlanRefreshConfig;
 import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.plan.meta.PlanMeta;
@@ -43,7 +42,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "同步计划新增")
-    public ResultVO<Void> savePlan(PlanVO planVO) {
+    public ResultVO<Void> save(@LogErrorParam PlanVO planVO) {
 
         String planContent = planVO.getPlanContent();
 
@@ -83,9 +82,8 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("已存在编号为 " + planCode + " 的同步计划");
         }
 
-        int count = jdbcTemplate.update(
-                "insert into pub_sync_plan(uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) " +
-                        "values(?,?,?,?,?,?,?,?,?,?)",
+        String sql = "insert into pub_sync_plan(uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) values(?,?,?,?,?,?,?,?,?,?)";
+        int count = jdbcTemplate.update(sql,
                 preparedStatement -> {
                     preparedStatement.setString(1, UUIDUtils.getPrimaryValue());
                     preparedStatement.setString(2, planCode);
@@ -197,9 +195,8 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-
-        int count = this.jdbcTemplate.update("update pub_sync_plan set plan_content=? ,plan_code = ?,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?" +
-                " where uuid=?", planContent, planCode, srcDb, destDb, srcProject, destProject, new Date(), uuid);
+        String sql = "update pub_sync_plan set plan_content=? ,plan_code = ?,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?  where uuid=?";
+        int count = this.jdbcTemplate.update(sql, planContent, planCode, srcDb, destDb, srcProject, destProject, new Date(), uuid);
 
         if (count <= 0) {
 
@@ -214,7 +211,7 @@ public class PlanServiceImpl implements PlanService {
 
     @LogError(value = "广播消息到redis")
     public void publishToRedis(){
-        this.redisService.getRedisTemplate().convertAndSend(PlanRefreshConfig.PLAN_REFRESH_KEY,String.valueOf(System.currentTimeMillis()));
+        this.redisService.getRedisTemplate().convertAndSend(PlanConstant.PLAN_REFRESH_KEY,String.valueOf(System.currentTimeMillis()));
     }
 
     @Override
@@ -235,10 +232,10 @@ public class PlanServiceImpl implements PlanService {
 
         PlanVO planVO = list.get(0);
 
-        int count = this.jdbcTemplate.update("update pub_sync_plan set status=?,update_time=?" +
-                " where uuid=?", StringUtils.equals(planVO.getStatus(), PlanConstant.STATUS_NORMAL) ?
-                PlanConstant.STATUS_FORBID : PlanConstant.STATUS_NORMAL, new Date(), uuid);
+        String sql  = "update pub_sync_plan set status=?,update_time=? where uuid=?";
+        String status = StringUtils.equals(planVO.getStatus(), PlanConstant.STATUS_NORMAL) ? PlanConstant.STATUS_FORBID : PlanConstant.STATUS_NORMAL;
 
+        int count = this.jdbcTemplate.update(sql, status, new Date(), uuid);
         if (count <= 0) {
 
             throw new RuntimeException("更新状态失败");
@@ -252,23 +249,23 @@ public class PlanServiceImpl implements PlanService {
 
     private List<PlanVO> getPlanVOByUuid(String uuid) {
 
+        Assert.isTrue(StringUtils.isNotBlank(uuid) , "uuid is null");
         List<Object> params = new ArrayList<>();
 
         params.add(uuid);
-
-        return this.jdbcTemplate.query("select plan_content,status from pub_sync_plan where uuid=?",
-                new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
+        String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where uuid=?";
+        return this.jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
     }
 
 
     private List<PlanVO> getPlanVOByCode(String code) {
 
+        Assert.isTrue(StringUtils.isNotBlank(code) , "code is null");
         List<Object> params = new ArrayList<>();
 
         params.add(code);
-
-        return this.jdbcTemplate.query("select uuid,plan_content,status from pub_sync_plan where plan_code=?",
-                new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
+        String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where plan_code=?";
+        return this.jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
     }
 
 
@@ -394,7 +391,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "查看同步内容")
-    public ResultVO<String> selectContent(String uuid) {
+    public ResultVO<PlanVO> selectPlanByUuid(String uuid) {
 
         if (StringUtils.isBlank(uuid)) {
 
@@ -408,7 +405,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("同步计划不存在");
         }
 
-        return ResultUtil.getSuccess(String.class, list.get(0).getPlanContent());
+        return ResultUtil.getSuccess(PlanVO.class, list.get(0));
     }
 
 }

@@ -95,9 +95,16 @@
                 tableLoading: true,
                 tableColumns: [
                     {
+                        title: 'uuid',
+                        dataIndex: 'uuid',
+                        key: 'uuid',
+                        ellipsis: true,
+                    },
+                    {
                         title: '计划编号',
                         dataIndex: 'planCode',
                         key: 'planCode',
+                        ellipsis: true,
                         slots: { customRender: 'planCode' },
                     },
                     {

@@ -10,15 +10,6 @@
             <a-button type="primary" @click="handleAuthorized" :loading="loading">更新授权</a-button>
           </div>
         </a-affix>
-        <a-descriptions title="角色信息" bordered size="small">
-          <a-descriptions-item label="角色名称">{{roleInfo.roleName}}</a-descriptions-item>
-          <a-descriptions-item label="角色描述">{{roleInfo.roleDesc}}</a-descriptions-item>
-          <a-descriptions-item label="创建时间">{{roleInfo.createTime}}</a-descriptions-item>
-          <a-descriptions-item label="修改时间">{{roleInfo.updateTime}}</a-descriptions-item>
-          <a-descriptions-item label="用户列表">
-                <a-tag class="mr15" color="blue" v-for="item in roleInfo.usernameList" :key="item">{{item}}</a-tag>
-          </a-descriptions-item>
-        </a-descriptions>
         <template v-for="(item, i) in allTreeList">
           <a-row :gutter="24" :key="i" v-if='i%6 === 0'>
             <a-col :span="4">

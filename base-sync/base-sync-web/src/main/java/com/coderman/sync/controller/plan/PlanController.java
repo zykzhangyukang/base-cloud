@@ -36,13 +36,17 @@ public class PlanController {
         return this.planService.updatePlan(planVO);
     }
 
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划添加")
     @PostMapping(value = "/save")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "content", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "同步计划内容"),
     })
-    public ResultVO<Void> savePlan(@RequestBody PlanVO planVO) {
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
+    })
+    public ResultVO<Void> save(@RequestBody PlanVO planVO) {
 
-        return this.planService.savePlan(planVO);
+        return this.planService.save(planVO);
     }
 
 
@@ -59,13 +63,18 @@ public class PlanController {
     }
 
 
-    @GetMapping(value = "/content")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "根据uuid获取同步计划信息")
+    @GetMapping(value = "/detail")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "uuid", required = true),
     })
-    public ResultVO<String> selectContent(String uuid) {
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+            @ApiReturnParam(name = "PlanVO", value = {"uuid","planCode","srcDb","destDb","srcProject","destProject","createTime","updateTime" , "status", "planContent"})
+    })
+    public ResultVO<PlanVO> selectPlanByUuid(String uuid) {
 
-        return this.planService.selectContent(uuid);
+        return this.planService.selectPlanByUuid(uuid);
     }
 
     @GetMapping(value = "/delete")
