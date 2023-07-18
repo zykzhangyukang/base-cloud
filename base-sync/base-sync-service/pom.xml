@@ -15,12 +15,6 @@
 
     <dependencies>
 
-        <!-- 接入权限系统 -->
-<!--        <dependency>-->
-<!--            <groupId>com.coderman</groupId>-->
-<!--            <artifactId>base-erp-service</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.coderman</groupId>
             <artifactId>base-sync-api</artifactId>
@@ -52,8 +46,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
         </dependency>
 
         <dependency>

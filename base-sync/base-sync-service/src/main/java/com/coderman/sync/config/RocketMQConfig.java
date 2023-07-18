@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 @Configuration
 @ConfigurationProperties(prefix = "sync.rocketmq")
 @Data
-public class ListenerConfig {
+public class RocketMQConfig {
 
     @Resource
     private RocketMqListener rocketMqListener;
