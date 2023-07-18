@@ -14,10 +14,10 @@
                 </a-select>
             </a-form-item>
             <a-form-item label="资源名称" name="rescName">
-                <a-input v-model:value="form.rescName" placeholder="资源名称" />
+                <a-input v-model:value="form.rescName" placeholder="资源名称" autocomplete="off" />
             </a-form-item>
             <a-form-item label="资源URL"  name="rescUrl">
-                <a-input v-model:value="form.rescUrl" placeholder="资源URL"  />
+                <a-input v-model:value="form.rescUrl" placeholder="资源URL" autocomplete="off" />
             </a-form-item>
             <a-form-item label="方法类型"  name="methodType">
                 <a-select v-model:value="form.methodType" placeholder="请求方法类型">
