@@ -16,14 +16,13 @@ import java.util.List;
 @Component
 @Lazy(false)
 @Slf4j
-@DependsOn("springContextUtil")
+@DependsOn(value = "springContextUtil")
 public class CallbackContext {
 
     private static CallbackContext callbackContext;
 
     @Resource
     private CallBackExecutor callBackExecutor;
-
 
     @Resource
     private CallbackRetryThread callbackRetryThread;

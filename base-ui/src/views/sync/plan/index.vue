@@ -42,8 +42,8 @@
                     :columns='tableColumns'
                     :data-source='tableData'
             >
-                <template #planCode="{ text }">
-                   <a class="btn-text-mini" href="javascript:void(0);"> {{ text }}</a>
+                <template #planCode="{ record }">
+                   <a class="btn-text-mini" href="javascript:void(0);" @click="handlePlanLook(record.uuid)"> {{ record.planCode }}</a>
                 </template>
                 <template #srcProject="{ text }">
                     {{ srcProjectGName[text] }}
@@ -64,12 +64,15 @@
                     @change="pageCurrentChange"
                     @showSizeChange="pageSizeChange"/>
         </a-card>
+        <!-- 查看同步计划 -->
+        <plan-look-modal ref="planLookModal"></plan-look-modal>
     </a-layout>
 </template>
 
 <script>
     import HTable from "@/components/table/HTable";
     import HPage from "@/components/pagination/HPage";
+    import PlanLookModal from "@/views/sync/plan/PlanLookModal";
     import {syncPlanPage} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
 
@@ -77,7 +80,8 @@
         name: "plan.vue",
         components: {
             HTable,
-            HPage
+            HPage,
+            PlanLookModal
         },
         data() {
             return {
@@ -176,6 +180,9 @@
             },
         },
         methods:{
+            handlePlanLook(uuid){
+                this.$refs['planLookModal'].open(uuid);
+            },
             pageSearchChange() {
                 this.searchParams.currentPage = 1
                 this.queryData()

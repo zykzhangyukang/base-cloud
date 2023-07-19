@@ -10,3 +10,14 @@ export const syncPlanPage = data => {
         data: data
     })
 }
+
+
+/**
+ * 同步计划详情
+ */
+export const syncPlanDetail = uuid => {
+    return http({
+        url: `/sync/plan/detail?uuid=${uuid}`,
+        method: 'get',
+    })
+}

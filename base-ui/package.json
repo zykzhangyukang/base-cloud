@@ -15,9 +15,10 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "default-passive-events": "^2.0.0",
+    "highlight.js": "^11.8.0",
     "moment": "^2.27.0",
     "screenfull": "^5.0.2",
-    "vue": "^3.0.0-0",
+    "vue": "^3.3.4",
     "vue-i18n": "^9.0.0-alpha.16",
     "vue-router": "^4.0.0-0"
   },

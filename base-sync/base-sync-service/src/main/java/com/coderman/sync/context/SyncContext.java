@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -26,11 +27,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
-@Configuration
 @Lazy(value = false)
+@Component
 @DependsOn(value = "springContextUtil")
 public class SyncContext {
-
 
     private final static Logger logger = LoggerFactory.getLogger(SyncContext.class);
 
@@ -42,7 +42,7 @@ public class SyncContext {
     @Resource
     private ResultToEsThread resultToEsThread;
 
-
+    // 同步上下文
     private static SyncContext syncContext;
 
     // 项目代号与数据库之间的关系
@@ -51,13 +51,11 @@ public class SyncContext {
     // 同步table原始数据
     private Map<String, TableMeta> tableMetaMap = new ConcurrentHashMap<>();
 
-
     // 数据库名称与类型之间的关系
-    private Map<String, String> dbTypeMap = new ConcurrentHashMap<String, String>();
+    private Map<String, String> dbTypeMap = new ConcurrentHashMap<>();
 
     // 同步计划原始数据
     private Map<String, PlanMeta> planMetaMap = new ConcurrentHashMap<>();
-
 
     // 是否锁定同步任务,默认锁定
     private boolean lockSyncTask = true;

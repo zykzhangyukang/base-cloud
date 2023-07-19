@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
@@ -49,10 +50,10 @@ public class GatewayExceptionHandler extends DefaultErrorWebExceptionHandler {
         } else {
             errorMessage = "网关转发异常";
         }
-        Map<String, Object> errorAttributes = new HashMap<>(3);
-        errorAttributes.put("code", 500);
+        Map<String, Object> errorAttributes = new LinkedHashMap<>(3);
+        errorAttributes.put("code", 503);
         errorAttributes.put("msg", errorMessage);
-        errorAttributes.put("data",null);
+        errorAttributes.put("result",null);
         return errorAttributes;
     }
 
