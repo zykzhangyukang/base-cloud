@@ -5,7 +5,7 @@ import './style/base.less'
 import './style/App.less'
 import App from './App.vue'
 import router from './routers'
-import permission from "@/permission"
+import permission from "@/utils/permission"
 import store from './store'
 import * as antIcons from '@ant-design/icons-vue'
 import 'default-passive-events'
