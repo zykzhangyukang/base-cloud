@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -51,7 +48,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("同步计划内容不能为空.");
         }
 
-        String planCode, srcDb, destDb, srcProject, destProject;
+        String planCode, srcDb, destDb, srcProject, destProject,description;
 
         try {
 
@@ -63,6 +60,7 @@ public class PlanServiceImpl implements PlanService {
             srcProject = planMeta.getProjectMeta().getSrcProject();
             srcDb = planMeta.getDbMeta().getSrcDb();
             destDb = planMeta.getDbMeta().getDestDb();
+            description = planMeta.getName();
 
         } catch (Exception E) {
 
@@ -74,6 +72,7 @@ public class PlanServiceImpl implements PlanService {
         Assert.notNull(srcDb, "srcDb is null");
         Assert.notNull(destProject, "destProject is null");
         Assert.notNull(srcProject, "srcProject is null");
+        Assert.notNull(description, "description is null");
 
         List<PlanVO> planVOByCode = this.getPlanVOByCode(planCode);
 
@@ -82,19 +81,20 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("已存在编号为 " + planCode + " 的同步计划");
         }
 
-        String sql = "insert into pub_sync_plan(uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) values(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into pub_sync_plan(uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) values(?,?,?,?,?,?,?,?,?,?,?)";
         int count = jdbcTemplate.update(sql,
                 preparedStatement -> {
                     preparedStatement.setString(1, UUIDUtils.getPrimaryValue());
                     preparedStatement.setString(2, planCode);
-                    preparedStatement.setString(3, srcDb);
-                    preparedStatement.setString(4, destDb);
-                    preparedStatement.setString(5, srcProject);
-                    preparedStatement.setString(6, destProject);
-                    preparedStatement.setString(7, planContent);
-                    preparedStatement.setString(8, PlanConstant.STATUS_NORMAL);
-                    preparedStatement.setObject(9, new Date());
+                    preparedStatement.setString(3, description);
+                    preparedStatement.setString(4, srcDb);
+                    preparedStatement.setString(5, destDb);
+                    preparedStatement.setString(6, srcProject);
+                    preparedStatement.setString(7, destProject);
+                    preparedStatement.setString(8, planContent);
+                    preparedStatement.setString(9, PlanConstant.STATUS_NORMAL);
                     preparedStatement.setObject(10, new Date());
+                    preparedStatement.setObject(11, new Date());
 
                 });
 
@@ -144,7 +144,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "同步计划更新")
-    public ResultVO<Void> updatePlan(PlanVO planVO) {
+    public ResultVO<Void> update(@LogErrorParam PlanVO planVO) {
 
         String uuid = planVO.getUuid();
 
@@ -160,7 +160,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("同步计划内容不能为空");
         }
 
-        String planCode, srcDb, destDb, destProject, srcProject;
+        String planCode, srcDb, destDb, destProject, srcProject,description;
 
         try {
 
@@ -172,6 +172,7 @@ public class PlanServiceImpl implements PlanService {
             destProject = planMeta.getProjectMeta().getDestProject();
             srcDb = planMeta.getDbMeta().getSrcDb();
             destDb = planMeta.getDbMeta().getDestDb();
+            description = planMeta.getName();
 
         } catch (Exception E) {
 
@@ -183,6 +184,7 @@ public class PlanServiceImpl implements PlanService {
         Assert.notNull(destDb, "destDb is null");
         Assert.notNull(destProject, "destProject is null");
         Assert.notNull(srcProject, "srcProject is null");
+        Assert.notNull(description, "description is null");
 
         List<PlanVO> planVOByCode = this.getPlanVOByCode(planCode);
 
@@ -195,8 +197,8 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-        String sql = "update pub_sync_plan set plan_content=? ,plan_code = ?,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?  where uuid=?";
-        int count = this.jdbcTemplate.update(sql, planContent, planCode, srcDb, destDb, srcProject, destProject, new Date(), uuid);
+        String sql = "update pub_sync_plan set plan_content=? ,plan_code = ?,description=? ,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?  where uuid=?";
+        int count = this.jdbcTemplate.update(sql, planContent, planCode,description, srcDb, destDb, srcProject, destProject, new Date(), uuid);
 
         if (count <= 0) {
 
@@ -253,7 +255,7 @@ public class PlanServiceImpl implements PlanService {
         List<Object> params = new ArrayList<>();
 
         params.add(uuid);
-        String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where uuid=?";
+        String sql = "select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where uuid=?";
         return this.jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
     }
 
@@ -289,7 +291,7 @@ public class PlanServiceImpl implements PlanService {
         String destProject = planPageDTO.getDestProject();
 
         StringBuilder countSql = new StringBuilder("select count(1) ");
-        StringBuilder realSql = new StringBuilder("select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
+        StringBuilder realSql = new StringBuilder("select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
         StringBuilder sql = new StringBuilder(" from pub_sync_plan where 1=1");
 
         if (currentPage == null) {
@@ -345,44 +347,35 @@ public class PlanServiceImpl implements PlanService {
         countSql.append(sql);
         Integer count = jdbcTemplate.queryForObject(countSql.toString(), Integer.class, params.toArray());
 
-        // 驼峰转下划线
-        realSql.append(sql);
-        String dbField = StringUtils.EMPTY;
+        List<PlanVO> list = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(sortField)) {
+        if(Objects.nonNull(count) && count > 0){
 
-            dbField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
-        }
+            // 驼峰转下划线
+            realSql.append(sql);
+            String dbField = StringUtils.EMPTY;
 
-        if (StringUtils.equals(dbField, "create_time")) {
+            if (StringUtils.isNotBlank(sortField)) {
 
-            realSql.append(" order by create_time ").append(sortOrder);
-
-        } else if (StringUtils.equals(dbField, "update_time")) {
-
-            realSql.append(" order by update_time ").append(sortOrder);
-
-        } else {
-            realSql.append(" order by create_time ").append("desc");
-        }
-
-        realSql.append(" limit ?,? ");
-        params.add((currentPage - 1) * pageSize);
-        params.add(pageSize);
-        List<PlanVO> list = this.jdbcTemplate.query(realSql.toString(), new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
-
-        try {
-
-            if (CollectionUtils.isNotEmpty(list)) {
-                for (PlanVO planVO : list) {
-                    if (StringUtils.isNotBlank(planVO.getPlanContent())) {
-                        String desc = MetaParser.parse(planVO.getPlanContent()).getName();
-                        planVO.setDescription(desc);
-                    }
-                }
+                dbField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
             }
-        } catch (Exception e) {
-            log.error("解析同步计划失败:{}",e.getMessage(),e);
+
+            if (StringUtils.equals(dbField, "create_time")) {
+
+                realSql.append(" order by create_time ").append(sortOrder);
+
+            } else if (StringUtils.equals(dbField, "update_time")) {
+
+                realSql.append(" order by update_time ").append(sortOrder);
+
+            } else {
+                realSql.append(" order by create_time ").append("desc");
+            }
+
+            realSql.append(" limit ?,? ");
+            params.add((currentPage - 1) * pageSize);
+            params.add(pageSize);
+            list = this.jdbcTemplate.query(realSql.toString(), new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
         }
 
         Assert.notNull(count, "count is null");

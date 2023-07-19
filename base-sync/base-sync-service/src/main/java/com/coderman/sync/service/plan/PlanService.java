@@ -33,7 +33,7 @@ public interface PlanService {
      * @param planVO 参数对象
      * @return
      */
-    ResultVO<Void> updatePlan(PlanVO planVO);
+    ResultVO<Void> update(PlanVO planVO);
 
 
     /**

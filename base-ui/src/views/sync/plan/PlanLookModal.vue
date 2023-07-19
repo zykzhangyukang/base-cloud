@@ -1,22 +1,32 @@
 <template>
     <a-modal v-model:visible="visible"
-             :title="null"
-             :width="600"
+             :title="title"
+             :width="800"
              :footer="null"
              @cancel="handleClose"
     >
+            <pre class="code">
+              <code v-highlightjs class="xml" :key="codeKey">{{code}}</code>
+            </pre>
     </a-modal>
 </template>
 
 <script>
     import {syncPlanDetail} from "@/api/sync";
+    import { highlightjs } from '@/utils/highlight';
+    import 'highlight.js/styles/idea.css';
     export default {
         name: "PlanLookModal.vue",
+        directives: {
+            highlightjs,
+        },
         components: {
         },
         data(){
             return {
+                title: '',
                 code: '',
+                codeKey: '',
                 visible: false,
             }
         },
@@ -26,14 +36,18 @@
             },
             open(uuid) {
                 syncPlanDetail(uuid).then(res=>{
+                    this.title = res.result.description;
                     this.code = res.result.planContent;
+                    this.codeKey = res.result.planCode;
                     this.visible = true;
                 })
             }
-        }
+        },
     }
 </script>
 
 <style scoped>
-
+.code{
+    font-family: "Comic Sans MS",serif
+}
 </style>

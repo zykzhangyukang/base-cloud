@@ -2,7 +2,7 @@
     <a-layout class='role-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger"  v-permission="'auth:role:add'">添加</a-button>
+                <a-button type="danger"  v-permission="'sync:plan:add'" @click="handleAdd">添加</a-button>
             </div>
             <a-form
                     :style="{'marginBottom':'10px'}"
@@ -27,7 +27,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'auth:role:page'">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'">搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -56,6 +56,20 @@
                         {{ planStatusGName[text] }}
                     </a-tag>
                 </template>
+                <template #action="{ record }">
+                    <div class="action-btns">
+                        <!-- 常用按钮 -->
+                        <a class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.uuid)" v-permission="'sync:plan:update'"><FormOutlined />编辑</a>
+                        <a-popconfirm
+                                title="您确定要删除该计划吗?"
+                                ok-text="确定"
+                                cancel-text="取消"
+                                @confirm="handleDelete(record.uuid)"
+                        >
+                            <a class="btn-text-mini" href="javascript:;" v-permission="'sync:plan:delete'"><DeleteOutlined/>删除</a>
+                        </a-popconfirm>
+                    </div>
+                </template>
             </HTable>
             <HPage
                     :current="searchParams.currentPage"
@@ -64,6 +78,10 @@
                     @change="pageCurrentChange"
                     @showSizeChange="pageSizeChange"/>
         </a-card>
+        <!-- 新增同步计划 -->
+        <plan-save-modal ref="planSaveModal" @success="queryData"></plan-save-modal>
+        <!-- 编辑同步计划 -->
+        <plan-update-modal ref="planUpdateModal" @success="queryData"></plan-update-modal>
         <!-- 查看同步计划 -->
         <plan-look-modal ref="planLookModal"></plan-look-modal>
     </a-layout>
@@ -73,7 +91,9 @@
     import HTable from "@/components/table/HTable";
     import HPage from "@/components/pagination/HPage";
     import PlanLookModal from "@/views/sync/plan/PlanLookModal";
-    import {syncPlanPage} from "@/api/sync";
+    import PlanSaveModal from "@/views/sync/plan/PlanSaveModal";
+    import PlanUpdateModal from "@/views/sync/plan/PlanUpdateModal";
+    import {syncPlanDelete, syncPlanPage} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
 
     export default {
@@ -81,7 +101,9 @@
         components: {
             HTable,
             HPage,
-            PlanLookModal
+            PlanLookModal,
+            PlanSaveModal,
+            PlanUpdateModal
         },
         data() {
             return {
@@ -105,16 +127,17 @@
                         ellipsis: true,
                     },
                     {
-                        title: '计划编号',
-                        dataIndex: 'planCode',
-                        key: 'planCode',
-                        ellipsis: true,
-                        slots: { customRender: 'planCode' },
-                    },
-                    {
                         title: '计划描述',
                         dataIndex: 'description',
                         key: 'description',
+                    },
+                    {
+                        title: '计划编号',
+                        dataIndex: 'planCode',
+                        key: 'planCode',
+                        width: '180px',
+                        ellipsis: true,
+                        slots: { customRender: 'planCode' },
                     },
                     {
                         title: '源数据库',
@@ -180,6 +203,18 @@
             },
         },
         methods:{
+            handleDelete(id){
+                syncPlanDelete(id).then(e=>{
+                    this.$message.success("删除计划成功！");
+                    this.queryData();
+                })
+            },
+            handleUpdate(uid){
+                this.$refs['planUpdateModal'].open(uid);
+            },
+            handleAdd(){
+                this.$refs['planSaveModal'].open();
+            },
             handlePlanLook(uuid){
                 this.$refs['planLookModal'].open(uuid);
             },

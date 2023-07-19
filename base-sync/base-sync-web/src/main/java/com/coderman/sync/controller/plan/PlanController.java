@@ -25,15 +25,14 @@ public class PlanController {
     @Resource
     private PlanService planService;
 
-
-    @PostMapping(value = "/update")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "uuid"),
-            @ApiImplicitParam(name = "content", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "同步计划内容"),
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "同步计划更新")
+    @PutMapping(value = "/update")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
-    public ResultVO<Void> updatePlan(@RequestBody PlanVO planVO) {
+    public ResultVO<Void> update(@RequestBody PlanVO planVO) {
 
-        return this.planService.updatePlan(planVO);
+        return this.planService.update(planVO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划添加")
@@ -70,16 +69,20 @@ public class PlanController {
     })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "PlanVO", value = {"uuid","planCode","srcDb","destDb","srcProject","destProject","createTime","updateTime" , "status", "planContent"})
+            @ApiReturnParam(name = "PlanVO", value = {"uuid","planCode","description","srcDb","destDb","srcProject","destProject","createTime","updateTime" , "status", "planContent"})
     })
     public ResultVO<PlanVO> selectPlanByUuid(String uuid) {
 
         return this.planService.selectPlanByUuid(uuid);
     }
 
-    @GetMapping(value = "/delete")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_DELETE, value = "根据uuid删除同步计划信息")
+    @DeleteMapping(value = "/delete")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "uuid", required = true),
+    })
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
     public ResultVO<Void> deletePlan(String uuid) {
 
