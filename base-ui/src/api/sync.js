@@ -49,7 +49,7 @@ export const syncPlanUpdate = data => {
  */
 export const syncPlanUpdateStatus = data => {
     return http({
-        url: `/sync/plan/update`,
+        url: `/sync/plan/update/status`,
         method: 'put',
         data: data
     })

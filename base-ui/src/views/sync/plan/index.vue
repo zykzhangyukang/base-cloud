@@ -51,11 +51,6 @@
                 <template #destProject="{ text }">
                     {{ destProjectGName[text] }}
                 </template>
-                <template #status="{ text }">
-                    <a-tag :color="text==='normal' ? 'green' : 'red'">
-                        {{ planStatusGName[text] }}
-                    </a-tag>
-                </template>
                 <template #action="{ record }">
                     <div class="action-btns">
                         <!-- 常用按钮 -->
@@ -68,6 +63,7 @@
                         >
                             <a class="btn-text-mini" href="javascript:;" v-permission="'sync:plan:delete'"><DeleteOutlined/>删除</a>
                         </a-popconfirm>
+                        <a-switch size="small"  :checked="record.status === 'normal'" @click="handleUpdateStatus(record.uuid,record.status)" v-permission="'sync:plan:updateStatus'" />
                     </div>
                 </template>
             </HTable>
@@ -93,7 +89,7 @@
     import PlanLookModal from "@/views/sync/plan/PlanLookModal";
     import PlanSaveModal from "@/views/sync/plan/PlanSaveModal";
     import PlanUpdateModal from "@/views/sync/plan/PlanUpdateModal";
-    import {syncPlanDelete, syncPlanPage} from "@/api/sync";
+    import {syncPlanDelete, syncPlanPage, syncPlanUpdateStatus} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
 
     export default {
@@ -162,12 +158,6 @@
                         slots: { customRender: 'destProject' },
                     },
                     {
-                        title: '状态',
-                        dataIndex: 'status',
-                        key: 'status',
-                        slots: { customRender: 'status' },
-                    },
-                    {
                         title: '更新时间',
                         dataIndex: 'updateTime',
                         key: 'updateTime',
@@ -211,6 +201,18 @@
             },
             handleUpdate(uid){
                 this.$refs['planUpdateModal'].open(uid);
+            },
+            handleUpdateStatus(uuid, status){
+                let s = status === 'normal' ? 'forbid' : 'normal';
+                let msg = status === 'normal' ? '禁用' : '启用';
+                syncPlanUpdateStatus({uuid, status: s }).then(e=>{
+                   this.tableData.forEach(e=>{
+                       if(e.uuid === uuid){
+                           e.status = s;
+                       }
+                   })
+                    this.$message.success(`计划${msg}状态成功`);
+                })
             },
             handleAdd(){
                 this.$refs['planSaveModal'].open();

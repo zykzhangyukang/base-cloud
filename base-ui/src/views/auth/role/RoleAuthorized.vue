@@ -14,7 +14,6 @@
           <a-row :gutter="24" :key="i" v-if='i%6 === 0'>
             <a-col :span="4">
               <role-authorized-tree
-                  :expanded-keys="[item.funcId]"
                   :biz-checked-keys="this.allCheckedMap[item.funcId]"
                   :checked-keys="this.halfCheckedMap[item.funcId]"
                   :ref="'roleAuthorizedTreeRef_'+item.funcId"
@@ -24,7 +23,6 @@
             </a-col>
             <a-col :span="4" v-if="i+1 < allTreeList.length">
               <role-authorized-tree
-                  :expanded-keys="[allTreeList[i+1].funcId]"
                   :biz-checked-keys="this.allCheckedMap[allTreeList[i+1].funcId]"
                   :checked-keys="this.halfCheckedMap[allTreeList[i+1].funcId]"
                   :ref="'roleAuthorizedTreeRef_'+allTreeList[i+1].funcId"
@@ -34,7 +32,6 @@
             </a-col>
             <a-col :span="4" v-if="i+2 < allTreeList.length">
               <role-authorized-tree
-                  :expanded-keys="[allTreeList[i+2].funcId]"
                   :biz-checked-keys="this.allCheckedMap[allTreeList[i+2].funcId]"
                   :checked-keys="this.halfCheckedMap[allTreeList[i+2].funcId]"
                   :ref="'roleAuthorizedTreeRef_'+allTreeList[i+2].funcId"
@@ -44,7 +41,6 @@
             </a-col>
             <a-col :span="4" v-if="i+3 < allTreeList.length">
               <role-authorized-tree
-                  :expanded-keys="[allTreeList[i+3].funcId]"
                   :biz-checked-keys="this.allCheckedMap[allTreeList[i+3].funcId]"
                   :checked-keys="this.halfCheckedMap[allTreeList[i+3].funcId]"
                   :ref="'roleAuthorizedTreeRef_'+allTreeList[i+3].funcId"
@@ -54,7 +50,6 @@
             </a-col>
             <a-col :span="4" v-if="i+4 < allTreeList.length">
               <role-authorized-tree
-                  :expanded-keys="[allTreeList[i+4].funcId]"
                   :biz-checked-keys="this.allCheckedMap[allTreeList[i+4].funcId]"
                   :checked-keys="this.halfCheckedMap[allTreeList[i+4].funcId]"
                   :ref="'roleAuthorizedTreeRef_'+allTreeList[i+4].funcId"
@@ -64,7 +59,6 @@
             </a-col>
             <a-col :span="4" v-if="i+5 < allTreeList.length">
               <role-authorized-tree
-                  :expanded-keys="[allTreeList[i+5].funcId]"
                   :biz-checked-keys="this.allCheckedMap[allTreeList[i+5].funcId]"
                   :checked-keys="this.halfCheckedMap[allTreeList[i+5].funcId]"
                   :ref="'roleAuthorizedTreeRef_'+allTreeList[i+5].funcId"
@@ -128,7 +122,7 @@ export default {
     handleCloseAll(){
       this.allTreeList.forEach(e => {
         let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
-        reference.setExpandedKeys([e.funcId])
+        reference.setExpandedKeys([])
       })
     },
     getAllNodeKeys(nodes) {
