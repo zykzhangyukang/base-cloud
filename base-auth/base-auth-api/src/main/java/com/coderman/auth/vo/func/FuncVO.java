@@ -3,6 +3,7 @@ package com.coderman.auth.vo.func;
 import com.coderman.auth.model.func.FuncModel;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.auth.vo.user.UserVO;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,14 +19,9 @@ import java.util.List;
 @Data
 public class FuncVO extends FuncModel {
 
-    /**
-     * 部门用户信息
-     */
+    @ApiModelProperty(value = "用户信息")
     private List<UserVO> userVOList;
 
-
-    /**
-     * 资源信息
-     */
+    @ApiModelProperty(value = "资源信息")
     private List<RescVO> rescVOList;
 }

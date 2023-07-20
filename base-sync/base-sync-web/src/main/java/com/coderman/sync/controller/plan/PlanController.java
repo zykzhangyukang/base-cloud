@@ -2,22 +2,25 @@ package com.coderman.sync.controller.plan;
 
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.swagger.annotation.ApiReturnIgnore;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
 import com.coderman.sync.dto.PlanPageDTO;
+import com.coderman.sync.dto.PlanSaveDTO;
+import com.coderman.sync.dto.PlanUpdateDTO;
+import com.coderman.sync.dto.PlanUpdateStatusDTO;
 import com.coderman.sync.service.plan.PlanService;
 import com.coderman.sync.vo.PlanVO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+@Api(value = "同步计划", tags = "同步计划")
 @RestController
 @RequestMapping(value = "/${domain}/plan")
 public class PlanController {
@@ -30,24 +33,20 @@ public class PlanController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
-    public ResultVO<Void> update(@RequestBody PlanVO planVO) {
+    public ResultVO<Void> update(@RequestBody PlanUpdateDTO planUpdateDTO) {
 
-        return this.planService.update(planVO);
+        return this.planService.update(planUpdateDTO);
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划添加")
     @PostMapping(value = "/save")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "content", paramType = SwaggerConstant.PARAM_BODY, dataType = SwaggerConstant.DATA_STRING, value = "同步计划内容"),
-    })
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
-    public ResultVO<Void> save(@RequestBody PlanVO planVO) {
+    public ResultVO<Void> save(@RequestBody PlanSaveDTO planSaveDTO) {
 
-        return this.planService.save(planVO);
+        return this.planService.save(planSaveDTO);
     }
-
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步计划列表")
     @PostMapping(value = "/page")
@@ -84,18 +83,18 @@ public class PlanController {
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
-    public ResultVO<Void> deletePlan(String uuid) {
+    public ResultVO<Void> delete(String uuid) {
 
-        return this.planService.deletePlan(uuid);
+        return this.planService.delete(uuid);
     }
 
-    @GetMapping(value = "/status")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "uuid", required = true),
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "根据uuid更新状态")
+    @PutMapping(value = "/update/status")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"result", "code", "msg"})
     })
-    public ResultVO<Void> updateStatus(String uuid) {
-
-        return this.planService.updateStatus(uuid);
+    public ResultVO<Void> updateStatus(@RequestBody PlanUpdateStatusDTO planUpdateStatusDTO) {
+        return this.planService.updateStatus(planUpdateStatusDTO);
     }
 
 }

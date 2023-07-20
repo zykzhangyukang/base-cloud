@@ -255,8 +255,7 @@ public class RoleServiceImpl implements RoleService {
         example.createCriteria().andRoleIdEqualTo(roleId);
         List<UserRoleModel> userRoleModels = this.userRoleDAO.selectByExample(example);
         List<Integer> roleUserIds = userRoleModels.stream().map(UserRoleModel::getUserId).collect(Collectors.toList());
-
-        roleUserInitVO.setAssignedIdList(roleUserIds);
+        roleUserInitVO.setUserIdList(roleUserIds);
 
         return ResultUtil.getSuccess(RoleUserInitVO.class, roleUserInitVO);
     }

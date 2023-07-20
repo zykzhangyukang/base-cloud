@@ -34,9 +34,20 @@ export const syncPlanDelete = uuid => {
 }
 
 /**
- * 新增同步计划
+ * 更新同步计划
  */
 export const syncPlanUpdate = data => {
+    return http({
+        url: `/sync/plan/update`,
+        method: 'put',
+        data: data
+    })
+}
+
+/**
+ * 更新同步计划状态
+ */
+export const syncPlanUpdateStatus = data => {
     return http({
         url: `/sync/plan/update`,
         method: 'put',

@@ -10,6 +10,9 @@ import com.coderman.service.redis.RedisService;
 import com.coderman.service.util.UUIDUtils;
 import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.dto.PlanPageDTO;
+import com.coderman.sync.dto.PlanSaveDTO;
+import com.coderman.sync.dto.PlanUpdateDTO;
+import com.coderman.sync.dto.PlanUpdateStatusDTO;
 import com.coderman.sync.plan.meta.PlanMeta;
 import com.coderman.sync.plan.parser.MetaParser;
 import com.coderman.sync.service.plan.PlanService;
@@ -39,9 +42,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "同步计划新增")
-    public ResultVO<Void> save(@LogErrorParam PlanVO planVO) {
+    public ResultVO<Void> save(@LogErrorParam PlanSaveDTO planSaveDTO) {
 
-        String planContent = planVO.getPlanContent();
+        String planContent = planSaveDTO.getPlanContent();
 
         if (StringUtils.isBlank(planContent)) {
 
@@ -110,7 +113,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "同步计划删除")
-    public ResultVO<Void> deletePlan(String uuid) {
+    public ResultVO<Void> delete(String uuid) {
 
         List<PlanVO> planVOByUuid = this.getPlanVOByUuid(uuid);
 
@@ -144,16 +147,15 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "同步计划更新")
-    public ResultVO<Void> update(@LogErrorParam PlanVO planVO) {
+    public ResultVO<Void> update(@LogErrorParam PlanUpdateDTO planUpdateDTO) {
 
-        String uuid = planVO.getUuid();
+        String uuid = planUpdateDTO.getUuid();
+        String planContent = planUpdateDTO.getPlanContent();
 
         if (StringUtils.isBlank(uuid)) {
 
             return ResultUtil.getWarn("uuid不能为空");
         }
-
-        String planContent = planVO.getPlanContent();
 
         if (StringUtils.isBlank(planContent)) {
 
@@ -218,11 +220,19 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @LogError(value = "启用/禁用 同步内容")
-    public ResultVO<Void> updateStatus(String uuid) {
+    public ResultVO<Void> updateStatus(PlanUpdateStatusDTO planUpdateStatusDTO) {
+
+        String uuid = planUpdateStatusDTO.getUuid();
+        String status = planUpdateStatusDTO.getStatus();
 
         if (StringUtils.isBlank(uuid)) {
 
             return ResultUtil.getWarn("uuid不能为空");
+        }
+
+        if (StringUtils.isBlank(status)) {
+
+            return ResultUtil.getWarn("status不能为空");
         }
 
         List<PlanVO> list = getPlanVOByUuid(uuid);
@@ -232,10 +242,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("同步计划不存在");
         }
 
-        PlanVO planVO = list.get(0);
-
-        String sql  = "update pub_sync_plan set status=?,update_time=? where uuid=?";
-        String status = StringUtils.equals(planVO.getStatus(), PlanConstant.STATUS_NORMAL) ? PlanConstant.STATUS_FORBID : PlanConstant.STATUS_NORMAL;
+        String sql = "update pub_sync_plan set status=?,update_time=? where uuid=?";
 
         int count = this.jdbcTemplate.update(sql, status, new Date(), uuid);
         if (count <= 0) {

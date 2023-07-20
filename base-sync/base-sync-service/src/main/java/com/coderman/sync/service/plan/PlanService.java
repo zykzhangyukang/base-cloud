@@ -3,6 +3,9 @@ package com.coderman.sync.service.plan;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.sync.dto.PlanPageDTO;
+import com.coderman.sync.dto.PlanSaveDTO;
+import com.coderman.sync.dto.PlanUpdateDTO;
+import com.coderman.sync.dto.PlanUpdateStatusDTO;
 import com.coderman.sync.vo.PlanVO;
 
 import java.util.List;
@@ -30,28 +33,28 @@ public interface PlanService {
     /**
      * 同步计划更新
      *
-     * @param planVO 参数对象
+     * @param planUpdateDTO 参数对象
      * @return
      */
-    ResultVO<Void> update(PlanVO planVO);
+    ResultVO<Void> update(PlanUpdateDTO planUpdateDTO);
 
 
     /**
      * 启用/禁用 同步内容
      *
-     * @param uuid uuid
+     * @param planUpdateStatusDTO uuid
      * @return
      */
-    ResultVO<Void> updateStatus(String uuid);
+    ResultVO<Void> updateStatus(PlanUpdateStatusDTO planUpdateStatusDTO);
 
 
     /**
      * 同步计划新增
      *
-     * @param planVO 参数对象
+     * @param planSaveDTO 参数对象
      * @return
      */
-    ResultVO<Void> save(PlanVO planVO);
+    ResultVO<Void> save(PlanSaveDTO planSaveDTO);
 
 
     /**
@@ -60,5 +63,5 @@ public interface PlanService {
      * @param uuid uuid
      * @return
      */
-    ResultVO<Void> deletePlan(String uuid);
+    ResultVO<Void> delete(String uuid);
 }

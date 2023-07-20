@@ -2,6 +2,7 @@ package com.coderman.auth.vo.role;
 
 import com.coderman.api.model.BaseModel;
 import com.coderman.auth.model.user.UserModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,19 +18,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class RoleUserInitVO extends BaseModel {
 
-    /**
-     * 角色id
-     */
+    @ApiModelProperty(value = "角色id")
     private Integer roleId;
 
-    /**
-     * 所有角色
-     */
+    @ApiModelProperty(value = "全部用户列表")
     private List<UserModel> userList;
 
-
-    /**
-     * 用户已经分配的用户id
-     */
-    private List<Integer> assignedIdList;
+    @ApiModelProperty(value = "用户id集合")
+    private List<Integer> userIdList;
 }

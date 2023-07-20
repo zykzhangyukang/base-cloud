@@ -2,6 +2,7 @@ package com.coderman.auth.vo.dept;
 
 import com.coderman.api.model.BaseModel;
 import com.coderman.auth.vo.user.UserVO;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,8 +17,6 @@ import java.util.List;
 @Data
 public class DeptVO extends BaseModel {
 
-    /**
-     * 用户信息
-     */
+    @ApiModelProperty(value = "用户信息")
     private List<UserVO> userList;
 }

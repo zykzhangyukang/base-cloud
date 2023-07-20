@@ -14,7 +14,7 @@
 <script>
     import {syncPlanDetail} from "@/api/sync";
     import { highlightjs } from '@/utils/highlight';
-    import 'highlight.js/styles/idea.css';
+    import 'highlight.js/styles/monokai-sublime.css';
     export default {
         name: "PlanLookModal.vue",
         directives: {
@@ -48,6 +48,7 @@
 
 <style scoped>
 .code{
-    font-family: "Comic Sans MS",serif
+    font-family: "Comic Sans MS",serif;
+    font-size: 11px;
 }
 </style>
