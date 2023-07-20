@@ -4,13 +4,13 @@
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"
-             :width="700"
+             :width="750"
              cancelText="取消"
              okText="提交"
     >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol"  ref="formRef" :rules="formRules">
             <a-form-item label="" name="planContent">
-                <a-textarea v-model:value="form.planContent"  :rows="10" autocomplete="off" />
+                <a-textarea v-model:value="form.planContent"  :rows="15" autocomplete="off" />
             </a-form-item>
         </a-form>
     </a-modal>

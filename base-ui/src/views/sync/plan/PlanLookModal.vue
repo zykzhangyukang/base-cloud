@@ -14,7 +14,7 @@
 <script>
     import {syncPlanDetail} from "@/api/sync";
     import { highlightjs } from '@/utils/highlight';
-    import 'highlight.js/styles/monokai-sublime.css';
+    import 'highlight.js/styles/idea.css';
     export default {
         name: "PlanLookModal.vue",
         directives: {
