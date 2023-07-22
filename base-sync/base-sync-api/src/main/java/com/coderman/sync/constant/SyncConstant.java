@@ -35,6 +35,8 @@ public interface SyncConstant {
     public static final String DEST_PROJECT_ORDER = "order";
     @ConstList(group = "dest_project",name = "索引系统")
     public static final String DEST_PROJECT_PIM = "pim";
+    @ConstList(group = "dest_project",name = "测试系统")
+    public static final String DEST_PROJECT_DEMO = "demo";
 
 
     /**

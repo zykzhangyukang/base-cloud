@@ -326,4 +326,13 @@
     WHERE username = #{username}
   </select>
 
+  <insert id="insertReturnKey" parameterType="com.coderman.auth.model.user.UserModel" useGeneratedKeys="true"  keyProperty="userId">
+    insert into auth_user (user_id, username, real_name,
+      password, dept_code, user_status,
+      create_time, update_time)
+    values (#{userId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR}, #{deptCode,jdbcType=VARCHAR}, #{userStatus,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
 </mapper>

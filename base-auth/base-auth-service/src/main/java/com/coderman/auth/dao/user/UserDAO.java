@@ -37,4 +37,12 @@ public interface UserDAO extends BaseDAO<UserModel, UserExample> {
      * @return
      */
     Long countPage(Map<String, Object> conditionMap);
+
+    /**
+     *  新增用户
+     *
+     * @param userModel
+     * @return
+     */
+    int insertReturnKey(UserModel userModel);
 }

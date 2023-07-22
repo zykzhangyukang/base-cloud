@@ -92,7 +92,7 @@ public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
      * @param userId
      * @return
      */
-    List<FuncTreeVO> selectAllByUserIdAndFuncType(Integer userId,String funcType);
+    List<FuncTreeVO> selectAllByUserIdAndFuncType(@Param(value = "userId") Integer userId,@Param(value = "funcType") String funcType);
 
 
     /**
@@ -100,5 +100,5 @@ public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
      * @param roleId
      * @return
      */
-    List<FuncModel> selectByRoleId(Integer roleId);
+    List<FuncModel> selectByRoleId(@Param(value = "roleId") Integer roleId);
 }

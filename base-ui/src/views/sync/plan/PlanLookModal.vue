@@ -6,15 +6,16 @@
              @cancel="handleClose"
     >
             <pre class="code">
-              <code v-highlightjs class="xml" :key="codeKey">{{code}}</code>
+              <code v-highlightjs class="xml" :key="Math.ceil(Math.random()*100000)">{{code}}</code>
             </pre>
     </a-modal>
 </template>
 
 <script>
     import {syncPlanDetail} from "@/api/sync";
-    import { highlightjs } from '@/utils/highlight';
+    import {highlightjs} from '@/utils/highlight';
     import 'highlight.js/styles/monokai-sublime.css';
+
     export default {
         name: "PlanLookModal.vue",
         directives: {
