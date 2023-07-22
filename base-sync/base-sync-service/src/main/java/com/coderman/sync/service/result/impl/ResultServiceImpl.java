@@ -4,9 +4,11 @@ import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.service.anntation.LogError;
+import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
+import com.coderman.sync.dto.ResultPageDTO;
 import com.coderman.sync.es.EsService;
 import com.coderman.sync.executor.AbstractExecutor;
 import com.coderman.sync.plan.meta.*;
@@ -47,7 +49,10 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @LogError(value = "同步记录搜索")
-    public com.coderman.api.vo.ResultVO<PageVO<List<ResultModel>>> search(Integer currentPage, Integer pageSize, ResultVO queryVO) throws IOException {
+    public com.coderman.api.vo.ResultVO<PageVO<List<ResultModel>>> page(@LogErrorParam ResultPageDTO resultPageDTO) throws IOException {
+
+        Integer currentPage = resultPageDTO.getCurrentPage();
+        Integer pageSize = resultPageDTO.getPageSize();
 
         if (Objects.isNull(currentPage)) {
             currentPage = 1;
@@ -65,8 +70,8 @@ public class ResultServiceImpl implements ResultService {
 
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
 
-        Date startTime = queryVO.getStartTime();
-        Date endTime = queryVO.getEndTime();
+        Date startTime = resultPageDTO.getStartTime();
+        Date endTime = resultPageDTO.getEndTime();
 
         if (startTime != null && endTime != null) {
 
@@ -79,7 +84,7 @@ public class ResultServiceImpl implements ResultService {
             queryBuilder.must(QueryBuilders.rangeQuery("msgCreateTime").lt(endTime.getTime()));
         }
 
-        String keywords = queryVO.getKeywords();
+        String keywords = resultPageDTO.getKeywords();
 
         if (StringUtils.isNotBlank(keywords)) {
 
@@ -88,42 +93,40 @@ public class ResultServiceImpl implements ResultService {
             shouldQuery.should(QueryBuilders.matchPhraseQuery("planName", keywords));
             shouldQuery.should(QueryBuilders.matchPhraseQuery("msgContent", keywords));
             shouldQuery.should(QueryBuilders.matchPhraseQuery("syncContent", keywords));
-            shouldQuery.should(QueryBuilders.matchPhraseQuery("remark", keywords));
             shouldQuery.should(QueryBuilders.matchPhraseQuery("errorMsg", keywords));
-
             queryBuilder.must(shouldQuery);
 
         }
 
-        if (StringUtils.isNotBlank(queryVO.getPlanCode())) {
+        if (StringUtils.isNotBlank(resultPageDTO.getPlanCode())) {
 
-            queryBuilder.must(QueryBuilders.termQuery("planCode", queryVO.getPlanCode()));
+            queryBuilder.must(QueryBuilders.termQuery("planCode", resultPageDTO.getPlanCode()));
         }
 
-        if (StringUtils.isNotBlank(queryVO.getSyncStatus())) {
+        if (StringUtils.isNotBlank(resultPageDTO.getSyncStatus())) {
 
-            queryBuilder.must(QueryBuilders.termQuery("status", queryVO.getSyncStatus()));
+            queryBuilder.must(QueryBuilders.termQuery("status", resultPageDTO.getSyncStatus()));
         }
 
-        if (StringUtils.isNotBlank(queryVO.getMsgSrc())) {
+        if (StringUtils.isNotBlank(resultPageDTO.getMsgSrc())) {
 
-            queryBuilder.must(QueryBuilders.termQuery("msgSrc", queryVO.getMsgSrc()));
+            queryBuilder.must(QueryBuilders.termQuery("msgSrc", resultPageDTO.getMsgSrc()));
         }
 
 
-        if (StringUtils.isNotBlank(queryVO.getSrcProject())) {
+        if (StringUtils.isNotBlank(resultPageDTO.getSrcProject())) {
 
-            queryBuilder.must(QueryBuilders.termQuery("srcProject", queryVO.getSrcProject()));
+            queryBuilder.must(QueryBuilders.termQuery("srcProject", resultPageDTO.getSrcProject()));
         }
 
-        if (StringUtils.isNotBlank(queryVO.getDestProject())) {
+        if (StringUtils.isNotBlank(resultPageDTO.getDestProject())) {
 
-            queryBuilder.must(QueryBuilders.termQuery("destProject", queryVO.getDestProject()));
+            queryBuilder.must(QueryBuilders.termQuery("destProject", resultPageDTO.getDestProject()));
         }
 
-        if (queryVO.getRepeatCount() != null) {
+        if (resultPageDTO.getRepeatCount() != null) {
 
-            queryBuilder.must(QueryBuilders.rangeQuery("repeatCount").gte(queryVO.getRepeatCount()));
+            queryBuilder.must(QueryBuilders.rangeQuery("repeatCount").gte(resultPageDTO.getRepeatCount()));
         }
 
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
@@ -167,7 +170,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @LogError(value = "标记成功")
-    public com.coderman.api.vo.ResultVO<Void> signSuccess(String uuid,String remark) throws IOException {
+    public com.coderman.api.vo.ResultVO<Void> signSuccess(String uuid, String remark) throws IOException {
 
         if (StringUtils.isBlank(uuid)) {
 
@@ -402,7 +405,7 @@ public class ResultServiceImpl implements ResultService {
 
             srcExecutor.sql(sqlMeta);
 
-            sqlMeta.setSql(SqlUtil.fillParam(sqlMeta,srcExecutor));
+            sqlMeta.setSql(SqlUtil.fillParam(sqlMeta, srcExecutor));
         }
 
         return srcExecutor;

@@ -2,7 +2,6 @@
     <a-table
             size='small'
             ref='table'
-            :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)"
             :scroll='{x: width, y:this.windowHeight-350}'
             v-bind="$attrs"
     >
@@ -42,8 +41,3 @@
       },
     };
 </script>
-<style scoped>
-    .ant-table-striped :deep(.table-striped) td {
-        background-color: #fafafa;
-    }
-</style>

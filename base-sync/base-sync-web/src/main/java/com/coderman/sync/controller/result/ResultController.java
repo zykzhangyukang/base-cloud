@@ -1,17 +1,17 @@
 package com.coderman.sync.controller.result;
 
 import com.coderman.api.vo.PageVO;
-import com.coderman.service.anntation.PageLimit;
 import com.coderman.swagger.annotation.ApiReturnIgnore;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
+import com.coderman.sync.dto.ResultPageDTO;
 import com.coderman.sync.result.ResultModel;
 import com.coderman.sync.service.result.ResultService;
 import com.coderman.sync.vo.CompareVO;
-import com.coderman.sync.vo.ResultVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,21 +25,17 @@ public class ResultController {
     @Resource
     private ResultService resultService;
 
-    @GetMapping(value = "/search")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "currentPage", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_INT, value = "当前页", required = true),
-            @ApiImplicitParam(name = "pageSize", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_INT, value = "分页大小", required = true),
-    })
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "同步记录查询")
+    @PostMapping(value = "/page")
     @ApiReturnIgnore
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "PageVO",value = {"pageRow", "totalRow", "currPage", "totalPage", "dataList"}),
-            @ApiReturnParam(name = "ResultModel",value = {"syncToEs", "msgSrc", "syncTime", "errorMsg", "uuid", "planCode", "msgId", "planName", "mqId", "planUuid", "status", "repeatCount", "msgCreateTime",
-                    "msgContent", "destProject", "srcProject","syncContent","remark"})
+            @ApiReturnParam(name = "PageVO", value = {"pageRow", "totalRow", "currPage", "totalPage", "dataList"}),
+            @ApiReturnParam(name = "ResultModel", value = {"syncToEs", "msgSrc", "syncTime", "errorMsg", "uuid", "planCode", "msgId", "planName", "mqId", "planUuid", "status", "repeatCount", "msgCreateTime",
+                    "msgContent", "destProject", "srcProject", "syncContent", "remark"})
     })
-    public com.coderman.api.vo.ResultVO<PageVO<List<ResultModel>>> search(@RequestParam(value = "page", defaultValue = "1") Integer currentPage,
-                                                      @RequestParam(value = "limit", defaultValue = "20") Integer pageSize, ResultVO resultVO) throws Exception {
-        return this.resultService.search(currentPage, pageSize, resultVO);
+    public com.coderman.api.vo.ResultVO<PageVO<List<ResultModel>>> page(@RequestBody ResultPageDTO resultPageDTO) throws Exception {
+        return this.resultService.page(resultPageDTO);
     }
 
     @GetMapping(value = "/repeat/sync")

@@ -1,5 +1,18 @@
 import http from "@/utils/request";
 
+
+/**
+ * 同步结果列表
+ */
+export const syncResultPage = data => {
+    return http({
+        url: `/sync/result/page`,
+        method: 'post',
+        data: data
+    })
+}
+
+
 /**
  * 同步计划列表
  */

@@ -42,13 +42,13 @@ public interface SyncConstant {
     /**
      * 消息来源
      */
-    @ConstList(group = "msg_source",name = "RocketMQ")
+    @ConstList(group = "msg_src",name = "RocketMQ")
     public static final String MSG_ROCKET_MQ = "rocket_mq";
-    @ConstList(group = "msg_source",name = "分区有序")
+    @ConstList(group = "msg_src",name = "分区有序")
     public static final String MSG_ROCKET_ORDER_MQ = "rocket_order_mq";
-    @ConstList(group = "msg_source",name = "定时器补偿")
+    @ConstList(group = "msg_src",name = "定时器补偿")
     public static final String MSG_SOURCE_JOB = "job";
-    @ConstList(group = "msg_source",name = "手动同步")
+    @ConstList(group = "msg_src",name = "手动同步")
     public static final String MSG_SOURCE_HANDLE = "handle";
 
     /**

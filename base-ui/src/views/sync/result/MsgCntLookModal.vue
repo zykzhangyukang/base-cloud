@@ -6,14 +6,13 @@
              :footer="null"
              @cancel="handleClose"
     >
-            <pre class="plan_code">
-              <code v-highlightjs class="xml" :key="Math.ceil(Math.random()*100000)">{{code}}</code>
+            <pre class="msg_cnt_code">
+              <code v-highlightjs class="json" :key="Math.ceil(Math.random()*100000)">{{code}}</code>
             </pre>
     </a-modal>
 </template>
 
 <script>
-    import {syncPlanDetail} from "@/api/sync";
     import {highlightjs} from '@/utils/highlight';
     import 'highlight.js/styles/idea.css';
 
@@ -26,9 +25,7 @@
         },
         data(){
             return {
-                title: '',
                 code: '',
-                codeKey: '',
                 visible: false,
             }
         },
@@ -36,20 +33,17 @@
             handleClose() {
                 this.visible = false
             },
-            open(uuid) {
-                syncPlanDetail(uuid).then(res=>{
-                    this.title = res.result.description;
-                    this.code = res.result.planContent;
-                    this.codeKey = res.result.planCode;
-                    this.visible = true;
-                })
+            open(code) {
+                const parsedData = JSON.parse(code);
+                this.code = JSON.stringify(parsedData, null, 4);
+                this.visible = true;
             }
         },
     }
 </script>
 
 <style scoped>
-    .plan_code{
+    .msg_cnt_code{
         font-size: 13px;
     }
 </style>
