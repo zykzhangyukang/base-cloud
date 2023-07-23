@@ -1,7 +1,7 @@
 package com.coderman.sync.jobhandler;
 
 import com.coderman.service.util.SpringContextUtil;
-import com.coderman.sync.config.MultiDatasourceConfig;
+import com.coderman.sync.config.SyncDBConfig;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.task.base.MsgTask;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class SyncHandler extends IJobHandler {
 
     @Resource
-    private MultiDatasourceConfig multiDatasourceConfig;
+    private SyncDBConfig syncDBConfig;
 
     @Override
     public ReturnT<String> execute(String param) {
@@ -52,7 +52,7 @@ public class SyncHandler extends IJobHandler {
 
         XxlJobLogger.log("前"+Math.abs(begin)+"分钟 - 前"+Math.abs(end)+"分钟的消息重新投递到mq");
 
-        List<String> databases = multiDatasourceConfig.listDatabases("message");
+        List<String> databases = syncDBConfig.listDatabases("message");
 
         for (String dbName : databases) {
 

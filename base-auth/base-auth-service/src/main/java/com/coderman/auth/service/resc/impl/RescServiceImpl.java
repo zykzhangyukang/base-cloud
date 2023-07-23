@@ -1,7 +1,6 @@
 package com.coderman.auth.service.resc.impl;
 
 import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.exception.BusinessException;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
@@ -11,19 +10,17 @@ import com.coderman.auth.dao.resc.RescDAO;
 import com.coderman.auth.dto.resc.RescPageDTO;
 import com.coderman.auth.dto.resc.RescSaveDTO;
 import com.coderman.auth.dto.resc.RescUpdateDTO;
-import com.coderman.auth.model.func.FuncRescExample;
 import com.coderman.auth.model.resc.RescExample;
 import com.coderman.auth.model.resc.RescModel;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.vo.resc.RescVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.coderman.sync.util.MsgBuilder;
+import com.coderman.sync.util.ProjectEnum;
+import com.coderman.sync.util.SyncUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -131,7 +128,15 @@ public class RescServiceImpl implements RescService {
         insert.setRescName(rescName);
         insert.setMethodType(methodType);
 
-        this.rescDAO.insertSelective(insert);
+        this.rescDAO.insertReturnKey(insert);
+
+        SyncUtil.sync(
+                MsgBuilder.create("insert_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("insert_auth_demo_resc", Collections.singletonList(insert.getRescId()))
+                        .build()
+        );
+
+
         return ResultUtil.getSuccess();
     }
 
@@ -186,6 +191,13 @@ public class RescServiceImpl implements RescService {
         update.setMethodType(methodType);
 
         this.rescDAO.updateByPrimaryKeySelective(update);
+
+        SyncUtil.sync(
+                MsgBuilder.create("update_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("update_auth_demo_resc", Collections.singletonList(rescId))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
@@ -207,6 +219,12 @@ public class RescServiceImpl implements RescService {
         }
 
         this.rescDAO.deleteByPrimaryKey(rescId);
+
+        SyncUtil.sync(
+                MsgBuilder.create("delete_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("delete_auth_demo_resc", Collections.singletonList(rescId))
+                        .build()
+        );
 
         return ResultUtil.getSuccess();
     }

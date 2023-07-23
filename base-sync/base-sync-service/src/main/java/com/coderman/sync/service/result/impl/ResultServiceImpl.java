@@ -21,7 +21,6 @@ import com.coderman.sync.task.SyncTask;
 import com.coderman.sync.task.support.WriteBackTask;
 import com.coderman.sync.util.SqlUtil;
 import com.coderman.sync.vo.CompareVO;
-import com.coderman.sync.vo.ResultVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;

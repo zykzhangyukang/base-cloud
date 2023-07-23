@@ -314,4 +314,13 @@
     from auth_resc
     where resc_url = #{rescUrl}
   </select>
+
+  <insert id="insertReturnKey" useGeneratedKeys="true" keyProperty="rescId">
+      insert into auth_resc (resc_id, resc_name, resc_url,
+      resc_domain, method_type, create_time,
+      update_time)
+    values (#{rescId,jdbcType=INTEGER}, #{rescName,jdbcType=VARCHAR}, #{rescUrl,jdbcType=VARCHAR},
+      #{rescDomain,jdbcType=VARCHAR}, #{methodType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
 </mapper>

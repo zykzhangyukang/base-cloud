@@ -176,6 +176,7 @@
                         dataIndex: 'msgSrc',
                         key: 'msgSrc',
                         ellipsis: true,
+                        width: 120,
                         slots: { customRender: 'msgSrc' },
                     },
                     {

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Configuration
 @ConfigurationProperties(prefix = "sync.jdbc")
 @Data
-public class MultiDatasourceConfig {
+public class SyncDBConfig {
 
     private String commonMaxIdle;
     private String commonMaxWait;

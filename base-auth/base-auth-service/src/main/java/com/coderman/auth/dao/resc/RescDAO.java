@@ -49,4 +49,12 @@ public interface RescDAO extends BaseDAO<RescModel, RescExample> {
      * @return
      */
     List<RescVO> selectRescListByUsername(@Param(value = "username") String username);
+
+    /**
+     * 新增系统资源
+     *
+     * @param rescModel
+     * @return
+     */
+    int insertReturnKey(RescModel rescModel);
 }

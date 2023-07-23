@@ -1,6 +1,6 @@
 package com.coderman.sync.jobhandler;
 
-import com.coderman.sync.config.MultiDatasourceConfig;
+import com.coderman.sync.config.SyncDBConfig;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.executor.AbstractExecutor;
@@ -27,7 +27,7 @@ import java.util.*;
 public class CleanHandler extends IJobHandler {
 
     @Resource
-    private MultiDatasourceConfig datasourceConfig;
+    private SyncDBConfig syncDBConfig;
 
     @SneakyThrows
     @Override
@@ -37,8 +37,8 @@ public class CleanHandler extends IJobHandler {
 
         Set<String> databaseSets = new HashSet<>();
 
-        List<String> messageDatabases = datasourceConfig.listDatabases("message");
-        List<String> callbackDatabases = datasourceConfig.listDatabases("callback");
+        List<String> messageDatabases = syncDBConfig.listDatabases("message");
+        List<String> callbackDatabases = syncDBConfig.listDatabases("callback");
 
         databaseSets.addAll(messageDatabases);
         databaseSets.addAll(callbackDatabases);
@@ -49,7 +49,7 @@ public class CleanHandler extends IJobHandler {
             try {
 
 
-                /***************************** 删除本地消息表冗余数据 ********************************/
+                /***************************** 删除本地消息表冗余数据  【本地消息 】********************************/
 
                 // 获取db类型
                 String dbType = SyncContext.getContext().getDbType(dbname);
@@ -78,7 +78,7 @@ public class CleanHandler extends IJobHandler {
                 }
 
 
-                /******************************** 删除回调消息表冗余数据 ********************************/
+                /******************************** 删除回调消息表冗余数据  【回调记录】********************************/
 
                 paramList.clear();
 
@@ -99,6 +99,9 @@ public class CleanHandler extends IJobHandler {
                     this.deleteLoop(dbname, batchDelSql, paramList);
                 }
 
+
+                /******************************** 删除同步系统冗余数据 【同步记录】 ********************************/
+                // TODO
 
             } catch (Exception e) {
 

@@ -1,6 +1,6 @@
 package com.coderman.sync.init;
 
-import com.coderman.sync.config.MultiDatasourceConfig;
+import com.coderman.sync.config.SyncDBConfig;
 import com.coderman.sync.db.*;
 import com.coderman.sync.util.SyncBeanUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DataSourceInitializer {
 
     @Resource
-    private MultiDatasourceConfig config;
+    private SyncDBConfig config;
 
     /**
      * 初始化数据源

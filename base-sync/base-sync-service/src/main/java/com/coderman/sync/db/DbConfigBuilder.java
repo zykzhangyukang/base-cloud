@@ -1,6 +1,6 @@
 package com.coderman.sync.db;
 
-import com.coderman.sync.config.MultiDatasourceConfig;
+import com.coderman.sync.config.SyncDBConfig;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,14 +11,14 @@ import java.util.Optional;
 
 public class DbConfigBuilder {
 
-    private static MultiDatasourceConfig config;
+    private static SyncDBConfig config;
 
 
-    public static List<AbstractDbConfig> build(MultiDatasourceConfig multiDatasourceConfig) {
+    public static List<AbstractDbConfig> build(SyncDBConfig syncDBConfig) {
 
-        config = multiDatasourceConfig;
+        config = syncDBConfig;
 
-        List<MultiDatasourceConfig.SyncDbConfig> dbList = multiDatasourceConfig.getDbList();
+        List<SyncDBConfig.SyncDbConfig> dbList = syncDBConfig.getDbList();
 
         if(CollectionUtils.isEmpty(dbList)){
 
@@ -28,7 +28,7 @@ public class DbConfigBuilder {
         List<AbstractDbConfig> configList = new ArrayList<>(dbList.size());
 
 
-        for (MultiDatasourceConfig.SyncDbConfig datasource : dbList) {
+        for (SyncDBConfig.SyncDbConfig datasource : dbList) {
 
             String url = datasource.getUrl();
             String type = datasource.getType();
@@ -62,7 +62,7 @@ public class DbConfigBuilder {
         return configList;
     }
 
-    private static MongoConfig getMongoConfig(MultiDatasourceConfig.SyncDbConfig syncDbConfig ) {
+    private static MongoConfig getMongoConfig(SyncDBConfig.SyncDbConfig syncDbConfig ) {
 
         // mongo 配置
         String dbname = syncDbConfig.getDbname();
@@ -101,7 +101,7 @@ public class DbConfigBuilder {
     }
 
 
-    private static AbstractDbConfig getOracleDbConfig(MultiDatasourceConfig.SyncDbConfig syncDbConfig) {
+    private static AbstractDbConfig getOracleDbConfig(SyncDBConfig.SyncDbConfig syncDbConfig) {
 
         OracleConfig oracleConfig = new OracleConfig();
 
@@ -145,7 +145,7 @@ public class DbConfigBuilder {
         return oracleConfig;
     }
 
-    private static AbstractDbConfig getMSSQLDbConfig(MultiDatasourceConfig.SyncDbConfig syncDbConfig,  String driverClassName) {
+    private static AbstractDbConfig getMSSQLDbConfig(SyncDBConfig.SyncDbConfig syncDbConfig, String driverClassName) {
 
         MSSQLConfig mssqlConfig = new MSSQLConfig();
 
@@ -192,7 +192,7 @@ public class DbConfigBuilder {
 
     }
 
-    private static AbstractDbConfig getMySQLConfig(MultiDatasourceConfig.SyncDbConfig syncDbConfig) {
+    private static AbstractDbConfig getMySQLConfig(SyncDBConfig.SyncDbConfig syncDbConfig) {
 
         MySQLConfig mySQLConfig = new MySQLConfig();
 

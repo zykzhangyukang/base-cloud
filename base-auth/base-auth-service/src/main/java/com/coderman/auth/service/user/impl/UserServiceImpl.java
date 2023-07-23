@@ -640,6 +640,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         updateModel.setUserStatus(AuthConstant.USER_STATUS_ENABLE);
         updateModel.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(updateModel);
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                        .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
@@ -663,6 +670,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         updateModel.setUserStatus(AuthConstant.USER_STATUS_DISABLE);
         updateModel.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(updateModel);
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                        .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
@@ -767,6 +781,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         record.setPassword(PasswordUtils.encryptSHA256(password));
         record.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(record);
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                        .addIntList("update_auth_demo_user_pwd", Collections.singletonList(userId))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
