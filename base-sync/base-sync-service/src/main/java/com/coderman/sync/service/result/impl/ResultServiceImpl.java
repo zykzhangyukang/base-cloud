@@ -148,8 +148,8 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        ResultModel resultModel = this.jdbcTemplate.queryForObject("select status,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?",
-                new BeanPropertyRowMapper<>(ResultModel.class), uuid);
+        final String sql  = "select status,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {
 
@@ -162,7 +162,6 @@ public class ResultServiceImpl implements ResultService {
         }
 
         String msgContent = resultModel.getMsgContent();
-
         SyncContext.getContext().syncData(msgContent, resultModel.getMqId(), SyncConstant.MSG_SOURCE_HANDLE, resultModel.getRepeatCount() + 1);
 
         return ResultUtil.getSuccess();
@@ -177,9 +176,8 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        ResultModel resultModel = this.jdbcTemplate.queryForObject("select status,msg_id,mq_id,msg_content,repeat_count " +
-                        "from pub_sync_result where uuid=?",
-                new BeanPropertyRowMapper<>(ResultModel.class), uuid);
+        final String sql  = "select status,msg_id,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {
 
@@ -189,9 +187,7 @@ public class ResultServiceImpl implements ResultService {
         this.esService.updateSyncResultSuccess(resultModel, remark);
 
         if (StringUtils.isNotBlank(resultModel.getMsgContent())) {
-
             SyncTask syncTask = SyncTask.build(resultModel.getMsgContent(), StringUtils.EMPTY, SyncConstant.MSG_SOURCE_HANDLE, 0);
-
             WriteBackTask writeBackTask = WriteBackTask.build(syncTask);
             writeBackTask.process();
         }

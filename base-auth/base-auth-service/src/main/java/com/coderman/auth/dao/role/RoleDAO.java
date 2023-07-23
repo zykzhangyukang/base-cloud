@@ -51,4 +51,12 @@ public interface RoleDAO extends BaseDAO<RoleModel, RoleExample> {
      * @return
      */
     List<RoleModel> selectUserRoleList(@Param(value = "userId") Integer userId);
+
+    /**
+     * 新增并返回主键
+     *
+     * @param roleModel 角色
+     * @return
+     */
+    int insertReturnKey(RoleModel roleModel);
 }

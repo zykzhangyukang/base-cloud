@@ -266,4 +266,13 @@
        from auth_user_role where user_id = #{userId}
     )
   </select>
+
+
+  <insert id="insertReturnKey" useGeneratedKeys="true" keyProperty="roleId">
+    insert into auth_role (role_id, role_name, role_desc,
+      create_time, update_time)
+    values (#{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
 </mapper>

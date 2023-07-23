@@ -42,6 +42,12 @@
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
+                <a-form-item>
+                    <a-button type="default" @click="signSuccess">标记成功</a-button>
+                </a-form-item>
+                <a-form-item>
+                    <a-button type="default" @click="repeatSync">重新同步</a-button>
+                </a-form-item>
             </a-form>
 
             <HTable
@@ -49,6 +55,7 @@
                     :loading='tableLoading'
                     rowKey='uuid'
                     bordered
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                     :columns='tableColumns'
                     :data-source='tableData'
             >
@@ -95,10 +102,15 @@
 <script>
     import HTable from "@/components/table/HTable";
     import HPage from "@/components/pagination/HPage";
-    import {syncResultPage} from "@/api/sync";
+    import {syncResultPage, syncResultRepeatSync, syncResultSignSuccess} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
     import MsgCntLookModal from "@/views/sync/result/MsgCntLookModal";
     import SyncCntLookModal from "@/views/sync/result/SyncCntLookModal";
+    import {Modal} from "ant-design-vue";
+    import {createVNode} from "vue";
+    import {authUserRefreshLogin} from "@/api/auth";
+    import store from "@/store";
+    import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 
     export default {
         name: "plan.vue",
@@ -110,6 +122,7 @@
         },
         data() {
             return {
+                selectedRowKeys: [],
                 tooltipStyle: {
                     color: 'white',
                     fontSize: '10px',
@@ -250,6 +263,53 @@
             },
         },
         methods:{
+            signSuccess(){
+                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                    return this.$message.warn("请选择一条记录进行操作！");
+                }
+                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                if(p && p.status !== 'fail'){
+                    return this.$message.warn("请选择同步失败的记录！");
+                }
+                let _this = this;
+                Modal.confirm({
+                    title: '标记成功',
+                    icon: createVNode(ExclamationCircleOutlined),
+                    content: '确定标记成功吗，请在开发人员的协助下操作！',
+                    okText: '确认',
+                    cancelText: '取消',
+                    onOk() {
+                        syncResultSignSuccess(p.uuid).then(e=>{
+                            _this.$message.success("操作成功,请刷新查看！");
+                        })
+                    },
+                });
+            },
+            repeatSync(){
+                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                    return this.$message.warn("请选择一条记录进行操作！");
+                }
+                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                if(p && p.status !== 'fail'){
+                    return this.$message.warn("请选择同步失败的记录！");
+                }
+                let _this = this;
+                Modal.confirm({
+                    title: '重新同步',
+                    icon: createVNode(ExclamationCircleOutlined),
+                    content: '确定重新同步吗，请在开发人员的协助下操作！',
+                    okText: '确认',
+                    cancelText: '取消',
+                    onOk() {
+                        syncResultRepeatSync(p.uuid).then(e=>{
+                            _this.$message.success("操作成功,请刷新查看！");
+                        })
+                    },
+                });
+            },
+            onSelectChange(selectedRowKeys){
+                this.selectedRowKeys = selectedRowKeys;
+            },
             pageSearchChange() {
                 this.searchParams.currentPage = 1
                 this.queryData()
@@ -263,6 +323,7 @@
                     ...this.$options.data().searchParams,
                     ...page
                 }
+                this.selectedRowKeys = [];
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;

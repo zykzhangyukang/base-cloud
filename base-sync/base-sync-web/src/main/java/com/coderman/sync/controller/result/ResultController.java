@@ -38,21 +38,27 @@ public class ResultController {
         return this.resultService.page(resultPageDTO);
     }
 
-    @GetMapping(value = "/repeat/sync")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "重新同步")
+    @PutMapping(value = "/repeat/sync")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "uuid", required = true),
     })
-    @ApiReturnIgnore
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+    })
     public com.coderman.api.vo.ResultVO<Void> repeatSync(String uuid) {
 
         return this.resultService.repeatSync(uuid);
     }
 
-    @GetMapping(value = "/sign/success")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "手动标记成功")
+    @PutMapping(value = "/sign/success")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uuid", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "uuid", required = true),
     })
-    @ApiReturnIgnore
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+    })
     public com.coderman.api.vo.ResultVO<Void> signSuccess(String uuid) throws IOException {
 
         return this.resultService.signSuccess(uuid,"手动标记");

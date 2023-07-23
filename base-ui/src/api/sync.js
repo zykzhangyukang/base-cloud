@@ -1,6 +1,27 @@
 import http from "@/utils/request";
 
 
+
+/**
+ * 重新同步记录
+ */
+export const syncResultRepeatSync = uuid => {
+    return http({
+        url: `/sync/result/repeat/sync?uuid=${uuid}`,
+        method: 'put',
+    })
+}
+
+/**
+ * 标记同步记录成功
+ */
+export const syncResultSignSuccess = uuid => {
+    return http({
+        url: `/sync/result/sign/success?uuid=${uuid}`,
+        method: 'put',
+    })
+}
+
 /**
  * 同步结果列表
  */

@@ -33,6 +33,9 @@ import com.coderman.auth.vo.role.RoleUserInitVO;
 import com.coderman.auth.vo.role.RoleVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
+import com.coderman.sync.util.MsgBuilder;
+import com.coderman.sync.util.ProjectEnum;
+import com.coderman.sync.util.SyncUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -140,7 +143,13 @@ public class RoleServiceImpl implements RoleService {
         insert.setCreateTime(currentDate);
         insert.setUpdateTime(currentDate);
 
-        this.roleDAO.insertSelective(insert);
+        this.roleDAO.insertReturnKey(insert);
+
+        SyncUtil.sync(
+                MsgBuilder.create("insert_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("insert_auth_demo_role", Collections.singletonList(insert.getRoleId()))
+                        .build()
+        );
 
         return ResultUtil.getSuccess();
     }
@@ -166,6 +175,13 @@ public class RoleServiceImpl implements RoleService {
 
         // 删除角色
         this.roleDAO.deleteByPrimaryKey(roleId);
+
+        SyncUtil.sync(
+                MsgBuilder.create("delete_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("delete_auth_demo_role", Collections.singletonList(roleId))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
@@ -212,6 +228,12 @@ public class RoleServiceImpl implements RoleService {
         update.setRoleDesc(roleDesc);
         update.setUpdateTime(new Date());
         this.roleDAO.updateByPrimaryKeySelective(update);
+
+        SyncUtil.sync(
+                MsgBuilder.create("update_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                        .addIntList("update_auth_demo_role", Collections.singletonList(roleId))
+                        .build()
+        );
 
         return ResultUtil.getSuccess();
     }
