@@ -16,13 +16,13 @@ import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,6 +33,7 @@ import java.util.Set;
 
 @Api(value = "公共接口", tags = "公共接口")
 @RestController
+@Slf4j
 @RequestMapping(value = "/${domain}")
 public class AuthController {
 
@@ -52,9 +53,9 @@ public class AuthController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取资源信息")
     @PostMapping(value = "/api/resc/all")
     public ResultVO<Map<String, Set<Integer>>> sysRescAll(@RequestParam(value = "domain") String project,
-                                                                                                                                     @RequestParam(value = "authSecurityCode") String authSecurityCode) {
+                                                                                                                                     @RequestParam(value = CommonConstant.AUTH_SECURITY_NAME,required = false) String code) {
 
-        this.checkSecurityCode(authSecurityCode);
+        this.checkSecurityCode(code);
 
         return this.rescApi.getSystemAllRescMap(project);
     }
@@ -63,24 +64,24 @@ public class AuthController {
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "获取用户信息")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
-            @ApiReturnParam(name = "AuthUserVO", value = {"realName", "rescIdList", "deptCode", "username", "token"}),
+            @ApiReturnParam(name = "AuthUserVO", value = {"realName", "rescIdList", "deptCode", "username", "token","expiredTime", "deptName", "userId"}),
     })
     @PostMapping(value = "/api/user/info")
-    public ResultVO<AuthUserVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME, required = false) String token,
-                                                                                      @RequestHeader(value = "authSecurityCode") String authSecurityCode) {
+    public ResultVO<AuthUserVO> info(@RequestHeader(value = CommonConstant.USER_TOKEN_NAME) String token,
+                                                                                      @RequestHeader(value = CommonConstant.AUTH_SECURITY_NAME,required = false) String code) {
 
-        this.checkSecurityCode(authSecurityCode);
+        this.checkSecurityCode(code);
 
         return this.userService.getUserByToken(token);
     }
 
-    private void checkSecurityCode(String authSecurityCode){
-        Assert.notNull(authSecurityCode , "authSecurityCode is null");
-        String code = authErpConfig.getAuthSecurityCode();
-        if(StringUtils.isNotBlank(code)){
-            if(!StringUtils.equals(code,authSecurityCode)){
-                throw new BusinessException("权限系统秘钥错误！");
-            }
+    private void checkSecurityCode(String code) {
+        String securityCode = authErpConfig.getAuthSecurityCode();
+        if (StringUtils.isBlank(securityCode)) {
+            return;
+        }
+        if (StringUtils.isNotBlank(securityCode) && !StringUtils.equals(code, securityCode)) {
+            throw new BusinessException("权限安全码错误，请业务系统核对！code:" + code);
         }
     }
 

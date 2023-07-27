@@ -102,7 +102,6 @@
                 this.$emit("select-node",item);
             },
             onExpand(expandedKeys, event) {
-                console.log(expandedKeys)
                 this.expandedKeys = expandedKeys;
                 this.autoExpandParent = false;
                 if(event.node.dataRef.slots.icon !=='func'){
