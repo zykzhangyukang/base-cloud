@@ -102,11 +102,11 @@
 <style scoped>
 .resc_item{
   background-color: #f5f5f5;
-  border-radius: 5px;
+  border-radius: 2px;
   font-size: 11px;
   color: #000000d9;
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 6px;
 }
 .user_item{
   display: inline-block;

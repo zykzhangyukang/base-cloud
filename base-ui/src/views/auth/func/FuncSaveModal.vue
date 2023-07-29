@@ -9,7 +9,7 @@
              ref="form"
     >
         <a-form :model="form" ref="formRef" :rules="formRules" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item v-if="parentFunc.funcName" label="父级功能">
+            <a-form-item v-if="parentFunc && parentFunc.funcName" label="父级功能">
                 <a-input  v-model:value="parentFunc.funcName"  disabled />
             </a-form-item>
             <a-form-item label="功能名称" name="funcName">
@@ -130,7 +130,9 @@
             open(parentFunc){
                 this.visible = true;
                 this.parentFunc = parentFunc;
-                this.form.parentId = parentFunc.funcId;
+                if(parentFunc){
+                    this.form.parentId = parentFunc.funcId;
+                }
             }
         }
     }
