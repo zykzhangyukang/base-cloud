@@ -48,6 +48,9 @@
                 <a-form-item>
                     <a-button type="default" @click="repeatSync">重新同步</a-button>
                 </a-form-item>
+                <a-form-item>
+                    <a-button type="default" @click="validResultData">校验结果</a-button>
+                </a-form-item>
             </a-form>
 
             <HTable
@@ -96,20 +99,20 @@
         </a-card>
         <sync-cnt-look-modal ref="SyncCntLookModal"></sync-cnt-look-modal>
         <msg-cnt-look-modal ref="MsgCntLookModal"></msg-cnt-look-modal>
+        <valid-data-look-modal ref="ValidDataLookModal"></valid-data-look-modal>
     </a-layout>
 </template>
 
 <script>
     import HTable from "@/components/table/HTable";
     import HPage from "@/components/pagination/HPage";
-    import {syncResultPage, syncResultRepeatSync, syncResultSignSuccess} from "@/api/sync";
+    import {syncResultPage, syncResultRepeatSync, syncResultSignSuccess, syncResultValidData} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
     import MsgCntLookModal from "@/views/sync/result/MsgCntLookModal";
     import SyncCntLookModal from "@/views/sync/result/SyncCntLookModal";
+    import ValidDataLookModal from "@/views/sync/result/ValidDataLookModal";
     import {Modal} from "ant-design-vue";
     import {createVNode} from "vue";
-    import {authUserRefreshLogin} from "@/api/auth";
-    import store from "@/store";
     import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
 
     export default {
@@ -118,7 +121,8 @@
             HTable,
             HPage,
             MsgCntLookModal,
-            SyncCntLookModal
+            SyncCntLookModal,
+            ValidDataLookModal
         },
         data() {
             return {
@@ -285,6 +289,15 @@
                         })
                     },
                 });
+            },
+            validResultData(){
+                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                    return this.$message.warn("请选择一条记录进行操作！");
+                }
+                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                if(p){
+                    this.$refs['ValidDataLookModal'].open(p);
+                }
             },
             repeatSync(){
                 if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){

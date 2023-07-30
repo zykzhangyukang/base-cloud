@@ -147,7 +147,7 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        final String sql  = "select status,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        final String sql = "select status,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
         ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {
@@ -175,7 +175,7 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        final String sql  = "select status,msg_id,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        final String sql = "select status,msg_id,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
         ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {
@@ -208,17 +208,15 @@ public class ResultServiceImpl implements ResultService {
 
         if (CollectionUtils.isEmpty(srcExecutor.getSqlList()) || CollectionUtils.isEmpty(destExecutor.getSqlList())) {
 
-            return null;
+            return ResultUtil.getSuccessList(CompareVO.class, Collections.emptyList());
         }
 
         // 查询源表数据
         List<SqlMeta> srcResultList = srcExecutor.execute();
-
         Map<String, CompareVO> srcResultMap = this.transformData(planMeta, srcResultList, convert, "src");
 
         // 查询目标表数据
         List<SqlMeta> destResultList = destExecutor.execute();
-
         Map<String, CompareVO> destResultMap = this.transformData(planMeta, destResultList, convert, "dest");
 
 
@@ -226,7 +224,6 @@ public class ResultServiceImpl implements ResultService {
         List<CompareVO> resultList = new ArrayList<>();
 
         for (String key : srcResultMap.keySet()) {
-
 
             CompareVO compareVO = srcResultMap.get(key);
             if (destResultMap.containsKey(key)) {

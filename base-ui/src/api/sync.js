@@ -3,6 +3,18 @@ import http from "@/utils/request";
 
 
 /**
+ * 数据校验
+ */
+export const syncResultValidData = data => {
+    return http({
+        url: `/sync/result//valid/data`,
+        method: 'post',
+        data
+    })
+}
+
+
+/**
  * 重新同步记录
  */
 export const syncResultRepeatSync = uuid => {

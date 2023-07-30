@@ -6,12 +6,14 @@ import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
 import com.coderman.sync.dto.ResultPageDTO;
+import com.coderman.sync.dto.ResultValidDataDTO;
 import com.coderman.sync.result.ResultModel;
 import com.coderman.sync.service.result.ResultService;
 import com.coderman.sync.vo.CompareVO;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -64,16 +66,18 @@ public class ResultController {
         return this.resultService.signSuccess(uuid,"手动标记");
     }
 
-
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "校验同步结果")
     @PostMapping(value = "/valid/data")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "msgContent", paramType = SwaggerConstant.PARAM_QUERY, dataType = SwaggerConstant.DATA_STRING, value = "msgContent", required = true),
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+            @ApiReturnParam(name = "CompareVO", value = {"srcUnique", "destColumnList", "srcResultList", "destResultList", "srcColumnList", "destUnique", "destTable", "srcTable"}),
     })
-    @ApiReturnIgnore
-    public com.coderman.api.vo.ResultVO<List<CompareVO>> validResultData(String msgContent) throws Throwable {
+    public com.coderman.api.vo.ResultVO<List<CompareVO>> validResultData(@RequestBody ResultValidDataDTO resultValidDataDTO) throws Throwable {
+
+        String msgContent = resultValidDataDTO.getMsgContent();
+        Assert.notNull(msgContent, "msgContent is null");
 
         return this.resultService.selectTableData(msgContent, true);
     }
-
 
 }
