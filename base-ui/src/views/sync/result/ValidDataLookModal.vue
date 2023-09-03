@@ -5,6 +5,7 @@
              :footer="null"
              @cancel="handleClose"
     >
+        <a-spin :spinning="spinning" size="small" >
         <div class="content-wrap">
             <p v-if="validTables.length !==0">共有<b class="red">{{count}}</b>个字段不一致</p>
             <table cellpadding="0" v-for="(item,index) in validTables" :key="index">
@@ -32,6 +33,7 @@
             </table>
             <div class="isCenter" v-if="validTables.length === 0">暂无数据</div>
         </div>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -43,6 +45,7 @@
         components: {},
         data() {
             return {
+                spinning: false,
                 visible: false,
                 count: 0,
                 validTables: [],
@@ -53,9 +56,10 @@
                 this.visible = false
             },
             open(p) {
+                this.visible = true;
+                this.spinning = true;
                 let param = {msgContent: p.msgContent}
                 syncResultValidData(param).then(res => {
-                    this.visible = true;
                     this.validTables = res.result;
                     let c = 0;
                     this.validTables.forEach((item, index) => {
@@ -66,6 +70,8 @@
                         })
                     })
                     this.count = c;
+                }).finally(()=>{
+                    this.spinning = false;
                 })
             }
         },

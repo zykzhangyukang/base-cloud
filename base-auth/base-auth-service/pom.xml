@@ -35,6 +35,11 @@
             <artifactId>base-erp-service</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.coderman</groupId>
+            <artifactId>base-aop-limiter</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

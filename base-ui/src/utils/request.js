@@ -29,7 +29,7 @@ http.interceptors.response.use(
 
             return Promise.resolve(response.data);
 
-        } else if (response.data.code === 405) {
+        } else if (response.data.code === 405 || response.data.code === 429) {
 
             message.warn(response.data.msg);
 

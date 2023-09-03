@@ -7,6 +7,7 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning">
         <a-form :model="form" ref="formRef" :rules="formRules" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="所属系统" name="rescDomain">
                 <a-select v-model:value="form.rescDomain"  placeholder="所属系统">
@@ -25,6 +26,7 @@
                 </a-select>
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 <script>
@@ -35,6 +37,7 @@
         name: "roleUpdateModal.vue",
         data() {
             return {
+                spinning: false,
                 confirmLoading: false,
                 visible: false,
                 labelCol: {span: 4},
@@ -82,12 +85,14 @@
                     .validate()
                     .then(() => {
                         this.confirmLoading = true;
+                        this.spinning = true;
                         authRescUpdate(this.form).then(res => {
                             this.$message.success("更新资源成功！");
                             this.handleClose();
                             this.$emit('success')
                         }).finally(e => {
                             this.confirmLoading = false;
+                            this.spinning = false;
                         })
                     })
                     .catch(() => {
@@ -101,10 +106,13 @@
                 this.$refs.formRef.resetFields();
             },
             open(rescId) {
+                this.spinning = true;
+                this.visible = true;
                 this.form.rescId = rescId;
                 authRescSelectById(rescId).then(res => {
                     this.form = res.result;
-                    this.visible = true;
+                }).finally(()=>{
+                    this.spinning = false;
                 });
             }
         }

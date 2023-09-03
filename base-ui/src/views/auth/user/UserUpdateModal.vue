@@ -7,6 +7,7 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" :label-col="labelCol"  ref="formRef" :rules="formRules"  :wrapper-col="wrapperCol">
             <a-form-item label="登录账号" name="username">
                 <a-input v-model:value="form.username" :disabled="true" />
@@ -25,6 +26,7 @@
                 </a-radio-group>
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -35,6 +37,7 @@
         name: "userUpdateModal.vue",
         data() {
             return {
+                spinning: false,
                 deptList: [],
                 confirmLoading: false,
                 visible: false,
@@ -72,6 +75,7 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         authUserUpdate(this.form).then(res => {
                             this.$message.success("更新用户成功！");
@@ -79,6 +83,7 @@
                             this.$emit('success')
                         }).finally(e=>{
                             this.confirmLoading =  false;
+                            this.spinning = false;
                         })
                     })
                     .catch(() => {
@@ -92,11 +97,13 @@
                 this.$refs.formRef.resetFields();
             },
             open(userId){
+                this. spinning = true;
+                this.visible = true;
                 authUserSelectById(userId).then(res=>{
                     this.form = res.result;
                     return authDeptList();
                 }).then(res=>{
-                    this.visible = true;
+                    this.spinning = false;
                     this.deptList=res.result;
                 })
             }

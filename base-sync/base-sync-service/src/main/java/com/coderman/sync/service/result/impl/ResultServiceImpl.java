@@ -3,6 +3,7 @@ package com.coderman.sync.service.result.impl;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
+import com.coderman.redis.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.sync.constant.PlanConstant;
@@ -32,6 +33,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -44,7 +46,17 @@ public class ResultServiceImpl implements ResultService {
     private EsService esService;
 
     @Resource
+    private ResultService resultService;
+
+    @Resource
     private JdbcTemplate jdbcTemplate;
+
+    @Resource
+    private RedisService redisService;
+
+    private final static String SYNC_MSG_ID = "sync_msg_id";
+    private final static String SYNC_MSG_ID_FLAG = "1";
+    private final static Integer SYNC_REDID_DB = 2;
 
     @Override
     @LogError(value = "同步记录搜索")
@@ -191,6 +203,8 @@ public class ResultServiceImpl implements ResultService {
             writeBackTask.process();
         }
 
+        // 写入redis 2 小时
+        this.resultService.successMsgSave2Redis(resultModel.getMqId() , 60 * 60 * 2);
         return ResultUtil.getSuccess();
     }
 
@@ -256,6 +270,32 @@ public class ResultServiceImpl implements ResultService {
 
         return ResultUtil.getSuccessList(CompareVO.class, resultList);
     }
+
+    @Override
+    @LogError(value = "消费成功 && 标记完成 写入redis")
+    public void successMsgSave2Redis(String msgId) {
+
+        this.successMsgSave2Redis(msgId, 60);
+    }
+
+    @Override
+    public void successMsgSave2Redis(String msgId, Integer expiredSeconds) {
+        Assert.hasText(msgId, "msgId is null");
+        Assert.notNull(expiredSeconds, "expiredSeconds is null");
+
+        redisService.setString(SYNC_MSG_ID + msgId, SYNC_MSG_ID_FLAG, expiredSeconds, SYNC_REDID_DB);
+    }
+
+    @Override
+    @LogError(value = "消费成功 && 标记完成是否存在与redis中")
+    public boolean successMsgExistRedis(String msgId) {
+
+        Assert.hasText(msgId, "msgId is null");
+
+        String syncMsgIdFlag = redisService.getString(SYNC_MSG_ID + msgId, SYNC_REDID_DB);
+        return StringUtils.isNotBlank(syncMsgIdFlag) && SYNC_MSG_ID_FLAG.equalsIgnoreCase(syncMsgIdFlag);
+    }
+
 
     private Map<String, CompareVO> transformData(PlanMeta planMeta, List<SqlMeta> dataResultList, boolean convert, String flag) {
 

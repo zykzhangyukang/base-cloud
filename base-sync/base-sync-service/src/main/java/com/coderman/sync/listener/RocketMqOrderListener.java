@@ -1,9 +1,8 @@
 package com.coderman.sync.listener;
 
-import com.coderman.service.redis.RedisService;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
-import org.apache.commons.lang3.StringUtils;
+import com.coderman.sync.service.result.ResultService;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
@@ -20,26 +19,18 @@ import java.util.List;
 public class RocketMqOrderListener implements MessageListenerOrderly {
 
     private final static Logger logger = LoggerFactory.getLogger(RocketMqListener.class);
-    private final static String SYNC_ORDER_MSG_ID = "sync_msg_id";
-    private final static String SYNC_ORDER_MSG_ID_FLAG = "1";
-
-    private final static Integer SYNC_ORDER_REDID_DB = 2;
 
     @Resource
-    private RedisService redisService;
+    private ResultService resultService;
 
     @Override
     public ConsumeOrderlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeOrderlyContext context) {
 
         int retryTimeLimit = 16;
 
-        String redisKey = SYNC_ORDER_MSG_ID + messageExtList.get(0).getMsgId();
-
         try {
 
-            String syncMsgIdFlag = redisService.getString(redisKey, SYNC_ORDER_REDID_DB);
-
-            if (StringUtils.isNotBlank(syncMsgIdFlag) && SYNC_ORDER_MSG_ID_FLAG.equalsIgnoreCase(syncMsgIdFlag)) {
+            if (this.resultService.successMsgExistRedis(messageExtList.get(0).getMsgId())) {
 
                 logger.error("consumeOrderMessage-重复消息,标记成功:" + messageExtList.get(0).getMsgId());
                 return ConsumeOrderlyStatus.SUCCESS;
@@ -92,7 +83,7 @@ public class RocketMqOrderListener implements MessageListenerOrderly {
         }
 
         // 如果没有异常都任务消费成功
-        redisService.setString(redisKey, SYNC_ORDER_MSG_ID_FLAG, 60, SYNC_ORDER_REDID_DB);
+        this.resultService.successMsgSave2Redis(messageExtList.get(0).getMsgId());
 
         return ConsumeOrderlyStatus.SUCCESS;
     }

@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>com.coderman</groupId>
-            <artifactId>base-erp-service</artifactId>
+            <artifactId>base-service</artifactId>
         </dependency>
 
         <dependency>

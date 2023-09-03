@@ -7,6 +7,7 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning" size="small" >
         <a-form :model="form" ref="formRef" :rules="formRules"  :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="功能名称" name="funcName">
                 <a-input v-model:value="form.funcName"/>
@@ -35,6 +36,7 @@
             </a-form-item>
         </a-form>
         <icon-picker ref="funcIconPicker" @success="selectIcon"></icon-picker>
+        </a-spin>
     </a-modal>
 </template>
 <script>
@@ -50,6 +52,7 @@
         },
         data() {
             return {
+                spinning: false,
                 confirmLoading: false,
                 visible: false,
                 labelCol: {span: 4},
@@ -95,12 +98,14 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         authFuncUpdate(this.form).then(res => {
                             this.$message.success("更新功能成功！");
                             this.handleClose();
                             this.$emit('success')
                         }).finally(e => {
+                            this.spinning = false;
                             this.confirmLoading = false;
                         })
                     })
@@ -115,9 +120,12 @@
                 this.$refs.formRef.resetFields();
             },
             open(funcId) {
+                this.spinning = true;
+                this.visible = true;
                 authFuncSelectById(funcId).then(res => {
                     this.form = res.result;
-                    this.visible = true;
+                }).finally(()=>{
+                   this.spinning = false;
                 });
             }
         }

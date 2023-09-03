@@ -1,23 +1,14 @@
 package com.coderman.sync.listener;
 
-import com.coderman.service.redis.RedisService;
-import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
-import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import com.coderman.sync.service.result.ResultService;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,27 +19,18 @@ import java.util.List;
 public class RocketMqListener implements MessageListenerConcurrently {
 
     private final static Logger logger = LoggerFactory.getLogger(RocketMqListener.class);
-    private final static String SYNC_MSG_ID = "sync_msg_id";
-    private final static String SYNC_MSG_ID_FLAG = "1";
-
-    private final static Integer SYNC_REDID_DB = 1;
 
     @Resource
-    private RedisService redisService;
+    private ResultService resultService;
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> messageExtList, ConsumeConcurrentlyContext context) {
 
         int retryTimeLimit = 8;
 
-        String redisKey = SYNC_MSG_ID + messageExtList.get(0).getMsgId();
-
         try {
 
-            String syncMsgIdFlag = redisService.getString(redisKey, SYNC_REDID_DB);
-
-            if (StringUtils.isNotBlank(syncMsgIdFlag) && SYNC_MSG_ID_FLAG.equalsIgnoreCase(syncMsgIdFlag)) {
-
+            if (this.resultService.successMsgExistRedis(messageExtList.get(0).getMsgId())) {
                 logger.error("consumeMessage-重复消息,标记成功:" + messageExtList.get(0).getMsgId());
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
@@ -100,7 +82,7 @@ public class RocketMqListener implements MessageListenerConcurrently {
         }
 
         // 如果没有异常都任务消费成功
-        redisService.setString(redisKey, SYNC_MSG_ID_FLAG, 60, SYNC_REDID_DB);
+        this.resultService.successMsgSave2Redis(messageExtList.get(0).getMsgId());
 
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
