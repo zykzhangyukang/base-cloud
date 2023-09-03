@@ -1,6 +1,5 @@
 package com.coderman.sync.es;
 
-import com.alibaba.fastjson.JSONObject;
 import com.coderman.api.vo.PageVO;
 import com.coderman.sync.result.ResultModel;
 import org.elasticsearch.search.builder.SearchSourceBuilder;

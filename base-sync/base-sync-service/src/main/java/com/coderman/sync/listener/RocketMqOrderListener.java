@@ -83,7 +83,7 @@ public class RocketMqOrderListener implements MessageListenerOrderly {
         }
 
         // 如果没有异常都任务消费成功
-        this.resultService.successMsgSave2Redis(messageExtList.get(0).getMsgId());
+        this.resultService.successMsgSave2Redis(messageExtList.get(0).getMsgId(), 60);
 
         return ConsumeOrderlyStatus.SUCCESS;
     }

@@ -7,6 +7,7 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol"  ref="formRef" :rules="formRules">
             <a-form-item label="登录账号" name="username">
                 <a-input v-model:value="form.username" autocomplete="off" />
@@ -28,6 +29,7 @@
                 </a-radio-group>
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -38,6 +40,7 @@
         name: "userSaveModal.vue",
         data() {
             return {
+                spinning: false,
                 formRules: {
                     username: [
                         { required: true, message: '请填写用户名', trigger: 'blur' },
@@ -78,6 +81,7 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         authUserSave(this.form).then(res => {
                             this.$message.success("新增用户成功");
@@ -85,6 +89,7 @@
                             this.$emit('success')
                         }).finally(e=>{
                             this.confirmLoading = false;
+                            this.spinning = false;
                         })
                     })
                     .catch(() => {

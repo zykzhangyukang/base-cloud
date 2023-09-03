@@ -8,6 +8,7 @@
              okText="提交"
              ref="form"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" ref="formRef" :rules="formRules" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item label="所属系统" name="rescDomain">
                 <a-select v-model:value="form.rescDomain"  placeholder="所属系统">
@@ -26,6 +27,7 @@
                 </a-select>
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -37,6 +39,7 @@
         name: "rescSaveModel.vue",
         data() {
             return {
+                spinning: false,
                 confirmLoading:  false,
                 visible: false,
                 labelCol: { span: 4 },
@@ -82,12 +85,14 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         authRescSave(this.form).then(res => {
                             this.$message.success("新增资源成功！");
                             this.handleClose();
                             this.$emit('success')
                         }).finally(e=>{
+                            this.spinning = false;
                             this.confirmLoading =false;
                         })
                     })

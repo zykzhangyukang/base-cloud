@@ -8,6 +8,7 @@
              okText="提交"
              ref="form"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" ref="formRef" :rules="formRules" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-form-item v-if="parentFunc && parentFunc.funcName" label="父级功能">
                 <a-input  v-model:value="parentFunc.funcName"  disabled />
@@ -39,6 +40,7 @@
             </a-form-item>
         </a-form>
         <icon-picker ref="funcIconPicker" @success="selectIcon"></icon-picker>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -56,6 +58,7 @@
         data() {
             return {
                 parentFunc:{},
+                spinning: false,
                 confirmLoading:  false,
                 visible: false,
                 labelCol: { span: 4 },
@@ -107,12 +110,14 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         authFucSave(this.form).then(res => {
                             this.$message.success("新增功能成功");
                             this.handleClose();
                             this.$emit('success')
                         }).finally(e=>{
+                            this.spinning = false;
                             this.confirmLoading = false;
                         })
                     })

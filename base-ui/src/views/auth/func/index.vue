@@ -61,7 +61,7 @@
                                 {{ funcTypeGName[text] }}
                             </template>
                             <template #funcKey="{ text }">
-                                <a-tag>{{text}}</a-tag>
+                                <a class="btn-text-small color303030">{{text}}</a>
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>

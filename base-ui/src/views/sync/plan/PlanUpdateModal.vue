@@ -8,11 +8,13 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" :label-col="labelCol"  ref="formRef" :rules="formRules"  :wrapper-col="wrapperCol">
             <a-form-item label="" name="planContent">
                 <a-textarea v-model:value="form.planContent"  :rows="15" autocomplete="off" />
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -24,6 +26,7 @@
         data() {
             return {
                 deptList: [],
+                spinning: false,
                 confirmLoading: false,
                 visible: false,
                 labelCol: { span: 4 },
@@ -45,12 +48,14 @@
                     .validate()
                     .then(() => {
                         this.confirmLoading = true;
+                        this.spinning = true;
                         syncPlanUpdate(this.form).then(res => {
                             this.$message.success("更新计划成功！");
                             this.handleClose();
                             this.$emit('success')
                         }).finally(e=>{
                             this.confirmLoading =  false;
+                            this.spinning = false;
                         })
                     })
                     .catch(() => {

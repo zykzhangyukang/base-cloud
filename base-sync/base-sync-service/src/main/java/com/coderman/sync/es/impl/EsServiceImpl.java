@@ -1,5 +1,6 @@
 package com.coderman.sync.es.impl;
 
+import com.alibaba.druid.support.http.ResourceServlet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.coderman.api.util.ResultUtil;
@@ -7,10 +8,13 @@ import com.coderman.api.vo.PageVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.util.SpringContextUtil;
 import com.coderman.sync.constant.PlanConstant;
+import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.es.EsService;
 import com.coderman.sync.result.ResultModel;
+import com.coderman.sync.service.result.ResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -61,6 +65,9 @@ public class EsServiceImpl implements EsService {
 
     // 当前使用的索引名
     public String syncResultIndexName;
+
+    @Resource
+    private ResultService resultService;
 
 
     @Override
@@ -117,19 +124,6 @@ public class EsServiceImpl implements EsService {
                 .should(QueryBuilders.termQuery("status", PlanConstant.RESULT_STATUS_FAIL));
         updateByQuery.setQuery(boolQueryBuilder);
 
-
-        /**
-         *   new Script(ScriptType.INLINE, Script.DEFAULT_SCRIPT_LANG,
-         *                         "ctx._source.planUuid = '" + resultModel.getPlanUuid() + "';" +
-         *                                 "ctx._source.planCode = '" + resultModel.getPlanCode() + "';" +
-         *                                 "ctx._source.planName = '" + resultModel.getPlanName() + "';" +
-         *                                 "ctx._source.srcProject = '" + resultModel.getSrcProject() + "';" +
-         *                                 "ctx._source.destProject = '" + resultModel.getDestProject() + "';" +
-         *                                 "ctx._source.syncContent = '" + resultModel.getSyncContent() + "';" +
-         *                                 "ctx._source.status = 'success';" +
-         *                                 "ctx._source.remark = '" + remark + "'", Collections.emptyMap())
-         */
-
         updateByQuery.setBatchSize(100);
         updateByQuery.setSize(100);
         updateByQuery.setScript(
@@ -143,6 +137,13 @@ public class EsServiceImpl implements EsService {
 
             log.error("批量更新ES同步记录状态失败:{}",JSON.toJSONString(response.getBulkFailures()));
         }
+
+        // 如果是RocketMQ重试消息,标记成功，写入redis防止RocketMQ消息后续继续重试。
+//        if (StringUtils.isNotBlank(resultModel.getMqId()) && Arrays.asList(SyncConstant.MSG_ROCKET_MQ , SyncConstant.MSG_ROCKET_ORDER_MQ).contains(resultModel.getMsgSrc())) {
+//
+//            log.warn("RocketMQ重试消息->标记成功. .mqId:{}",resultModel.getMqId());
+//            this.resultService.successMsgSave2Redis(resultModel.getMqId(), 60 * 60 * 2);
+//        }
     }
 
     @Override

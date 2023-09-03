@@ -45,12 +45,6 @@ public interface ResultService {
      */
     com.coderman.api.vo.ResultVO<List<CompareVO>> selectTableData(String msgContent, boolean convert) throws Throwable;
 
-
-    /**
-     * 消费成功 && 标记完成 写入redis
-     */
-    void successMsgSave2Redis(String msgId);
-
     /**
      *
      * 消费成功 && 标记完成 写入redis

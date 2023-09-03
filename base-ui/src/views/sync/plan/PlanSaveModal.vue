@@ -8,11 +8,13 @@
              cancelText="取消"
              okText="提交"
     >
+        <a-spin :spinning="spinning" >
         <a-form :model="form" :label-col="labelCol" :wrapper-col="wrapperCol"  ref="formRef" :rules="formRules">
             <a-form-item label="" name="planContent">
                 <a-textarea v-model:value="form.planContent"  :rows="15" autocomplete="off" />
             </a-form-item>
         </a-form>
+        </a-spin>
     </a-modal>
 </template>
 <script>
@@ -26,6 +28,7 @@
                         {required: true, message: '请填写同步计划', trigger: 'blur'},
                     ],
                 },
+                spinning: false,
                 confirmLoading: false,
                 visible: false,
                 labelCol: { span: 4 },
@@ -40,6 +43,7 @@
                 this.$refs.formRef
                     .validate()
                     .then(() => {
+                        this.spinning = true;
                         this.confirmLoading = true;
                         syncPlanSave(this.form).then(res => {
                             this.$message.success("新增计划成功");
@@ -47,6 +51,7 @@
                             this.$emit('success')
                         }).finally(e=>{
                             this.confirmLoading = false;
+                            this.spinning = false;
                         })
                     })
                     .catch(() => {
