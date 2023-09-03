@@ -22,6 +22,7 @@ import com.coderman.sync.task.SyncTask;
 import com.coderman.sync.task.support.WriteBackTask;
 import com.coderman.sync.util.SqlUtil;
 import com.coderman.sync.vo.CompareVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@Slf4j
 public class ResultServiceImpl implements ResultService {
 
     @Resource
@@ -217,10 +219,16 @@ public class ResultServiceImpl implements ResultService {
         PlanMeta planMeta = SyncContext.getContext().getPlanMeta(msgMeta.getPlanCode());
 
         // 构建执行器
-        AbstractExecutor srcExecutor = this.buildExecutor(msgMeta, planMeta, "src");
-        AbstractExecutor destExecutor = this.buildExecutor(msgMeta, planMeta, "dest");
+        AbstractExecutor srcExecutor = null;
+        AbstractExecutor destExecutor = null;
+        try {
+            srcExecutor = this.buildExecutor(msgMeta, planMeta, "src");
+            destExecutor= this.buildExecutor(msgMeta, planMeta, "dest");
+        }catch (Exception e){
+            log.error("构建执行器错误！message:{},msgContent:{}",e.getMessage(),msgContent);
+        }
 
-        if (CollectionUtils.isEmpty(srcExecutor.getSqlList()) || CollectionUtils.isEmpty(destExecutor.getSqlList())) {
+        if (Objects.isNull(srcExecutor) || Objects.isNull(destExecutor) || CollectionUtils.isEmpty(srcExecutor.getSqlList()) || CollectionUtils.isEmpty(destExecutor.getSqlList())) {
 
             return ResultUtil.getSuccessList(CompareVO.class, Collections.emptyList());
         }
