@@ -1,6 +1,17 @@
 import http from "@/utils/request";
 
 
+/**
+ * 同步消息列表
+ */
+export const syncMsgPage = data => {
+    return http({
+        url: `/sync/message/page`,
+        method: 'post',
+        data: data
+    })
+}
+
 
 /**
  * 数据校验

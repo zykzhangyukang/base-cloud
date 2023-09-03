@@ -1,5 +1,5 @@
 <template>
-    <a-layout class='role-container'>
+    <a-layout class='result-container'>
         <a-card>
             <a-form
                     :style="{'marginBottom':'10px'}"
@@ -37,19 +37,19 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'">搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="signSuccess">标记成功</a-button>
+                    <a-button type="default" @click="signSuccess" v-permission="'sync:result:signSuccess'">标记成功</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="repeatSync">重新同步</a-button>
+                    <a-button type="default" @click="repeatSync" v-permission="'sync:result:repeatSync'">重新同步</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="validResultData">校验结果</a-button>
+                    <a-button type="default" @click="validResultData" v-permission="'sync:result:validResultData'">校验结果</a-button>
                 </a-form-item>
             </a-form>
 
@@ -317,6 +317,7 @@
                     onOk() {
                         syncResultRepeatSync(p.uuid).then(e=>{
                             _this.$message.success("操作成功,请刷新查看！");
+                            _this.selectedRowKeys = [];
                         })
                     },
                 });

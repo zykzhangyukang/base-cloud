@@ -1,5 +1,5 @@
 <template>
-    <a-layout class='role-container'>
+    <a-layout class='plan-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
                 <a-button type="danger"  v-permission="'sync:plan:add'" @click="handleAdd">添加</a-button>

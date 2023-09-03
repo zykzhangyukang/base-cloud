@@ -9,14 +9,13 @@ import com.coderman.service.service.BaseService;
 import com.coderman.service.util.SpringContextUtil;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
+import com.coderman.sync.dto.MessagePageDTO;
 import com.coderman.sync.message.MqMessageModel;
 import com.coderman.sync.service.message.MessageService;
-import com.mongodb.DBObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.CriteriaDefinition;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -34,8 +33,18 @@ public class MessageServiceImpl extends BaseService implements MessageService {
 
     @Override
     @LogError(value = "MQ消息发送记录列表")
-    public ResultVO<PageVO<List<MqMessageModel>>> selectMessagePage(String srcProject, String destProject, String sendStatus, String dealStatus, Date startTime, Date endTime, String msgId,String mid
-            , Integer currentPage, Integer pageSize) {
+    public ResultVO<PageVO<List<MqMessageModel>>> selectMessagePage(MessagePageDTO messagePageDTO) {
+
+        Integer currentPage = messagePageDTO.getCurrentPage();
+        Integer pageSize = messagePageDTO.getPageSize();
+        String srcProject = messagePageDTO.getSrcProject();
+        String destProject = messagePageDTO.getDestProject();
+        String sendStatus = messagePageDTO.getSendStatus();
+        String dealStatus = messagePageDTO.getDealStatus();
+        Date startTime = messagePageDTO.getStartTime();
+        Date endTime = messagePageDTO.getEndTime();
+        String msgId = messagePageDTO.getMsgId();
+        String mid = messagePageDTO.getMid();
 
         if (null == currentPage) {
             currentPage = 1;
