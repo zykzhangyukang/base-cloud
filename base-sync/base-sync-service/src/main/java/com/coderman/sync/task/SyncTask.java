@@ -88,7 +88,7 @@ public class SyncTask {
 
         // 这里判断一下该同步消息是否已经被处理成功过.
         Date after7Day = DateUtils.addDays(new Date(), -7);
-        String sql = "select count(1) as c from pub_sync_result where msg_id=? and msg_create_time < ? and status=? and msg_src = ?";
+        String sql = "select count(1) as c from sync_result where msg_id=? and msg_create_time < ? and status=? and msg_src = ?";
         int count = Optional.ofNullable(SpringContextUtil.getBean(JdbcTemplate.class).queryForObject(sql, Integer.class, resultModel.getMsgId(), after7Day, PlanConstant.RESULT_STATUS_SUCCESS, msgSrc)).orElse(0);
 
         if (count > 0) {
@@ -239,7 +239,7 @@ public class SyncTask {
 
         jdbcTemplate.update(
                 "insert into " +
-                        "pub_sync_result(uuid,plan_uuid,plan_code,plan_name,msg_src" +
+                        "sync_result(uuid,plan_uuid,plan_code,plan_name,msg_src" +
                         ",mq_id,msg_id,msg_content,src_project,dest_project,sync_content," +
                         "msg_create_time,sync_time,status,error_msg,repeat_count,remark,sync_to_es)" +
                         " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -276,7 +276,7 @@ public class SyncTask {
 
             String remark = "系统标记成功";
 
-            jdbcTemplate.update("update pub_sync_result set status=?,remark=? where msg_id=? and status=?", preparedStatement -> {
+            jdbcTemplate.update("update sync_result set status=?,remark=? where msg_id=? and status=?", preparedStatement -> {
 
                 preparedStatement.setString(1, PlanConstant.RESULT_STATUS_SUCCESS);
                 preparedStatement.setString(2, remark);

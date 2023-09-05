@@ -104,7 +104,7 @@ public class EsServiceImpl implements EsService {
                 NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
                 Map<String, Object> params = new HashMap<>(uuidList.size());
                 params.put("params", uuidList);
-                namedParameterJdbcTemplate.update("update pub_sync_result set sync_To_es = 1 where uuid in (:params)", params);
+                namedParameterJdbcTemplate.update("update sync_result set sync_To_es = 1 where uuid in (:params)", params);
             }
 
         }

@@ -161,7 +161,7 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        final String sql = "select status,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        final String sql = "select status,mq_id,msg_content,repeat_count from sync_result where uuid=?";
         ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {
@@ -189,7 +189,7 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("uuid不能为空!");
         }
 
-        final String sql = "select msg_src,status,msg_id,mq_id,msg_content,repeat_count from pub_sync_result where uuid=?";
+        final String sql = "select msg_src,status,msg_id,mq_id,msg_content,repeat_count from sync_result where uuid=?";
         ResultModel resultModel = this.jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ResultModel.class), uuid);
 
         if (resultModel == null) {

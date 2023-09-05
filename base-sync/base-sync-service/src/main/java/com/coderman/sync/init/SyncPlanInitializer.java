@@ -26,7 +26,7 @@ public class SyncPlanInitializer {
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    private final static String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status, create_time,update_time from pub_sync_plan where status= ?";
+    private final static String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status, create_time,update_time from sync_plan where status= ?";
 
     public synchronized void init() {
 

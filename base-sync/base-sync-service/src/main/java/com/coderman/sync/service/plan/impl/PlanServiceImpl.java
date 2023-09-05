@@ -84,7 +84,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("已存在编号为 " + planCode + " 的同步计划");
         }
 
-        String sql = "insert into pub_sync_plan(uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) values(?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into sync_plan(uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time) values(?,?,?,?,?,?,?,?,?,?,?)";
         int count = jdbcTemplate.update(sql,
                 preparedStatement -> {
                     preparedStatement.setString(1, UUIDUtils.getPrimaryValue());
@@ -133,7 +133,7 @@ public class PlanServiceImpl implements PlanService {
 
         params.add(uuid);
 
-        int rowCount = this.jdbcTemplate.update("delete from pub_sync_plan where uuid=?", params.toArray());
+        int rowCount = this.jdbcTemplate.update("delete from sync_plan where uuid=?", params.toArray());
 
         if (rowCount <= 0) {
 
@@ -199,7 +199,7 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-        String sql = "update pub_sync_plan set plan_content=? ,plan_code = ?,description=? ,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?  where uuid=?";
+        String sql = "update sync_plan set plan_content=? ,plan_code = ?,description=? ,src_db=?,dest_db=?,src_project=?,dest_project=?,update_time=?  where uuid=?";
         int count = this.jdbcTemplate.update(sql, planContent, planCode,description, srcDb, destDb, srcProject, destProject, new Date(), uuid);
 
         if (count <= 0) {
@@ -242,7 +242,7 @@ public class PlanServiceImpl implements PlanService {
             return ResultUtil.getWarn("同步计划不存在");
         }
 
-        String sql = "update pub_sync_plan set status=?,update_time=? where uuid=?";
+        String sql = "update sync_plan set status=?,update_time=? where uuid=?";
 
         int count = this.jdbcTemplate.update(sql, status, new Date(), uuid);
         if (count <= 0) {
@@ -262,7 +262,7 @@ public class PlanServiceImpl implements PlanService {
         List<Object> params = new ArrayList<>();
 
         params.add(uuid);
-        String sql = "select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where uuid=?";
+        String sql = "select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from sync_plan where uuid=?";
         return this.jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
     }
 
@@ -273,7 +273,7 @@ public class PlanServiceImpl implements PlanService {
         List<Object> params = new ArrayList<>();
 
         params.add(code);
-        String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from pub_sync_plan where plan_code=?";
+        String sql = "select uuid,plan_code,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content from sync_plan where plan_code=?";
         return this.jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(PlanVO.class), params.toArray());
     }
 
@@ -299,7 +299,7 @@ public class PlanServiceImpl implements PlanService {
 
         StringBuilder countSql = new StringBuilder("select count(1) ");
         StringBuilder realSql = new StringBuilder("select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
-        StringBuilder sql = new StringBuilder(" from pub_sync_plan where 1=1");
+        StringBuilder sql = new StringBuilder(" from sync_plan where 1=1");
 
         if (currentPage == null) {
 

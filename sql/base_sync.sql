@@ -20,7 +20,7 @@ CREATE TABLE `pub_mq_message` (
 ) ENGINE=InnoDB AUTO_INCREMENT=349249 DEFAULT CHARSET=utf8mb4;
 
 -- 同步计划 --
-CREATE TABLE `pub_sync_plan` (
+CREATE TABLE `sync_plan` (
   `uuid` varchar(32) NOT NULL,
   `plan_code` varchar(64) NOT NULL,
   `description` varchar(64) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE `pub_sync_plan` (
 
 
 -- 同步结果 --
-CREATE TABLE `pub_sync_result` (
+CREATE TABLE `sync_result` (
   `uuid` varchar(32) NOT NULL,
   `plan_uuid` varchar(32) DEFAULT NULL,
   `plan_code` varchar(64) DEFAULT NULL,
