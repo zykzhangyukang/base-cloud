@@ -65,7 +65,7 @@ export default {
       return this.$route.path
     },
     menu() {
-      return store.state.user.info.menus
+      return store.state.user.info.menus || []
     },
     menuToggle() {
       return store.state.app.menuToggle
