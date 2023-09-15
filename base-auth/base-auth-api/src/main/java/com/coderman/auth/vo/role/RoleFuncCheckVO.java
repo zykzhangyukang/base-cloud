@@ -23,4 +23,12 @@ public class RoleFuncCheckVO extends BaseModel {
 
     @ApiModelProperty(value = "本次删除")
     private List<FuncModel> delList;
+
+    public RoleFuncCheckVO(List<FuncModel> insertList, List<FuncModel> delList) {
+        this.insertList = insertList;
+        this.delList = delList;
+    }
+
+    public RoleFuncCheckVO() {
+    }
 }

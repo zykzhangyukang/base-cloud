@@ -454,6 +454,10 @@ public class RoleServiceImpl implements RoleService {
 
         // 取交集
         Collection<FuncModel> intersection = CollectionUtils.intersection(needAuthFuncKeyList, historyAuthFuncList);
+        if(CollectionUtils.isEmpty(intersection)){
+            return ResultUtil.getSuccess(RoleFuncCheckVO.class, new  RoleFuncCheckVO(Collections.emptyList() , Collections.emptyList()));
+        }
+
         // 新增的
         Collection<FuncModel> addList = CollectionUtils.subtract(needAuthFuncKeyList, intersection);
         // 删除的
