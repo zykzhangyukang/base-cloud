@@ -357,11 +357,6 @@ public class FuncServiceImpl implements FuncService {
 
         FuncModel rootNode = this.funcDAO.selectByPrimaryKey(rootFuncId);
 
-        if (StringUtils.equals(rootNode.getFuncType(), AuthConstant.FUNC_TYPE_DIR)) {
-
-            return ResultUtil.getWarn("目录功能不支持解绑用户！");
-        }
-
         if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(rootNode.getParentId())) {
 
             return ResultUtil.getWarn("不允许解绑最顶级的功能！");
