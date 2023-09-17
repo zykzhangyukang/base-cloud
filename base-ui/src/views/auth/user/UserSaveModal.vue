@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="添加用户"
+             title="新增用户"
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"

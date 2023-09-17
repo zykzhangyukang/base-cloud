@@ -2,7 +2,7 @@
     <a-layout class='plan-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger"  v-permission="'sync:plan:add'" @click="handleAdd">添加</a-button>
+                <a-button type="primary"  v-permission="'sync:plan:add'" @click="handleAdd"><PlusOutlined />新增计划</a-button>
             </div>
             <a-form
                     :style="{'marginBottom':'10px'}"

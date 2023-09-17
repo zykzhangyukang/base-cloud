@@ -1,6 +1,6 @@
 <template>
     <a-modal v-model:visible="visible"
-             title="添加功能"
+             title="新增功能"
              @ok="handleOk"
              @cancel="handleClose"
              :confirm-loading="confirmLoading"

@@ -9,8 +9,8 @@
                 <a-col :span="20">
                     <a-card>
                         <div :style="{'textAlign':'right'}">
-                            <a-button type="danger" @click="handleAdd" v-permission="'auth:func:add'">
-                                添加
+                            <a-button type="primary" @click="handleAdd" v-permission="'auth:func:add'">
+                                <PlusOutlined />新增功能
                             </a-button>
                         </div>
                         <a-form

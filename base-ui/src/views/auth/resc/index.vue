@@ -2,7 +2,7 @@
     <a-layout class='resc-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd" v-permission="'auth:resc:add'">添加</a-button>
+                <a-button type="primary" @click="handleAdd" v-permission="'auth:resc:add'"><PlusOutlined />新增资源</a-button>
             </div>
             <a-form
                     :style="{'marginBottom':'10px'}"

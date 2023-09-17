@@ -2,7 +2,7 @@
     <a-layout class='role-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd" v-permission="'auth:role:add'">添加</a-button>
+                <a-button type="primary" @click="handleAdd" v-permission="'auth:role:add'"><PlusOutlined />新增角色</a-button>
             </div>
             <a-form
                     :style="{'marginBottom':'10px'}"

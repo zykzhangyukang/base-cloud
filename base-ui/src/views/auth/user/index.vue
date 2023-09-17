@@ -2,7 +2,7 @@
     <a-layout class='user-container'>
         <a-card>
             <div :style="{'textAlign':'right'}">
-                <a-button type="danger" @click="handleAdd" v-permission="'auth:user:add'">添加</a-button>
+                <a-button type="primary" @click="handleAdd" v-permission="'auth:user:add'"><PlusOutlined />新增用户</a-button>
             </div>
             <a-form
                     ref='form'
