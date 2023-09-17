@@ -15,7 +15,7 @@ module.exports = {
   },
   configureWebpack: config => {
     if (process.env.ENV === 'production') {
-      config.plugins.push(new EndWebpackPlugin('dist','项目名称'))
+      config.plugins.push(new EndWebpackPlugin('dist','微服务系统'))
     }
   },
   chainWebpack: (config) => {
@@ -28,8 +28,8 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            'primary-color': '#1890ff', // 主色调
-            'link-color': '#1890ff', // 链接颜色
+            // 'primary-color': '#1890ff', // 主色调
+            // 'link-color': '#1890ff', // 链接颜色
           },
           javascriptEnabled: true,
         },

@@ -61,14 +61,14 @@
                                 {{ funcTypeGName[text] }}
                             </template>
                             <template #funcKey="{ text }">
-                                <a class="btn-text-small color303030">{{text}}</a>
+                                [{{text}}]
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
-                                         <a v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-small color303030" @click="handleLookResc(record.funcId)">
+                                         <a v-if="record.rescVOList !==null && record.rescVOList.length >0" class="btn-text-small color_link" @click="handleLookResc(record.funcId)">
                                              {{record.rescVOList.map(item=>{return item.rescUrl}).join(",") }}
                                          </a>
-                                        <a v-else class="btn-text-small color303030" @click="handleLookResc(record.funcId)">-</a>
+                                        <a v-else class="btn-text-small color_link" @click="handleLookResc(record.funcId)">-</a>
                                     </span>
                             </template>
                             <template #action="{ record }">
@@ -357,6 +357,7 @@ export default {
             },
         },
         created() {
+            this.searchParams.rescUrl =  this.$route.params.rescUrl || '';
             this.pageSearchChange();
         }
     }

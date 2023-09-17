@@ -13,7 +13,7 @@ const getRoutes = (menuTree) => {
 
 const getMenuList = (menuTree,menuList) => {
   for(let i = 0; i< menuTree.length; i++){
-    let route = ruleRoutes.find(r => r.name === menuTree[i].funcKey);
+    let route = ruleRoutes.find(r => r.path === menuTree[i].funcKey);
     if (route) {
       menuList.push(route);
       store.setMenuItem(menuTree[i], 'path', route.path);

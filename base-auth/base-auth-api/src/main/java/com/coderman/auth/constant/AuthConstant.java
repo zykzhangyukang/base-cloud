@@ -74,10 +74,10 @@ public interface AuthConstant {
      */
     String FUNC_TYPE_GROUP = "func_type_group";
 
-    @ConstList(group = FUNC_TYPE_GROUP, name = "目录")
+    @ConstList(group = FUNC_TYPE_GROUP, name = "菜单路由")
     String FUNC_TYPE_DIR = "dir";
 
-    @ConstList(group = FUNC_TYPE_GROUP, name = "功能")
+    @ConstList(group = FUNC_TYPE_GROUP, name = "功能按钮")
     String FUNC_TYPE_FUNC = "func";
 
     /**

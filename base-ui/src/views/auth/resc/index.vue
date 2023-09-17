@@ -47,7 +47,8 @@
                 </template>
                 <template #action="{ record }">
                     <div class="action-btns">
-                         <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.rescId)" v-permission="'auth:resc:update'"><EditOutlined/>编辑</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.rescId)" v-permission="'auth:resc:update'"><EditOutlined/>编辑</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleFuncSearch(record.rescUrl)" v-permission="'auth:resc:funcSearch'"><SearchOutlined />功能</a>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"
@@ -79,7 +80,6 @@
     import constant, {authDomain} from "@/utils/constant";
     import rescSaveModal from "@/views/auth/resc/RescSaveModal";
     import rescUpdateModal from "@/views/auth/resc/RescUpdateModal";
-    import {DeleteOutlined, EditOutlined} from '@ant-design/icons-vue';
     import HPage from "@/components/pagination/HPage";
     import HTable from "@/components/table/HTable";
 
@@ -88,8 +88,6 @@
         components: {
             rescSaveModal,
             rescUpdateModal,
-            DeleteOutlined,
-            EditOutlined,
             HPage,
             HTable
         },
@@ -172,6 +170,9 @@
         methods:{
             handleUpdate(id){
                 this.$refs['rescUpdateModal'].open(id);
+            },
+            handleFuncSearch(rescUrl){
+                this.$router.push({ name: "AuthFunc", params: { rescUrl: rescUrl } })
             },
             handleDelete(id){
                 authRescDelete(id).then(e=>{
