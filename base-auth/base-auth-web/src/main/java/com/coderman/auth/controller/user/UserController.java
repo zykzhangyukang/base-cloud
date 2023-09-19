@@ -174,7 +174,7 @@ public class UserController {
         return this.userService.updateDisable(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "新增用户")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "新增用户")
     @PostMapping(value = "/save")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
