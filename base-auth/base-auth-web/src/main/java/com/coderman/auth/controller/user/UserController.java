@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/info")
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "获取用户菜单与权限")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "获取菜单权限")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "UserPermissionVO", value = {"realName", "deptCode", "deptName", "username", "token", "userId", "buttons", "menus","expiredTime"}),
@@ -91,7 +91,7 @@ public class UserController {
         return this.userService.info(token);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户分配角色初始化")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "分配角色初始化")
     @GetMapping(value = "/role/init")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_FORM, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
@@ -104,7 +104,7 @@ public class UserController {
         return this.userService.selectUserRoleInit(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "用户分配角色")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "分配角色")
     @PutMapping(value = "/role/update")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"})
@@ -113,7 +113,7 @@ public class UserController {
         return this.userService.updateUserRole(userRoleUpdateDTO);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "根据ID获取用户信息")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "用户详情")
     @GetMapping(value = "/detail")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", paramType = SwaggerConstant.PARAM_PATH, dataType = SwaggerConstant.DATA_INT, value = "用户id", required = true)
@@ -126,7 +126,7 @@ public class UserController {
         return this.userService.selectUserById(userId);
     }
 
-    @ApiOperation(httpMethod = SwaggerConstant.METHOD_GET, value = "查询用户列表")
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户列表")
     @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
