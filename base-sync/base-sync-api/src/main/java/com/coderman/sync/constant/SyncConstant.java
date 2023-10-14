@@ -11,32 +11,12 @@ public interface SyncConstant {
      */
     @ConstList(group = "src_project",name = "权限系统")
     public static final String SRC_PROJECT_AUTH= "auth";
-    @ConstList(group = "src_project",name = "商品系统")
-    public static final String SRC_PROJECT_SKU = "sku";
-    @ConstList(group = "src_project",name = "订单系统")
-    public static final String SRC_PROJECT_ORDER = "order";
-    @ConstList(group = "src_project",name = "测试系统")
-    public static final String SRC_PROJECT_DEMO= "demo";
 
     /**
      * 目标系统
      */
-    @ConstList(group = "dest_project",name = "采购系统")
-    public static final String DEST_PROJECT_PMS = "pms";
-    @ConstList(group = "dest_project",name = "仓储系统")
-    public static final String DEST_PROJECT_WMS= "wms";
-    @ConstList(group = "dest_project",name = "营销后台")
-    public static final String DEST_PROJECT_MMS = "mms";
-    @ConstList(group = "dest_project",name = "购物车")
-    public static final String DEST_PROJECT_CART = "cart";
-    @ConstList(group = "dest_project",name = "营销前台")
-    public static final String DEST_PROJECT_MARKET= "market";
-    @ConstList(group = "dest_project",name = "订单系统")
-    public static final String DEST_PROJECT_ORDER = "order";
-    @ConstList(group = "dest_project",name = "索引系统")
-    public static final String DEST_PROJECT_PIM = "pim";
-    @ConstList(group = "dest_project",name = "测试系统")
-    public static final String DEST_PROJECT_DEMO = "demo";
+    @ConstList(group = "dest_project",name = "权限系统-sync")
+    public static final String SRC_PROJECT_AUTH_SYNC= "auth_sync";
 
 
     /**

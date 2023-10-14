@@ -131,7 +131,7 @@ public class RescServiceImpl implements RescService {
         this.rescDAO.insertReturnKey(insert);
 
         SyncUtil.sync(
-                MsgBuilder.create("insert_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("insert_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("insert_auth_demo_resc", Collections.singletonList(insert.getRescId()))
                         .build()
         );
@@ -193,7 +193,7 @@ public class RescServiceImpl implements RescService {
         this.rescDAO.updateByPrimaryKeySelective(update);
 
         SyncUtil.sync(
-                MsgBuilder.create("update_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("update_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("update_auth_demo_resc", Collections.singletonList(rescId))
                         .build()
         );
@@ -221,7 +221,7 @@ public class RescServiceImpl implements RescService {
         this.rescDAO.deleteByPrimaryKey(rescId);
 
         SyncUtil.sync(
-                MsgBuilder.create("delete_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("delete_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("delete_auth_demo_resc", Collections.singletonList(rescId))
                         .build()
         );

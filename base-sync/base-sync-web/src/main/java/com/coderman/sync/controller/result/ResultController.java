@@ -1,6 +1,7 @@
 package com.coderman.sync.controller.result;
 
 import com.coderman.api.vo.PageVO;
+import com.coderman.erp.util.AuthUtil;
 import com.coderman.swagger.annotation.ApiReturnIgnore;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
@@ -63,7 +64,7 @@ public class ResultController {
     })
     public com.coderman.api.vo.ResultVO<Void> signSuccess(String uuid) throws IOException {
 
-        return this.resultService.signSuccess(uuid,"手动标记");
+        return this.resultService.signSuccess(uuid, AuthUtil.getCurrent().getUsername() + "-手动标记成功");
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "校验同步结果")

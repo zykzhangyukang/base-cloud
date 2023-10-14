@@ -1,6 +1,9 @@
 <template>
     <a-layout class='msg-container'>
         <a-card>
+            <div :style="{'textAlign':'right'}">
+                <a-button type="primary"  ><PlusOutlined />自动刷新</a-button>
+            </div>
             <a-form
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
@@ -26,7 +29,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -139,6 +142,7 @@
                         title: '处理次数',
                         dataIndex: 'dealCount',
                         key: 'dealCount',
+                        align: 'center',
                     },
                     {
                         title: '发送时间',

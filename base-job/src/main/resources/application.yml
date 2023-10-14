@@ -1,5 +1,5 @@
 server:
-  port: 9871
+  port: 6850
   servlet:
     context-path: /xxl-job-admin
 # spring-boot-admin配置

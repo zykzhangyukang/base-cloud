@@ -67,26 +67,21 @@ http.interceptors.response.use(
 
                 message.error(' 您访问的资源不存在！（404）');
 
+            } else if (error.response.status === 429) {
+
+                message.error(' 您的请求过于频繁！（429）');
+
             } else if (error.response.status === 503) {
 
                 message.error(' 网关转发异常，请稍后再试！');
 
-            } else {
+            }else if (error.response.status === 500){
 
-                if (error.toString().search('timeout') > -1) {
-                    message.error('请求超时，请重试或联系管理员！');
-                }
+                message.error('抱歉，服务器内部异常！');
 
-                if (error.toString().search('Network Error') > -1) {
-                    message.error('请连接网络！');
-                } else {
-                    // 其他未知错误不提示
-                    message.error({
-                        content: error.message,
-                        type: 'error',
-                        duration: 5 * 1000
-                    })
-                }
+            }  else {
+
+                message.error('unknown error！');
             }
         }
 

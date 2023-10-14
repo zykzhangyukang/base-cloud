@@ -37,19 +37,19 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'">搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'" :loading="loading1"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="signSuccess" v-permission="'sync:result:signSuccess'">标记成功</a-button>
+                    <a-button type="default" @click="signSuccess" v-permission="'sync:result:signSuccess'"  :loading="loading2">标记成功</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="repeatSync" v-permission="'sync:result:repeatSync'">重新同步</a-button>
+                    <a-button type="default" @click="repeatSync" v-permission="'sync:result:repeatSync'"  :loading="loading3">重新同步</a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="default" @click="validResultData" v-permission="'sync:result:validResultData'">校验结果</a-button>
+                    <a-button type="default" @click="validResultData" v-permission="'sync:result:validResultData'" >校验结果</a-button>
                 </a-form-item>
             </a-form>
 
@@ -58,7 +58,7 @@
                     :loading='tableLoading'
                     rowKey='uuid'
                     bordered
-                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type: 'radio' }"
                     :columns='tableColumns'
                     :data-source='tableData'
             >
@@ -126,7 +126,11 @@
         },
         data() {
             return {
+                loading1: false,
+                loading2: false,
+                loading3: false,
                 selectedRowKeys: [],
+                selectedRows: [],
                 tooltipStyle: {
                     color: 'white',
                     fontSize: '10px',
@@ -268,6 +272,10 @@
             },
         },
         methods:{
+            onSelectChange(selectedRowKeys, selectedRows) {
+                this.selectedRowKeys = selectedRowKeys;
+                this.selectedRows = selectedRows;
+            },
             signSuccess(){
                 if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
                     return this.$message.warn("请选择一条记录进行操作！");
@@ -284,8 +292,11 @@
                     okText: '确认',
                     cancelText: '取消',
                     onOk() {
+                        _this.loading2 = true;
                         syncResultSignSuccess(p.uuid).then(e=>{
                             _this.$message.success("操作成功,请刷新查看！");
+                        }).finally(()=>{
+                            _this.loading2 = false;
                         })
                     },
                 });
@@ -315,19 +326,24 @@
                     okText: '确认',
                     cancelText: '取消',
                     onOk() {
+                        _this.loading3 = true;
                         syncResultRepeatSync(p.uuid).then(e=>{
                             _this.$message.success("操作成功,请刷新查看！");
                             _this.selectedRowKeys = [];
+                        }).finally(()=>{
+                            _this.loading3 = false;
                         })
                     },
                 });
             },
-            onSelectChange(selectedRowKeys){
-                this.selectedRowKeys = selectedRowKeys;
-            },
-            pageSearchChange() {
-                this.searchParams.currentPage = 1
-                this.queryData()
+            async pageSearchChange() {
+                try {
+                    this.loading1 = true;
+                    this.searchParams.currentPage = 1
+                    await this.queryData()
+                } finally {
+                    this.loading1 = false;
+                }
             },
             pageSearchReset() {
                 const page = {
@@ -339,6 +355,7 @@
                     ...page
                 }
                 this.selectedRowKeys = [];
+                this.selectedRows = [];
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;

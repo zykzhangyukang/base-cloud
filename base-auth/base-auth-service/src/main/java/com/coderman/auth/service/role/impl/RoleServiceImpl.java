@@ -146,7 +146,7 @@ public class RoleServiceImpl implements RoleService {
         this.roleDAO.insertReturnKey(insert);
 
         SyncUtil.sync(
-                MsgBuilder.create("insert_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("insert_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("insert_auth_demo_role", Collections.singletonList(insert.getRoleId()))
                         .build()
         );
@@ -177,7 +177,7 @@ public class RoleServiceImpl implements RoleService {
         this.roleDAO.deleteByPrimaryKey(roleId);
 
         SyncUtil.sync(
-                MsgBuilder.create("delete_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("delete_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("delete_auth_demo_role", Collections.singletonList(roleId))
                         .build()
         );
@@ -230,7 +230,7 @@ public class RoleServiceImpl implements RoleService {
         this.roleDAO.updateByPrimaryKeySelective(update);
 
         SyncUtil.sync(
-                MsgBuilder.create("update_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.DEMO)
+                MsgBuilder.create("update_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("update_auth_demo_role", Collections.singletonList(roleId))
                         .build()
         );

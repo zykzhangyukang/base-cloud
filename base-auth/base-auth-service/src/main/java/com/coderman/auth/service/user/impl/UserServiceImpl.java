@@ -482,7 +482,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.insertReturnKey(insertModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("insert_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO, "user")
+                MsgBuilder.createOrderlyMsg("insert_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:"+insertModel.getUserId())
                         .addIntList("insert_auth_demo_user", Collections.singletonList(insertModel.getUserId()))
                         .build()
         );
@@ -518,7 +518,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.deleteByPrimaryKey(userId);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("delete_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                MsgBuilder.createOrderlyMsg("delete_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
                         .addIntList("delete_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
@@ -567,7 +567,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
                         .addIntList("update_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
@@ -642,7 +642,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
                         .build()
         );
@@ -672,7 +672,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
                         .build()
         );
@@ -783,7 +783,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(record);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.DEMO,"user")
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
                         .addIntList("update_auth_demo_user_pwd", Collections.singletonList(userId))
                         .build()
         );

@@ -197,13 +197,13 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getWarn("同步记录不存在!");
         }
 
-        this.esService.updateSyncResultSuccess(resultModel, remark);
-
         if (StringUtils.isNotBlank(resultModel.getMsgContent())) {
             SyncTask syncTask = SyncTask.build(resultModel.getMsgContent(), StringUtils.EMPTY, SyncConstant.MSG_SOURCE_HANDLE, 0);
             WriteBackTask writeBackTask = WriteBackTask.build(syncTask);
             writeBackTask.process();
         }
+
+        this.esService.updateSyncResultSuccess(resultModel, remark);
 
         return ResultUtil.getSuccess();
     }
