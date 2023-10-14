@@ -71,8 +71,8 @@
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
-                    @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange"/>
+                    @current-change="pageCurrentChange"
+                    @size-change="pageSizeChange"/>
         </a-card>
         <!-- 新增同步计划 -->
         <plan-save-modal ref="planSaveModal" @success="queryData"></plan-save-modal>

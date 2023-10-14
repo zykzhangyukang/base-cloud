@@ -19,10 +19,10 @@
         },
         methods: {
             pageCurrentChange (page, pageSize) {
-                this.$emit('change', page, pageSize)
+                this.$emit('current-change', page, pageSize)
             },
             pageSizeChange (current, size) {
-                this.$emit('show-size-change', current, size)
+                this.$emit('size-change', current, size)
             },
         },
     };

@@ -90,8 +90,8 @@
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
-                    @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange">
+                    @current-change="pageCurrentChange"
+                    @size-change="pageSizeChange">
             </HPage>
             <!-- 新增用户 -->
             <user-save-modal  ref="userSaveModal" @success="queryData"></user-save-modal>

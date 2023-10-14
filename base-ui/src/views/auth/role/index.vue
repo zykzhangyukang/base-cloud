@@ -45,8 +45,8 @@
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
-                    @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange"/>
+                    @current-change="pageCurrentChange"
+                    @size-change="pageSizeChange"/>
 
             <role-save-modal ref="roleSaveModal" @success="queryData"></role-save-modal>
             <role-update-modal ref="roleUpdateModal" @success="queryData"></role-update-modal>

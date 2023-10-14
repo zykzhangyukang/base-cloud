@@ -64,8 +64,8 @@
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
-                    @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange"/>
+                    @current-change="pageCurrentChange"
+                    @size-change="pageSizeChange"/>
         </a-card>
         <msg-cnt-look-modal ref="MsgCntLookModal"></msg-cnt-look-modal>
     </a-layout>

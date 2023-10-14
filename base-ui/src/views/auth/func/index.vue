@@ -106,8 +106,8 @@
                                 :current="searchParams.currentPage"
                                 :page-size="searchParams.pageSize"
                                 :total="total"
-                                @change="pageCurrentChange"
-                                @showSizeChange="pageSizeChange">
+                                @current-change="pageCurrentChange"
+                                @size-change="pageSizeChange">
                         </HPage>
                         <!-- 新增功能 -->
                         <func-save-modal ref="funcSaveModal" @success="queryData"></func-save-modal>

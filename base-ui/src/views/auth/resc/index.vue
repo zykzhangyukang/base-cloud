@@ -63,8 +63,8 @@
                     :current="searchParams.currentPage"
                     :page-size="searchParams.pageSize"
                     :total="total"
-                    @change="pageCurrentChange"
-                    @showSizeChange="pageSizeChange">
+                    @current-change="pageCurrentChange"
+                    @size-change="pageSizeChange">
             </HPage>
             <!-- 新增资源 -->
             <resc-save-modal ref="rescSaveModal" @success="queryData"></resc-save-modal>
