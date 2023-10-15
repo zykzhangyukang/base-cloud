@@ -276,10 +276,10 @@
                 this.selectedRows = selectedRows;
             },
             signSuccess(){
-                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                if(!this.selectedRows || this.selectedRows.length !==1){
                     return this.$message.warn("请选择一条记录进行操作！");
                 }
-                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                const p = this.selectedRows[0];
                 if(p && p.status !== 'fail'){
                     return this.$message.warn("请选择同步失败的记录！");
                 }
@@ -301,19 +301,19 @@
                 });
             },
             validResultData(){
-                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                if(!this.selectedRows || this.selectedRows.length !==1){
                     return this.$message.warn("请选择一条记录进行操作！");
                 }
-                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                const p = this.selectedRows[0];
                 if(p){
                     this.$refs['ValidDataLookModal'].open(p);
                 }
             },
             repeatSync(){
-                if(!this.selectedRowKeys || this.selectedRowKeys.length !==1){
+                if(!this.selectedRows || this.selectedRows.length !==1){
                     return this.$message.warn("请选择一条记录进行操作！");
                 }
-                const p = this.tableData.find(e=> e.uuid === this.selectedRowKeys[0]);
+                const p = this.selectedRows[0];
                 if(p && p.status !== 'fail'){
                     return this.$message.warn("请选择同步失败的记录！");
                 }
@@ -354,6 +354,8 @@
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;
                 this.searchParams.pageSize = pageSize;
+                this.selectedRows = [];
+                this.selectedRowKeys = [];
                 this.queryData()
             },
             pageSizeChange(current, size){
