@@ -6,38 +6,38 @@
                     layout='inline'
             >
                 <a-form-item label="计划编号">
-                    <a-input v-model:value="searchParams.planCode" :style="{width:'180px'}" placeholder="计划编号输入框"  autocomplete="off" ></a-input>
+                    <a-input v-model:value="searchParams.planCode" :style="{width:'180px'}" placeholder="计划编号输入框"  autocomplete="off" allowClear></a-input>
                 </a-form-item>
                 <a-form-item label="关键字">
-                    <a-input v-model:value="searchParams.keywords" :style="{width:'260px'}" placeholder=" 消息内容，同步内容，计划编号"  autocomplete="off" ></a-input>
+                    <a-input v-model:value="searchParams.keywords" :style="{width:'260px'}" placeholder=" 消息内容，同步内容，计划编号"  autocomplete="off" allowClear></a-input>
                 </a-form-item>
                 <a-form-item label="源系统">
-                    <a-select v-model:value="searchParams.srcProject" :style="{width:'180px'}" placeholder="源系统">
+                    <a-select v-model:value="searchParams.srcProject" :style="{width:'180px'}" placeholder="源系统" allowClear>
                         <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="目标系统">
-                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统">
+                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" allowClear>
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="状态">
-                    <a-select v-model:value="searchParams.syncStatus" :style="{width:'180px'}" placeholder="同步状态">
+                    <a-select v-model:value="searchParams.syncStatus" :style="{width:'180px'}" placeholder="同步状态" allowClear>
                         <a-select-option v-for="item in resultStatusG" :value="item.code" :key="item.code">{{resultStatusGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="消息来源">
-                    <a-select v-model:value="searchParams.msgSrc" :style="{width:'180px'}" placeholder="消息来源">
+                    <a-select v-model:value="searchParams.msgSrc" :style="{width:'180px'}" placeholder="消息来源" allowClear>
                         <a-select-option v-for="item in msgSrcG" :value="item.code" :key="item.code">{{msgSrcGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="重试次数">
-                    <a-select v-model:value="searchParams.repeatCount" :style="{width:'180px'}" placeholder="重试次数">
+                    <a-select v-model:value="searchParams.repeatCount" :style="{width:'180px'}" placeholder="重试次数" allowClear>
                         <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'" :loading="loading1"><template #icon><SearchOutlined /></template>搜索</a-button>
+                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -63,10 +63,10 @@
                     :data-source='tableData'
             >
                 <template #msgContent="{ record }">
-                    <a class="btn-text-mini" href="javascript:;" @click="this.$refs.MsgCntLookModal.open(record.msgContent)">  {{ record.msgContent }}</a>
+                    <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)">  {{ record.msgContent }}</span>
                 </template>
                 <template #syncContent="{ record }">
-                   <a class="btn-text-mini" href="javascript:;" @click="this.$refs.SyncCntLookModal.open(record.syncContent)"> {{ record.syncContent }}</a>
+                   <span id="sync_content" @click="this.$refs.SyncCntLookModal.open(record.syncContent)"> {{ record.syncContent }}</span>
                 </template>
                 <template #srcProject="{ text }">
                     {{ srcProjectGName[text] }}
@@ -126,7 +126,6 @@
         },
         data() {
             return {
-                loading1: false,
                 loading2: false,
                 loading3: false,
                 selectedRowKeys: [],
@@ -337,13 +336,8 @@
                 });
             },
             async pageSearchChange() {
-                try {
-                    this.loading1 = true;
-                    this.searchParams.currentPage = 1
-                    await this.queryData()
-                } finally {
-                    this.loading1 = false;
-                }
+                this.searchParams.currentPage = 1
+                await this.queryData()
             },
             pageSearchReset() {
                 const page = {
@@ -394,5 +388,11 @@
         color: #ed4014;
         cursor: pointer;
         font-size: 13px;
+    }
+    #sync_content,#msg_content{
+        font-family: Corbel,serif;
+        font-size: 13px;
+        cursor: pointer;
+        color: #409eff;
     }
 </style>

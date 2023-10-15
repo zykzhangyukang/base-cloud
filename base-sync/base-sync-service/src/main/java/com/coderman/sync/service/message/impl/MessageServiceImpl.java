@@ -184,7 +184,7 @@ public class MessageServiceImpl extends BaseService implements MessageService {
             for (Map<String, Object> resultMap : resultList) {
 
                 MqMessageModel mqMessageModel = new MqMessageModel();
-
+                mqMessageModel.setMqMessageId(resultMap.get("mq_message_id").toString());
                 mqMessageModel.setMsgContent(resultMap.get("msg_content").toString());
                 mqMessageModel.setSrcProject(resultMap.get("src_project").toString());
                 mqMessageModel.setDestProject(resultMap.get("dest_project").toString());
@@ -213,7 +213,7 @@ public class MessageServiceImpl extends BaseService implements MessageService {
 
             builder.append(" top ").append(count).append(" * ");
             builder.append(" from (select row_number() over(order by mq_message_id desc)");
-            builder.append(" as rownumber, msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count ");
+            builder.append(" as rownumber, msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count ,mq_message_id");
             builder.append(" from pub_mq_message with(nolock) ");
             builder.append(builderSql);
 
@@ -221,12 +221,12 @@ public class MessageServiceImpl extends BaseService implements MessageService {
 
             builder.append(" * ");
             builder.append(" from (select a1.*,rownum rn from (");
-            builder.append("select msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count from pub_mq_message ");
+            builder.append("select msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count,mq_message_id from pub_mq_message ");
             builder.append(builderSql);
             builder.append(" order by mq_message_id desc) a1 where rownum <=").append(endCount).append(") ");
         } else {
 
-            builder.append(" msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count ");
+            builder.append(" msg_content,mid,src_project,dest_project,create_time,send_time,ack_time,send_status,deal_status,deal_count,mq_message_id ");
             builder.append(" from pub_mq_message ");
             builder.append(builderSql);
         }

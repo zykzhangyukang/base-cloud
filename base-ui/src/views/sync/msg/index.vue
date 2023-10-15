@@ -14,17 +14,17 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item label="目标系统">
-                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统">
+                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" allowClear>
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="发送状态">
-                    <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态">
+                    <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态" allowClear>
                         <a-select-option v-for="item in sendStatusG" :value="item.code" :key="item.code">{{sendStatusGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
                 <a-form-item label="处理状态">
-                    <a-select v-model:value="searchParams.dealStatus" :style="{width:'180px'}" placeholder="处理状态">
+                    <a-select v-model:value="searchParams.dealStatus" :style="{width:'180px'}" placeholder="处理状态" allowClear>
                         <a-select-option v-for="item in dealStatusG" :value="item.code" :key="item.code">{{dealStatusGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -40,7 +40,7 @@
                     :pagination='false'
                     :loading='tableLoading'
                     bordered
-                    rowKey='mid'
+                    rowKey='mqMessageId'
                     :columns='tableColumns'
                     :data-source='tableData'
             >
@@ -57,7 +57,7 @@
                     {{ dealStatusGName[text] }}
                 </template>
                 <template #msgContent="{ record }">
-                    <a class="btn-text-mini" href="javascript:;" @click="this.$refs.MsgCntLookModal.open(record.msgContent)">  {{ record.msgContent }}</a>
+                    <a id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)">  {{ record.msgContent }}</a>
                 </template>
             </HTable>
             <HPage
@@ -226,10 +226,10 @@
 </script>
 
 <style scoped>
-    .action-btns {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
+    #msg_content{
+        font-family: Corbel,serif;
+        font-size: 13px;
+        cursor: pointer;
+        color: #409eff;
     }
 </style>

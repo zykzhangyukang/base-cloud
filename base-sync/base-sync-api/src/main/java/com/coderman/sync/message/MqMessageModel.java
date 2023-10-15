@@ -11,6 +11,9 @@ import java.util.Date;
 @Data
 public class MqMessageModel extends BaseModel {
 
+    @ApiModelProperty(value = "本地消息表主键")
+    private String mqMessageId;
+
     @ApiModelProperty(value = "rocketmq消息id")
     private String mid;
 
