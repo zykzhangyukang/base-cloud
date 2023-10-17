@@ -28,7 +28,7 @@ import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.erp.util.AuthUtil;
 import com.coderman.erp.vo.AuthUserVO;
-import com.coderman.redis.RedisService;
+import com.coderman.redis.service.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.service.BaseService;

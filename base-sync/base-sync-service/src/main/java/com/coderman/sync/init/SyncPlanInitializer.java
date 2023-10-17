@@ -1,6 +1,8 @@
 package com.coderman.sync.init;
 
+import com.coderman.redis.annotaion.RedisChannelListener;
 import com.coderman.sync.constant.PlanConstant;
+import com.coderman.sync.constant.RedisChannelConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.plan.PlanModel;
 import com.coderman.sync.plan.meta.PlanMeta;
@@ -69,24 +71,20 @@ public class SyncPlanInitializer {
     }
 
 
-    @Bean
-    public MessageListenerAdapter messageListenerAdapter(){
-        return new MessageListenerAdapter((MessageListener) (message, pattern) -> {
+    @RedisChannelListener(channelName = RedisChannelConstant.TOPIC_REFRESH_PLAN, envDiff = false)
+    public void refreshPlan(String messageContent) {
 
-            try {
+        try {
 
-                log.info("刷新同步计划开始...");
+            log.info("刷新同步计划开始 -> {}", messageContent);
+            this.init();
 
-                this.init();
+        } catch (Exception e) {
+            log.error("刷新同步计划失败 -> {}", messageContent);
 
-                log.info("刷新同步计划结束...");
-
-            }catch (Exception e){
-
-                log.error("刷新同步计划失败...");
-            }
-
-        }, "onMessage");
+        } finally {
+            log.info("刷新同步计划结束 -> {}", messageContent);
+        }
     }
 
 }

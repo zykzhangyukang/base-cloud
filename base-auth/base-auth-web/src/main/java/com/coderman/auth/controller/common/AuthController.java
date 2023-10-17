@@ -9,7 +9,7 @@ import com.coderman.auth.service.user.UserService;
 import com.coderman.erp.api.RescApi;
 import com.coderman.erp.config.AuthErpConfig;
 import com.coderman.erp.vo.AuthUserVO;
-import com.coderman.redis.RedisService;
+import com.coderman.redis.service.RedisService;
 import com.coderman.service.dict.ConstItems;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;

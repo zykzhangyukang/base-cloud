@@ -4,11 +4,13 @@ import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
-import com.coderman.redis.RedisService;
+import com.coderman.erp.util.AuthUtil;
+import com.coderman.redis.service.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.util.UUIDUtils;
 import com.coderman.sync.constant.PlanConstant;
+import com.coderman.sync.constant.RedisChannelConstant;
 import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.dto.PlanSaveDTO;
 import com.coderman.sync.dto.PlanUpdateDTO;
@@ -21,6 +23,7 @@ import com.google.common.base.CaseFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -215,7 +218,8 @@ public class PlanServiceImpl implements PlanService {
 
     @LogError(value = "广播消息到redis")
     public void publishToRedis(){
-        this.redisService.getRedisTemplate().convertAndSend(PlanConstant.PLAN_REFRESH_KEY,String.valueOf(System.currentTimeMillis()));
+        String msg = AuthUtil.getCurrent().getUsername() + "刷新同步计划。time=" + DateFormatUtils.format(new Date() , "yyyy-MM-dd HH:mm:ss");
+        this.redisService.sendMessage(RedisChannelConstant.TOPIC_REFRESH_PLAN , msg);
     }
 
     @Override

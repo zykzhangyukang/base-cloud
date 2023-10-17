@@ -3,7 +3,7 @@ package com.coderman.sync.service.result.impl;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
-import com.coderman.redis.RedisService;
+import com.coderman.redis.service.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.sync.constant.PlanConstant;
