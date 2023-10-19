@@ -15,7 +15,7 @@ public interface SyncConstant {
     /**
      * 目标系统
      */
-    @ConstList(group = "dest_project",name = "权限系统-sync")
+    @ConstList(group = "dest_project",name = "ECP权限系统")
     public static final String SRC_PROJECT_AUTH_SYNC= "auth_sync";
     @ConstList(group = "dest_project",name ="订单系统")
     public static final String SRC_PROJECT_ORDER= "order";

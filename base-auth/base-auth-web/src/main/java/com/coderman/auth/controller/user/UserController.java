@@ -10,6 +10,7 @@ import com.coderman.auth.vo.user.UserPermissionVO;
 import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.limiter.annotation.RateLimit;
+import com.coderman.redis.annotaion.RedisChannelListener;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -17,10 +18,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author coderman

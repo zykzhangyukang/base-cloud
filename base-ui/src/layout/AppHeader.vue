@@ -12,6 +12,9 @@
                 <ShrinkOutlined v-if='isScreenFull'/>
                 <ArrowsAltOutlined v-else/>
             </div>
+            <div class="mr15">
+              <msg-center></msg-center>
+            </div>
             <div>
                 <a-dropdown>
                     <template v-slot:overlay>
@@ -70,10 +73,12 @@
     import { Modal } from 'ant-design-vue';
     import {authUserRefreshLogin} from "@/api/auth";
     import store from "@/store";
+    import MsgCenter from '@/components/msgCenter/msgCenter'
 
     export default {
         name: 'AppHeader',
         components: {
+            MsgCenter,
             MenuUnfoldOutlined,
             MenuFoldOutlined,
             ShrinkOutlined,

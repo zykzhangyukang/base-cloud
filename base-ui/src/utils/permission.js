@@ -2,6 +2,10 @@ import router from '@/routers'
 import ruleRoutes from '@/routers/ruleRoutes'
 import store from '@/store'
 import {authUserInfo,authConstAll} from '@/api/auth';
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar custom style
+
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 
 //获取当前用户所有可以访问的路由权限
@@ -28,6 +32,7 @@ const getMenuList = (menuTree,menuList) => {
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
+  NProgress.start() // start progress bar
   const userToken = localStorage.getItem('token');
   if (userToken) {
     // 有token
@@ -59,12 +64,14 @@ router.beforeEach(async(to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
+      NProgress.done();
       next(`/login`)
     }
   }
 })
 
 router.afterEach(async(to, from) => {
+  NProgress.done();
   if (to.path === '/login') {
     store.setUserToken('');
     store.setUserInfo(null);

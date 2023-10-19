@@ -5,7 +5,7 @@ export default {
       menuToggle: false,
     },
     user: {
-      token:'',
+      token: localStorage.getItem("token") || '',
       info: {}
     },
     const: [],
