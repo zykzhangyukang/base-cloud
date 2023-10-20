@@ -20,7 +20,7 @@ import java.text.MessageFormat;
  */
 @Component
 @Slf4j
-public class NotifyMessageUtil {
+public class NotifyMessageService {
 
     @Resource
     private SimpUserRegistry simpUserRegistry;
@@ -50,9 +50,9 @@ public class NotifyMessageUtil {
         }
         //如果接收者在线，则说明接收者连接了集群的其他节点，需要通知接收者连接的那个节点发送消息
         else if (redisService.isSetMember(RedisConstant.WEBSOCKET_USER_SET, receiver, RedisDbConstant.REDIS_DB_DEFAULT)) {
-            RedisWebsocketMsg<String> redisWebsocketMsg = new RedisWebsocketMsg<>(receiver, WebSocketChannelEnum.CHAT.getCode(), payload);
 
-            redisService.sendMessage(RedisConstant.CHANNEL_WEBSOCKET_NOTIFY, redisWebsocketMsg);
+            WebsocketRedisMsg<String> websocketRedisMsg = new WebsocketRedisMsg<>(receiver, destination, payload);
+            redisService.sendMessage(RedisConstant.CHANNEL_WEBSOCKET_NOTIFY, websocketRedisMsg);
         }
         //否则将消息存储到redis，等用户上线后主动拉取未读消息
         else {

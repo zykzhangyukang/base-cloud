@@ -9,10 +9,8 @@ import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
 import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
-import com.coderman.auth.websocket.NotifyMessageUtil;
+import com.coderman.auth.websocket.NotifyMessageService;
 import com.coderman.auth.websocket.WebSocketChannelEnum;
-import com.coderman.limiter.annotation.RateLimit;
-import com.coderman.redis.annotaion.RedisChannelListener;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -20,13 +18,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.messaging.simp.user.SimpUser;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author coderman
@@ -42,7 +37,7 @@ public class UserController {
     private UserService userService;
 
     @Resource
-    private NotifyMessageUtil notifyMessageUtil;
+    private NotifyMessageService notifyMessageService;
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户登录")
@@ -52,7 +47,7 @@ public class UserController {
             @ApiReturnParam(name = "UserLoginRespVO", value = {"realName", "deptCode", "username", "token", "deptName"})
     })
     public ResultVO<UserLoginRespVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        this.notifyMessageUtil.sendToUser("系统通知", userLoginDTO.getUsername(), WebSocketChannelEnum.TOPIC_SYSTEM.getCode() , "欢迎您登录系统！");
+        this.notifyMessageService.sendToUser("系统通知", userLoginDTO.getUsername(), WebSocketChannelEnum.TOPIC_SYSTEM.getCode() , "欢迎您登录系统！");
         return this.userService.login(userLoginDTO);
     }
 

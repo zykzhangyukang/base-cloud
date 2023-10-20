@@ -7,7 +7,7 @@ package com.coderman.auth.websocket;
  * @date 2018/10/16
  * @since 1.0.0
  */
-public class RedisWebsocketMsg<T> {
+public class WebsocketRedisMsg<T> {
     /**
      * 消息接收者的username
      */
@@ -21,11 +21,11 @@ public class RedisWebsocketMsg<T> {
      */
     private T content;
 
-    public RedisWebsocketMsg() {
+    public WebsocketRedisMsg() {
 
     }
 
-    public RedisWebsocketMsg(String receiver, String channelCode, T content) {
+    public WebsocketRedisMsg(String receiver, String channelCode, T content) {
         this.receiver = receiver;
         this.channelCode = channelCode;
         this.content = content;

@@ -1,15 +1,8 @@
 package com.coderman.auth.websocket;
 
-import com.alibaba.fastjson.JSON;
-import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
-import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.constant.RedisConstant;
-import com.coderman.erp.api.UserApi;
-import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.redis.service.RedisService;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
