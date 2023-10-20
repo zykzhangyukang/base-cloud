@@ -1,4 +1,4 @@
-package com.coderman.auth.config;
+package com.coderman.auth.websocket;
 
 import com.coderman.auth.websocket.AuthHandshakeInterceptor;
 import com.coderman.auth.websocket.MyChannelInterceptor;

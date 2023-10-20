@@ -10,7 +10,18 @@ public interface RedisConstant {
     /**
      * 刷新系统资源
      */
-    public static final String CHANNEL_REFRESH_RESC = "TOPIC:REFRESH_RESC";
+    public static final String CHANNEL_REFRESH_RESC = "TOPIC://REFRESH_RESC";
+
+    /**
+     * websocket消息广告
+     */
+    public static final String CHANNEL_WEBSOCKET_NOTIFY = "TOPIC://WEBSOCKET_NOTIFY";
+
+
+    /**
+     * 离线消息通知
+     */
+    public static final String REDIS_UNREAD_MSG_PREFIX = "redis_unread_msg";
 
     /**
      * 存储websocket连接的用户

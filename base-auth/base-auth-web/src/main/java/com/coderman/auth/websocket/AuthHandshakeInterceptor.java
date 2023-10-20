@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * 建立连接时候的权限拦截器
+ * @author zhangyukang
  */
 @Slf4j
 @Component
