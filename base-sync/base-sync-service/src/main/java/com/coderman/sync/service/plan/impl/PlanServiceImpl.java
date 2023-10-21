@@ -10,7 +10,7 @@ import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.util.UUIDUtils;
 import com.coderman.sync.constant.PlanConstant;
-import com.coderman.sync.constant.RedisChannelConstant;
+import com.coderman.sync.constant.RedisConstant;
 import com.coderman.sync.dto.PlanPageDTO;
 import com.coderman.sync.dto.PlanSaveDTO;
 import com.coderman.sync.dto.PlanUpdateDTO;
@@ -219,7 +219,7 @@ public class PlanServiceImpl implements PlanService {
     @LogError(value = "广播消息到redis")
     public void publishToRedis(){
         String msg = AuthUtil.getCurrent().getUsername() + "刷新同步计划。time=" + DateFormatUtils.format(new Date() , "yyyy-MM-dd HH:mm:ss");
-        this.redisService.sendMessage(RedisChannelConstant.TOPIC_REFRESH_PLAN , msg);
+        this.redisService.sendMessage(RedisConstant.TOPIC_REFRESH_PLAN , msg);
     }
 
     @Override

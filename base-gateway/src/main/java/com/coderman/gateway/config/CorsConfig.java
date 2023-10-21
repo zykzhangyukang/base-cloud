@@ -10,18 +10,19 @@ import org.springframework.web.util.pattern.PathPatternParser;
 public class CorsConfig {
 
     @Bean
-    public CorsWebFilter corsFilter(){
+    public CorsWebFilter corsFilter() {
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
-        source.registerCorsConfiguration("/**", buildConfig());
-        return new CorsWebFilter(source);
+        // 设置跨域缓存时间为30分钟
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedMethod("*");
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.setMaxAge(7200L);
+        config.setAllowCredentials(false);
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsWebFilter(source, new CorsProcessor());
     }
 
-    private CorsConfiguration buildConfig(){
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        //在生产环境上最好指定域名，以免产生跨域安全问题
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        return corsConfiguration;
-    }
 }

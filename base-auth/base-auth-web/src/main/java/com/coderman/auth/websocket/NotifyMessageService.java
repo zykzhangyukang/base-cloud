@@ -52,7 +52,7 @@ public class NotifyMessageService {
         if (simpUser != null && StringUtils.isNoneBlank(simpUser.getName())) {
 
             simpMessagingTemplate.convertAndSend(destination, payload);
-            log.debug("websocket推送消息 destination => {} ,payload => {}", destination, JSON.toJSONString(payload));
+            log.info("websocket推送消息 destination => {} ,payload => {}", destination, JSON.toJSONString(payload));
         }
         //如果接收者在线，则说明接收者连接了集群的其他节点，需要通知接收者连接的那个节点发送消息
         else if (redisService.isSetMember(RedisConstant.WEBSOCKET_USER_SET, receiver, RedisDbConstant.REDIS_DB_DEFAULT)) {
@@ -64,7 +64,7 @@ public class NotifyMessageService {
         else {
 
             String listKey = RedisConstant.REDIS_UNREAD_MSG_PREFIX + receiver + ":" + destination;
-            log.debug("消息接收者:{}还未建立WebSocket连接，{} 发送的消息【{}】将被存储到Redis的【{}】列表中", receiver, sender, payload, listKey);
+            log.info("消息接收者:{}还未建立WebSocket连接，{} 发送的消息【{}】将被存储到Redis的【{}】列表中", receiver, sender, payload, listKey);
 
 
         }

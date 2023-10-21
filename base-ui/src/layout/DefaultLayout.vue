@@ -26,7 +26,7 @@ import store from '../store';
 import AppAside from './AppAside'
 import AppHeader from './AppHeader'
 import AppFooter from './AppFooter'
-import avatar from '@/assets/images/user.png'
+import avatar from '@/assets/images/user.jpg'
 import {authUserLogout} from '@/api/auth';
 import {Modal} from "ant-design-vue";
 import {createVNode} from "vue";

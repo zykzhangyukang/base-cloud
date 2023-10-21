@@ -60,13 +60,11 @@ class MyWebSock {
     // 监听系统消息
     subSysMsg(msg) {
         const body = JSON.parse(msg.body)
-        console.log("监听系统消息....")
     }
 
     // 监听用户消息
     subUserMsg(msg) {
-        const body = JSON.parse(msg.body)
-        console.log("监听用户消息....")
+        store.addUserMsg(JSON.parse(msg.body));
     }
 }
 

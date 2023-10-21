@@ -22,7 +22,6 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.text.MessageFormat;
 import java.util.List;
 
 /**

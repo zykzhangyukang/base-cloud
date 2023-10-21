@@ -23,8 +23,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Resource
     private MyChannelInterceptor myChannelInterceptor;
 
-    @Resource
-    private MyHandshakeHandler myHandshakeHandler;
 
     // 客户端订阅服务器地址的前缀信息
     private static final String[] CLIENT_DES_PREFIX = new String[]{
@@ -41,7 +39,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/sys_websocket")
-                .setHandshakeHandler(myHandshakeHandler)
                 .setAllowedOrigins("*")
                 .withSockJS();
     }

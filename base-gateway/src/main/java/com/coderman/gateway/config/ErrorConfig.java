@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
-public class GatewayErrorConfig {
+public class ErrorConfig {
 
     private final ServerProperties serverProperties;
     private final ApplicationContext applicationContext;
@@ -26,7 +26,7 @@ public class GatewayErrorConfig {
     private final List<ViewResolver> viewResolvers;
     private final ServerCodecConfigurer serverCodecConfigurer;
 
-    public GatewayErrorConfig(ServerProperties serverProperties,
+    public ErrorConfig(ServerProperties serverProperties,
                                      ResourceProperties resourceProperties,
                                      ObjectProvider<List<ViewResolver>> viewResolversProvider,
                                      ServerCodecConfigurer serverCodecConfigurer,

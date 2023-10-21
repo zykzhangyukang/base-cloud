@@ -8,12 +8,12 @@
             </div>
         </div>
         <div class="right">
+            <div>
+                <notifyNav></notifyNav>
+            </div>
             <div class="mr15" @click='screenFullChange'>
                 <ShrinkOutlined v-if='isScreenFull'/>
                 <ArrowsAltOutlined v-else/>
-            </div>
-            <div class="mr15">
-              <msg-center></msg-center>
             </div>
             <div>
                 <a-dropdown>
@@ -73,12 +73,12 @@
     import { Modal } from 'ant-design-vue';
     import {authUserRefreshLogin} from "@/api/auth";
     import store from "@/store";
-    import MsgCenter from '@/components/msgCenter/msgCenter'
+    import notifyNav from '@/components/notify/notfiyNav'
 
     export default {
         name: 'AppHeader',
         components: {
-            MsgCenter,
+            notifyNav,
             MenuUnfoldOutlined,
             MenuFoldOutlined,
             ShrinkOutlined,

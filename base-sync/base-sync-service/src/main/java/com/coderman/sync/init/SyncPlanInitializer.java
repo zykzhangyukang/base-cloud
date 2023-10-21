@@ -2,16 +2,13 @@ package com.coderman.sync.init;
 
 import com.coderman.redis.annotaion.RedisChannelListener;
 import com.coderman.sync.constant.PlanConstant;
-import com.coderman.sync.constant.RedisChannelConstant;
+import com.coderman.sync.constant.RedisConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.plan.PlanModel;
 import com.coderman.sync.plan.meta.PlanMeta;
 import com.coderman.sync.plan.parser.MetaParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -71,7 +68,7 @@ public class SyncPlanInitializer {
     }
 
 
-    @RedisChannelListener(channelName = RedisChannelConstant.TOPIC_REFRESH_PLAN, envDiff = false)
+    @RedisChannelListener(channelName = RedisConstant.TOPIC_REFRESH_PLAN, envDiff = false)
     public void refreshPlan(String messageContent) {
 
         try {
