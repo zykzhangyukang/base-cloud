@@ -15,19 +15,18 @@ public class WebsocketRedisMsg<T> {
     /**
      * 消息对应的订阅频道的CODE，参考{@link WebSocketChannelEnum}的code字段
      */
-    private String channelCode;
+    private String destination;
     /**
      * 消息正文
      */
     private T content;
 
     public WebsocketRedisMsg() {
-
     }
 
-    public WebsocketRedisMsg(String receiver, String channelCode, T content) {
+    public WebsocketRedisMsg(String receiver, String destination, T content) {
         this.receiver = receiver;
-        this.channelCode = channelCode;
+        this.destination = destination;
         this.content = content;
     }
 
@@ -47,19 +46,19 @@ public class WebsocketRedisMsg<T> {
         this.content = content;
     }
 
-    public String getChannelCode() {
-        return channelCode;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setChannelCode(String channelCode) {
-        this.channelCode = channelCode;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     @Override
     public String toString() {
         return "RedisWebsocketMsg{" +
                 "receiver='" + receiver + '\'' +
-                ", channelCode='" + channelCode + '\'' +
+                ", channelCode='" + destination + '\'' +
                 ", content=" + content +
                 '}';
     }

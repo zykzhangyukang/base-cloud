@@ -1,8 +1,5 @@
 package com.coderman.auth.websocket;
 
-import com.coderman.auth.websocket.AuthHandshakeInterceptor;
-import com.coderman.auth.websocket.MyChannelInterceptor;
-import com.coderman.auth.websocket.MyHandshakeHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -29,6 +26,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Resource
     private MyHandshakeHandler myHandshakeHandler;
 
+    // 客户端订阅服务器地址的前缀信息
+    private static final String[] CLIENT_DES_PREFIX = new String[]{
+            "/topic",
+            "/user",
+    };
+
+    // 客户端发送消息给服务端的地址允许前缀
+    private static final String[] SERVER_DES_PREFIX = new String[]{
+            "/app"
+    };
+
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/sys_websocket")
@@ -38,14 +47,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        //客户端需要把消息发送到/message/xxx地址
-        registry.setApplicationDestinationPrefixes("/message");
-        //服务端广播消息的路径前缀，客户端需要相应订阅/topic/yyy这个地址的消息
-        registry.enableSimpleBroker("/topic");
-        //给指定用户发送消息的路径前缀，默认值是/user/
-        registry.setUserDestinationPrefix("/user/");
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker(CLIENT_DES_PREFIX);
+        config.setApplicationDestinationPrefixes(SERVER_DES_PREFIX);
     }
+
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {

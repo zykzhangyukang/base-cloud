@@ -51,33 +51,35 @@ public class AuthHandshakeInterceptor implements ChannelInterceptor {
         }
 
         List<String> nativeHeader = accessor.getNativeHeader(CommonConstant.USER_TOKEN_NAME);
+        String sessionId = accessor.getSessionId();
         if (CollectionUtils.isEmpty(nativeHeader)) {
 
-            log.error("未登录系统，禁止连接WebSocket!");
+            log.error("未登录系统，禁止连接WebSocket!,sessionId:{}",sessionId);
             return null;
         }
 
         String token = nativeHeader.get(0);
-
         ResultVO<AuthUserVO> resultVO = this.userApi.getUserByToken(token);
         if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode())) {
-            log.error("未登录系统，禁止连接WebSocket! , resultVO:{}", JSON.toJSON(resultVO));
+
+            log.error("未登录系统，禁止连接WebSocket! , resultVO:{}, sessionId:{}", JSON.toJSON(resultVO), sessionId);
             return null;
         }
 
         AuthUserVO authUserVO = resultVO.getResult();
-        if (this.redisService.isSetMember(RedisConstant.WEBSOCKET_USER_SET, authUserVO.getUsername(), RedisDbConstant.REDIS_DB_DEFAULT)) {
-            log.error("同一个用户不准建立多个连接WebSocket");
+        Integer userId = authUserVO.getUserId();
+
+        // 单节点会话
+        accessor.setUser(new MyPrincipal(userId));
+        if (this.redisService.isSetMember(RedisConstant.WEBSOCKET_USER_SET, String.valueOf(userId), RedisDbConstant.REDIS_DB_DEFAULT)) {
+
+            log.warn("同一个用户:{} 不准建立多个连接WebSocket. sessionId:{}", userId, sessionId);
             return null;
         }
 
-        // 单节点会话
-        accessor.setUser(new MyPrincipal(authUserVO.getUsername()));
-
-        // 将用户名存到Redis中
-        this.redisService.addToSet(RedisConstant.WEBSOCKET_USER_SET, authUserVO.getUsername(), RedisDbConstant.REDIS_DB_DEFAULT);
-
-        log.info(MessageFormat.format("用户{0}请求建立WebSocket连接", authUserVO.getUsername()));
+        // 将用户id存到Redis中
+        this.redisService.addToSet(RedisConstant.WEBSOCKET_USER_SET, String.valueOf(userId), RedisDbConstant.REDIS_DB_DEFAULT);
+        log.info("用户:{} 请求建立WebSocket连接, sessionId:{}", userId, sessionId);
 
         return message;
     }

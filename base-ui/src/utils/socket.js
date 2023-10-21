@@ -38,7 +38,7 @@ class MyWebSock {
                 this.stompClient.subscribe('/topic/sysMsg', this.subSysMsg, headers)
                 if (user) {
                     // 监听用户消息
-                    this.stompClient.subscribe(`/user/${user.id}/sysMsg`, this.subUserMsg, headers)
+                    this.stompClient.subscribe(`/user/${user.info.userId}/sysMsg`, this.subUserMsg, headers)
                 }
             },
             err => {

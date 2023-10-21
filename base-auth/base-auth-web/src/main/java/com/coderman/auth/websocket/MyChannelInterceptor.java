@@ -3,7 +3,6 @@ package com.coderman.auth.websocket;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.auth.constant.RedisConstant;
 import com.coderman.redis.service.RedisService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
@@ -33,7 +32,9 @@ public class MyChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public void afterSendCompletion(@NotNull Message<?> message, @NotNull MessageChannel channel, boolean sent, Exception ex) {
+
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        String sessionId = accessor.getSessionId();
         StompCommand command = accessor.getCommand();
 
         //用户已经断开连接
@@ -41,16 +42,19 @@ public class MyChannelInterceptor implements ChannelInterceptor {
 
             String user;
             Principal principal = accessor.getUser();
-            if (principal != null && StringUtils.isNoneBlank(principal.getName())) {
+            if (principal instanceof MyPrincipal) {
 
-                //从Redis中移除用户
-                user = principal.getName();
+                // 将会话信息从redis中移除
+                MyPrincipal myPrincipal = (MyPrincipal) principal;
+                user = String.valueOf(myPrincipal.getUserId());
                 redisService.removeFromSet(RedisConstant.WEBSOCKET_USER_SET, user, RedisDbConstant.REDIS_DB_DEFAULT);
+
             } else {
-                user = accessor.getSessionId();
+
+                user = sessionId;
             }
 
-            logger.info(MessageFormat.format("用户{0}的WebSocket连接已经断开", user));
+            logger.info("用户:{} 的WebSocket连接已经断开,sessionId:{}", user, sessionId);
         }
     }
 

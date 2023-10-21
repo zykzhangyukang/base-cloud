@@ -151,49 +151,36 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "用户登录")
     public ResultVO<UserLoginRespVO> login(@LogErrorParam UserLoginDTO userLoginDTO) {
 
-        try {
+        String username = userLoginDTO.getUsername();
+        String password = userLoginDTO.getPassword();
 
-            String username = userLoginDTO.getUsername();
-            String password = userLoginDTO.getPassword();
+        if (StringUtils.isBlank(username)) {
 
-            if (StringUtils.isBlank(username)) {
+            return ResultUtil.getWarn("用户名不能为空！");
+        }
+        if (StringUtils.isBlank(password)) {
 
-                return ResultUtil.getWarn("用户名不能为空！");
-            }
-
-            if (StringUtils.isBlank(password)) {
-
-                return ResultUtil.getWarn("登录密码不能为空！");
-            }
-
-            UserVO dbUser = this.userDAO.selectByUsernameVos(username);
-            if (Objects.isNull(dbUser)) {
-
-                return ResultUtil.getWarn("用户名或密码错误！");
-            }
-
-            if (!StringUtils.equals(PasswordUtils.encryptSHA256(password), dbUser.getPassword())) {
-
-                return ResultUtil.getWarn("用户名或密码错误！");
-            }
-
-            if (Objects.equals(dbUser.getUserStatus(), AuthConstant.USER_STATUS_DISABLE)) {
-
-                return ResultUtil.getWarn("用户已被锁定！");
-            }
-
-            // 签发token
-            UserLoginRespVO response = this.generateAndStoreToken(dbUser);
-
-            return ResultUtil.getSuccess(UserLoginRespVO.class, response);
-
-        } catch (Exception e) {
-
-            logger.error("用户登录失败,username:{},msg:{}", userLoginDTO.getUsername(), e.getMessage(), e);
-
-            return ResultUtil.getFail("登录失败,请联系技术人员处理.");
+            return ResultUtil.getWarn("登录密码不能为空！");
         }
 
+        UserVO dbUser = this.userDAO.selectByUsernameVos(username);
+        if (Objects.isNull(dbUser)) {
+
+            return ResultUtil.getWarn("用户名或密码错误！");
+        }
+
+        if (!StringUtils.equals(PasswordUtils.encryptSHA256(password), dbUser.getPassword())) {
+
+            return ResultUtil.getWarn("用户名或密码错误！");
+        }
+        if (Objects.equals(dbUser.getUserStatus(), AuthConstant.USER_STATUS_DISABLE)) {
+
+            return ResultUtil.getWarn("用户已被锁定！");
+        }
+
+        // 签发token
+        UserLoginRespVO response = this.generateAndStoreToken(dbUser);
+        return ResultUtil.getSuccess(UserLoginRespVO.class, response);
     }
 
     /**
@@ -237,66 +224,57 @@ public class UserServiceImpl extends BaseService implements UserService {
         HttpServletResponse httpServletResponse = HttpContextUtil.getHttpServletResponse();
         String token = StringUtils.defaultString(httpServletRequest.getHeader(CommonConstant.USER_TOKEN_NAME), defaultToken);
 
-        try {
+        // 校验用户登录的token
+        if (StringUtils.isBlank(token) || StringUtils.length(token.trim()) != 32) {
 
-            // 校验用户登录的token
-            if (StringUtils.isBlank(token) || StringUtils.length(token.trim()) != 32) {
-
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "登录令牌不存在！");
-            }
-
-            // 获取会话信息
-            ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
-            AuthUserVO authUserVO = resultVO.getResult();
-
-            if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode()) || Objects.isNull(authUserVO)) {
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
-            }
-
-            // 获取用户信息
-            String username = authUserVO.getUsername();
-            ResultVO<UserVO> voResultVO = this.selectUserByName(username);
-            UserVO userVO = voResultVO.getResult();
-
-            if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode()) || Objects.isNull(userVO) || !AuthConstant.USER_STATUS_ENABLE.equals(userVO.getUserStatus())) {
-
-                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, String.format("登录用户[%s]不存在！", username));
-            }
-
-            // 查询菜单
-            ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
-            if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
-
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取菜单失败！");
-            }
-
-            // 查询功能
-            ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
-            if (!ResultConstant.RESULT_CODE_200.equals(vo.getCode())) {
-
-                return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取功能失败！");
-            }
-
-            UserPermissionVO userPermissionVO = new UserPermissionVO();
-            userPermissionVO.setUserId(authUserVO.getUserId());
-            userPermissionVO.setUsername(username);
-            userPermissionVO.setDeptCode(authUserVO.getDeptCode());
-            userPermissionVO.setDeptName(authUserVO.getDeptName());
-            userPermissionVO.setRealName(authUserVO.getRealName());
-            userPermissionVO.setExpiredTime(new Date(authUserVO.getExpiredTime()));
-            userPermissionVO.setMenus(r1.getResult());
-            userPermissionVO.setButtons(vo.getResult());
-            return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
-
-        } catch (Exception e) {
-
-            logger.error("获取用户信息异常:{},token:{}", e.getMessage(), token, e);
-
-            return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取用户信息异常！");
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, "登录令牌不存在！");
         }
+
+        // 获取会话信息
+        ResultVO<AuthUserVO> resultVO = this.getUserByToken(token);
+        AuthUserVO authUserVO = resultVO.getResult();
+
+        if (!ResultConstant.RESULT_CODE_200.equals(resultVO.getCode()) || Objects.isNull(authUserVO)) {
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, resultVO.getMsg());
+        }
+
+        // 获取用户信息
+        String username = authUserVO.getUsername();
+        ResultVO<UserVO> voResultVO = this.selectUserByName(username);
+        UserVO userVO = voResultVO.getResult();
+
+        if (!ResultConstant.RESULT_CODE_200.equals(voResultVO.getCode()) || Objects.isNull(userVO) || !AuthConstant.USER_STATUS_ENABLE.equals(userVO.getUserStatus())) {
+
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_401, String.format("登录用户[%s]不存在！", username));
+        }
+
+        // 查询菜单
+        ResultVO<List<FuncTreeVO>> r1 = this.funcService.selectMenusTreeByUserId(userVO.getUserId());
+        if (!ResultConstant.RESULT_CODE_200.equals(r1.getCode())) {
+
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取菜单失败！");
+        }
+
+        // 查询功能
+        ResultVO<List<String>> vo = this.funcService.selectFuncKeyListByUserId(userVO.getUserId());
+        if (!ResultConstant.RESULT_CODE_200.equals(vo.getCode())) {
+
+            return ResultUtil.getFail(ResultConstant.RESULT_CODE_500, "获取功能失败！");
+        }
+
+        UserPermissionVO userPermissionVO = new UserPermissionVO();
+        userPermissionVO.setUserId(authUserVO.getUserId());
+        userPermissionVO.setUsername(username);
+        userPermissionVO.setDeptCode(authUserVO.getDeptCode());
+        userPermissionVO.setDeptName(authUserVO.getDeptName());
+        userPermissionVO.setRealName(authUserVO.getRealName());
+        userPermissionVO.setExpiredTime(new Date(authUserVO.getExpiredTime()));
+        userPermissionVO.setMenus(r1.getResult());
+        userPermissionVO.setButtons(vo.getResult());
+        return ResultUtil.getSuccess(UserPermissionVO.class, userPermissionVO);
     }
 
     @Override
@@ -344,6 +322,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         // 签发token
         UserLoginRespVO response = this.generateAndStoreToken(userVO);
+
         // 删除当前token
         this.redisService.del(this.getRedisKey(oldToken), RedisDbConstant.REDIS_DB_AUTH);
 

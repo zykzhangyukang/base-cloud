@@ -11,6 +11,7 @@ import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
 import com.coderman.auth.websocket.NotifyMessageService;
 import com.coderman.auth.websocket.WebSocketChannelEnum;
+import com.coderman.erp.util.AuthUtil;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -47,7 +48,6 @@ public class UserController {
             @ApiReturnParam(name = "UserLoginRespVO", value = {"realName", "deptCode", "username", "token", "deptName"})
     })
     public ResultVO<UserLoginRespVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        this.notifyMessageService.sendToUser("系统通知", userLoginDTO.getUsername(), WebSocketChannelEnum.TOPIC_SYSTEM.getCode() , "欢迎您登录系统！");
         return this.userService.login(userLoginDTO);
     }
 
@@ -140,6 +140,7 @@ public class UserController {
                     "updateTime", "userId", "deptCode", "username"})
     })
     public ResultVO<PageVO<List<UserVO>>> page(@RequestBody UserPageDTO queryVO) {
+        this.notifyMessageService.sendToUser(-1, AuthUtil.getCurrent().getUserId(), queryVO);
         return this.userService.page(queryVO);
     }
 
