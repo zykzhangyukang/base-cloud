@@ -19,6 +19,7 @@ import com.coderman.auth.model.user.UserRoleModel;
 import com.coderman.auth.service.func.FuncService;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.service.user.UserService;
+import com.coderman.auth.service.websocket.WebSocketService;
 import com.coderman.auth.utils.PasswordUtils;
 import com.coderman.auth.vo.func.FuncTreeVO;
 import com.coderman.auth.vo.resc.RescVO;
@@ -39,6 +40,7 @@ import com.coderman.sync.util.SyncUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -80,6 +82,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Resource
     private FuncService funcService;
 
+    @Resource
+    private WebSocketService webSocketService;
+
 
     @Override
     @LogError(value = "切换用户登录")
@@ -104,7 +109,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         if (!AuthConstant.USER_STATUS_ENABLE.equals(dbUser.getUserStatus())) {
-            
+
             return ResultUtil.getWarn("用户已被锁定！");
         }
 
@@ -165,16 +170,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         UserVO dbUser = this.userDAO.selectByUsernameVos(username);
         if (Objects.isNull(dbUser)) {
-
             return ResultUtil.getWarn("用户名或密码错误！");
         }
 
         if (!StringUtils.equals(PasswordUtils.encryptSHA256(password), dbUser.getPassword())) {
-
             return ResultUtil.getWarn("用户名或密码错误！");
         }
         if (Objects.equals(dbUser.getUserStatus(), AuthConstant.USER_STATUS_DISABLE)) {
-
             return ResultUtil.getWarn("用户已被锁定！");
         }
 
@@ -379,7 +381,8 @@ public class UserServiceImpl extends BaseService implements UserService {
             userVOList = this.userDAO.selectPage(conditionMap);
         }
 
-
+        // 欢迎消息推送
+        this.webSocketService.sendToUser(-1, AuthUtil.getCurrent().getUserId(), "欢迎您登录系统！，当前时间：" + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         return ResultUtil.getSuccessPage(UserVO.class, PageUtil.getPageVO(count, userVOList, currentPage, pageSize));
     }
 
@@ -461,7 +464,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.insertReturnKey(insertModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("insert_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:"+insertModel.getUserId())
+                MsgBuilder.createOrderlyMsg("insert_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + insertModel.getUserId())
                         .addIntList("insert_auth_demo_user", Collections.singletonList(insertModel.getUserId()))
                         .build()
         );
@@ -497,7 +500,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.deleteByPrimaryKey(userId);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("delete_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
+                MsgBuilder.createOrderlyMsg("delete_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("delete_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
@@ -546,7 +549,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
@@ -621,7 +624,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
                         .build()
         );
@@ -651,7 +654,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
                         .build()
         );
@@ -663,7 +666,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     @LogError(value = "用户分配角色初始化")
     public ResultVO<UserRoleInitVO> selectUserRoleInit(@LogErrorParam Integer userId) {
 
-        Assert.isTrue(Objects.nonNull(userId) , "userId is null");
+        Assert.isTrue(Objects.nonNull(userId), "userId is null");
 
         UserRoleInitVO userRoleInitVO = new UserRoleInitVO();
         UserModel userModel = this.userDAO.selectByPrimaryKey(userId);
@@ -762,7 +765,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         this.userDAO.updateByPrimaryKeySelective(record);
 
         SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC,"user:"+userId)
+                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_pwd", Collections.singletonList(userId))
                         .build()
         );

@@ -1,4 +1,4 @@
-package com.coderman.auth.websocket;
+package com.coderman.auth.dto.websocket;
 
 /**
  * Redis中存储WebSocket消息

@@ -30,9 +30,8 @@ class MyWebSock {
         // 定义客户端的认证信息,按需求配置
         const user = store.state.user;
         const headers = {
-            Authorization: user.token || ""
+            Authorization: localStorage.getItem("token") || ""
         }
-
         // 向服务器发起websocket连接
         this.stompClient.connect(headers, () => {
                 this.stompClient.subscribe('/topic/sysMsg', this.subSysMsg, headers)

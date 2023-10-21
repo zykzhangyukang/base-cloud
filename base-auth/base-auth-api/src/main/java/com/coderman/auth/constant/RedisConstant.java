@@ -21,7 +21,7 @@ public interface RedisConstant {
     /**
      * 离线消息通知
      */
-    public static final String REDIS_UNREAD_MSG_PREFIX = "redis_unread_msg";
+    public static final String REDIS_UNREAD_MSG_PREFIX = "websocket.user.unread";
 
     /**
      * 存储websocket连接的用户

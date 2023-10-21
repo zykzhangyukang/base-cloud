@@ -1,10 +1,13 @@
-package com.coderman.auth.websocket;
+package com.coderman.auth.interceptor;
 
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.auth.constant.RedisConstant;
+import com.coderman.auth.dto.websocket.MyPrincipal;
 import com.coderman.redis.service.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -15,16 +18,15 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.text.MessageFormat;
 
 /**
  * @author ：zhangyukang
  * @date ：2023/10/19 14:39
  */
 @Component
+@Slf4j
+@Lazy(value = false)
 public class MyChannelInterceptor implements ChannelInterceptor {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
     private RedisService redisService;
@@ -54,7 +56,7 @@ public class MyChannelInterceptor implements ChannelInterceptor {
                 user = sessionId;
             }
 
-            logger.info("用户:{} 的WebSocket连接已经断开,sessionId:{}", user, sessionId);
+            log.info("用户:{} 的WebSocket连接已经断开,sessionId:{}", user, sessionId);
         }
     }
 

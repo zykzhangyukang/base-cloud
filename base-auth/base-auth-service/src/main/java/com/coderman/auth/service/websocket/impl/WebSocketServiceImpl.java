@@ -1,28 +1,24 @@
-package com.coderman.auth.websocket;
+package com.coderman.auth.service.websocket.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.auth.constant.RedisConstant;
+import com.coderman.auth.constant.WebSocketChannelEnum;
+import com.coderman.auth.dto.websocket.WebsocketRedisMsg;
+import com.coderman.auth.service.websocket.WebSocketService;
 import com.coderman.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.MessageFormat;
 
-/**
- * 消息通知
- *
- * @author ：zhangyukang
- * @date ：2023/10/20 10:17
- */
-@Component
+@Service
 @Slf4j
-public class NotifyMessageService {
+public class WebSocketServiceImpl implements WebSocketService {
 
     @Resource
     private SimpUserRegistry simpUserRegistry;
@@ -65,8 +61,6 @@ public class NotifyMessageService {
 
             String listKey = RedisConstant.REDIS_UNREAD_MSG_PREFIX + receiver + ":" + destination;
             log.info("消息接收者:{}还未建立WebSocket连接，{} 发送的消息【{}】将被存储到Redis的【{}】列表中", receiver, sender, payload, listKey);
-
-
         }
     }
 }

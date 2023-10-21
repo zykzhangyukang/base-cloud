@@ -1,4 +1,4 @@
-package com.coderman.auth.websocket;
+package com.coderman.auth.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.coderman.api.constant.CommonConstant;
@@ -6,11 +6,13 @@ import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.constant.RedisConstant;
+import com.coderman.auth.dto.websocket.MyPrincipal;
 import com.coderman.erp.api.UserApi;
 import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
@@ -31,6 +33,7 @@ import java.util.List;
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
+@Lazy(value = false)
 public class AuthHandshakeInterceptor implements ChannelInterceptor {
 
     @Resource

@@ -25,8 +25,8 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableConfigurationProperties(MybatisProperties.class)
-@MapperScan(basePackages = AuthDatasourceConfig.PACKAGE,sqlSessionFactoryRef = "authSqlSessionFactory")
-public class AuthDatasourceConfig extends BasicTransactionConfig {
+@MapperScan(basePackages = DatasourceConfig.PACKAGE,sqlSessionFactoryRef = "authSqlSessionFactory")
+public class DatasourceConfig extends BasicTransactionConfig {
 
 
     public static final String PACKAGE = "com.coderman.*.dao";

@@ -9,9 +9,6 @@ import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
 import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
-import com.coderman.auth.websocket.NotifyMessageService;
-import com.coderman.auth.websocket.WebSocketChannelEnum;
-import com.coderman.erp.util.AuthUtil;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author coderman
@@ -37,9 +33,6 @@ public class UserController {
 
     @Resource
     private UserService userService;
-
-    @Resource
-    private NotifyMessageService notifyMessageService;
 
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户登录")
@@ -141,7 +134,6 @@ public class UserController {
                     "updateTime", "userId", "deptCode", "username"})
     })
     public ResultVO<PageVO<List<UserVO>>> page(@RequestBody UserPageDTO queryVO) {
-        this.notifyMessageService.sendToUser(-1, AuthUtil.getCurrent().getUserId(), queryVO);
         return this.userService.page(queryVO);
     }
 

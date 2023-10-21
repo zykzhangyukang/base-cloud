@@ -1,6 +1,10 @@
-package com.coderman.auth.websocket;
+package com.coderman.auth.config;
 
+import com.coderman.auth.interceptor.AuthHandshakeInterceptor;
+import com.coderman.auth.interceptor.MyChannelInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -15,6 +19,7 @@ import javax.annotation.Resource;
  */
 @Configuration
 @EnableWebSocketMessageBroker
+@DependsOn(value = {"authHandshakeInterceptor","myChannelInterceptor"})
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Resource
