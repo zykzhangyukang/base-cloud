@@ -40,7 +40,6 @@ import com.coderman.sync.util.SyncUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -372,17 +371,13 @@ public class UserServiceImpl extends BaseService implements UserService {
         PageUtil.getConditionMap(conditionMap, currentPage, pageSize);
 
         // 总条数
-        Long count = this.userDAO.countPage(conditionMap);
-
         List<UserVO> userVOList = new ArrayList<>();
-
+        Long count = this.userDAO.countPage(conditionMap);
         if (count > 0) {
 
             userVOList = this.userDAO.selectPage(conditionMap);
         }
 
-        // 欢迎消息推送
-        this.webSocketService.sendToUser(-1, AuthUtil.getCurrent().getUserId(), "欢迎您登录系统！，当前时间：" + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         return ResultUtil.getSuccessPage(UserVO.class, PageUtil.getPageVO(count, userVOList, currentPage, pageSize));
     }
 
