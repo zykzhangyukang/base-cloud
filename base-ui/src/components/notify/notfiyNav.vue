@@ -34,6 +34,7 @@
 <script>
     import MyWebSock from "@/utils/socket";
     import store from '@/store/index'
+    import {authUserPullNotify} from "@/api/auth";
     export default {
         name: "notify.vue",
         data() {
@@ -49,8 +50,20 @@
                 return store.state.message.noRead
             }
         },
+        methods:{
+            getMessages(){
+                authUserPullNotify().then(res=>{
+                    if(res.result){
+                        res.result.forEach(e=>{
+                            store.addUserMsg(e)
+                        })
+                    }
+                })
+            }
+        },
         created() {
-            this.stompClient = new MyWebSock()
+            this.stompClient = new MyWebSock();
+            this.getMessages();
         },
         beforeUnmount() {
             this.stompClient.disconnect()

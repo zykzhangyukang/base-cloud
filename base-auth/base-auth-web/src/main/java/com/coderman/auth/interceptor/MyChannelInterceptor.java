@@ -5,8 +5,6 @@ import com.coderman.auth.constant.RedisConstant;
 import com.coderman.auth.dto.websocket.MyPrincipal;
 import com.coderman.redis.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -20,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
 /**
+ * websocket断开连接时候拦截器
  * @author ：zhangyukang
  * @date ：2023/10/19 14:39
  */

@@ -3,11 +3,14 @@ package com.coderman.auth.service.user.impl;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
+import com.coderman.api.model.BaseModel;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.auth.constant.AuthConstant;
+import com.coderman.auth.constant.RedisConstant;
+import com.coderman.auth.constant.WebSocketChannelEnum;
 import com.coderman.auth.dao.role.RoleDAO;
 import com.coderman.auth.dao.user.UserDAO;
 import com.coderman.auth.dao.user.UserRoleDAO;
@@ -34,6 +37,7 @@ import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.service.BaseService;
 import com.coderman.service.util.HttpContextUtil;
+import com.coderman.service.util.UUIDUtils;
 import com.coderman.sync.util.MsgBuilder;
 import com.coderman.sync.util.ProjectEnum;
 import com.coderman.sync.util.SyncUtil;
@@ -330,6 +334,23 @@ public class UserServiceImpl extends BaseService implements UserService {
         return ResultUtil.getSuccess(String.class, response.getToken());
     }
 
+    @Override
+    @LogError(value = "用户离线消息拉取")
+    public ResultVO<List<Object>> pullNotify(Integer userId) {
+
+        Assert.notNull(userId , "userId is null");
+
+        // 离线消息key
+        String target = String.format(WebSocketChannelEnum.USER_SYS_MSG.getSubscribeUrl(), userId);
+        String listKey = RedisConstant.REDIS_UNREAD_MSG_PREFIX + ":" + userId + ":" + target;
+        // 拉取消息
+        List<Object> list = this.redisService.getListData(listKey, Object.class, RedisDbConstant.REDIS_DB_DEFAULT);
+        // 删除消息
+        this.redisService.del(listKey,RedisDbConstant.REDIS_DB_DEFAULT);
+
+        return ResultUtil.getSuccessList(Object.class, list);
+    }
+
     private String getRedisKey(String userToken) {
 
         Assert.isTrue(StringUtils.isNotBlank(userToken), "userToken is blank");
@@ -548,6 +569,9 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .addIntList("update_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
+
+        Set<String> singleton = Collections.singleton("您收到一条系统消息，请注意查收！" + UUIDUtils.getPrimaryValue());
+        webSocketService.sendToUser(-1, userId , singleton);
 
         return ResultUtil.getSuccess();
     }

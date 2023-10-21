@@ -161,4 +161,13 @@ public interface UserService {
      * @return
      */
     ResultVO<String> refreshLogin(String token);
+
+    /**
+     * 用户离线消息拉取
+     *
+     * @param userId 用户id
+     * @return
+     */
+    ResultVO<List<Object>> pullNotify(Integer userId);
+
 }

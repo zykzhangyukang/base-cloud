@@ -9,6 +9,7 @@ import com.coderman.auth.vo.user.UserLoginRespVO;
 import com.coderman.auth.vo.user.UserPermissionVO;
 import com.coderman.auth.vo.user.UserRoleInitVO;
 import com.coderman.auth.vo.user.UserVO;
+import com.coderman.erp.util.AuthUtil;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
 import com.coderman.swagger.constant.SwaggerConstant;
@@ -137,6 +138,15 @@ public class UserController {
         return this.userService.page(queryVO);
     }
 
+
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "用户离线消息拉取")
+    @PostMapping(value = "/pull/notify")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+    })
+    public ResultVO<List<Object>> pullNotify() {
+        return this.userService.pullNotify(AuthUtil.getCurrent().getUserId());
+    }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "更新密码")
     @PutMapping(value = "/pwd/update")

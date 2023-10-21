@@ -287,6 +287,18 @@ export const authUserUpdatePwd = (data) => {
     })
 }
 
+/**
+ *  获取用户离线消息
+ */
+export const authUserPullNotify = (data) => {
+    return http({
+        url: `/auth/user/pull/notify`,
+        method: 'post',
+        data
+    })
+}
+
+
 
 /**
  *更新角色信息
