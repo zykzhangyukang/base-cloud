@@ -5,6 +5,7 @@ import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.erp.util.AuthUtil;
+import com.coderman.erp.vo.AuthUserVO;
 import com.coderman.redis.service.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
@@ -109,8 +110,6 @@ public class PlanServiceImpl implements PlanService {
             throw new RuntimeException("新增同步计划失败");
         }
 
-        this.publishToRedis();
-
         return ResultUtil.getSuccess();
     }
 
@@ -142,8 +141,18 @@ public class PlanServiceImpl implements PlanService {
 
             return ResultUtil.getWarn("删除同步计划失败!");
         }
+        return ResultUtil.getSuccess();
+    }
 
-        this.publishToRedis();
+    @Override
+    public ResultVO<Void> refreshSyncPlan() {
+
+        AuthUserVO current = AuthUtil.getCurrent();
+        if (null == current) {
+
+            return ResultUtil.getFail("请登录后访问！");
+        }
+        this.redisService.sendMessage(RedisConstant.TOPIC_REFRESH_PLAN, current.getUsername() + "刷新同步计划！");
 
         return ResultUtil.getSuccess();
     }
@@ -210,17 +219,9 @@ public class PlanServiceImpl implements PlanService {
             throw new RuntimeException("更新同步计划失败");
         }
 
-        this.publishToRedis();
-
         return ResultUtil.getSuccess();
     }
 
-
-    @LogError(value = "广播消息到redis")
-    public void publishToRedis(){
-        String msg = AuthUtil.getCurrent().getUsername() + "刷新同步计划。time=" + DateFormatUtils.format(new Date() , "yyyy-MM-dd HH:mm:ss");
-        this.redisService.sendMessage(RedisConstant.TOPIC_REFRESH_PLAN , msg);
-    }
 
     @Override
     @LogError(value = "启用/禁用 同步内容")
@@ -253,8 +254,6 @@ public class PlanServiceImpl implements PlanService {
 
             throw new RuntimeException("更新状态失败");
         }
-
-        this.publishToRedis();
 
         return ResultUtil.getSuccess();
     }

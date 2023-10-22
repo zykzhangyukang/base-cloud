@@ -84,4 +84,11 @@ public interface RescService {
      * @return
      */
     ResultVO<Map<String, Set<Integer>>> getSystemAllRescMap(String project);
+
+    /**
+     * 刷新系统资源
+     * @return
+     */
+    ResultVO<Void> refreshSysResc();
+
 }

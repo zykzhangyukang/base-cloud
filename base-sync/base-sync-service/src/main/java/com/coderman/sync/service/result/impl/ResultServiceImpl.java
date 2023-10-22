@@ -223,7 +223,7 @@ public class ResultServiceImpl implements ResultService {
             srcExecutor = this.buildExecutor(msgMeta, planMeta, "src");
             destExecutor= this.buildExecutor(msgMeta, planMeta, "dest");
         }catch (Exception e){
-            log.error("构建执行器错误！message:{},msgContent:{}",e.getMessage(),msgContent);
+            log.error("构建执行器错误！message:{},msgContent:{}",e.getMessage(),msgContent,e);
         }
 
         if (Objects.isNull(srcExecutor) || Objects.isNull(destExecutor) || CollectionUtils.isEmpty(srcExecutor.getSqlList()) || CollectionUtils.isEmpty(destExecutor.getSqlList())) {

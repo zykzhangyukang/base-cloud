@@ -64,4 +64,10 @@ public interface PlanService {
      * @return
      */
     ResultVO<Void> delete(String uuid);
+
+    /**
+     * 刷新同步计划
+     * @return
+     */
+    ResultVO<Void> refreshSyncPlan();
 }

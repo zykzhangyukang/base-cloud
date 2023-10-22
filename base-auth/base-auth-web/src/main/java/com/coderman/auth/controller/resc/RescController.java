@@ -104,5 +104,13 @@ public class RescController {
         return this.rescService.selectById(rescId);
     }
 
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "刷新系统资源")
+    @PutMapping(value = "/refresh")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+    })
+    public ResultVO<Void> refreshSysResc() {
+        return this.rescService.refreshSysResc();
+    }
 
 }

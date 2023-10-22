@@ -30,6 +30,9 @@
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
+                <a-form-item>
+                    <a-button type="default" @click="handleRescRefresh" v-permission="'auth:resc:refresh'" :loading="btnLoading">资源刷新</a-button>
+                </a-form-item>
             </a-form>
             <HTable
                     bordered
@@ -76,7 +79,7 @@
 
 <script>
 
-    import {authRescDelete, authRescPage} from "@/api/auth";
+    import {authRescDelete, authRescPage, authRescRefresh} from "@/api/auth";
     import constant, {authDomain} from "@/utils/constant";
     import rescSaveModal from "@/views/auth/resc/RescSaveModal";
     import rescUpdateModal from "@/views/auth/resc/RescUpdateModal";
@@ -93,6 +96,7 @@
         },
         data() {
             return {
+                btnLoading: false,
                 toolbarFixed: true,
                 searchParams: {
                     currentPage: 1,
@@ -168,6 +172,14 @@
             }
         },
         methods:{
+            handleRescRefresh() {
+                this.btnLoading = true;
+                authRescRefresh().then(e=>{
+                    this.$message.success("刷新系统资源成功！");
+                }).finally(()=>{
+                    this.btnLoading  = false;
+                })
+            },
             handleUpdate(id){
                 this.$refs['rescUpdateModal'].open(id);
             },

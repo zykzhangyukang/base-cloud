@@ -32,6 +32,9 @@
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
                 </a-form-item>
+                <a-form-item>
+                    <a-button type="default" @click="handlePlanRefresh" v-permission="'sync:plan:refresh'" :loading="btnLoading">计划刷新</a-button>
+                </a-form-item>
             </a-form>
 
             <HTable
@@ -42,6 +45,9 @@
                     :columns='tableColumns'
                     :data-source='tableData'
             >
+                <template #status="{ record }">
+                    <a-switch size="small" :checked="record.status === 'normal'" @click="handleUpdateStatus(record.uuid,record.status)" v-permission="'sync:plan:updateStatus'" />
+                </template>
                 <template #planCode="{ record }">
                    <a class="btn-text-mini" href="javascript:void(0);" @click="handlePlanLook(record.uuid)"> {{ record.planCode }}</a>
                 </template>
@@ -63,7 +69,6 @@
                         >
                             <a class="btn-text-mini" href="javascript:;" v-permission="'sync:plan:delete'"><DeleteOutlined/>删除</a>
                         </a-popconfirm>
-                        <a-switch size="small"  :checked="record.status === 'normal'" @click="handleUpdateStatus(record.uuid,record.status)" v-permission="'sync:plan:updateStatus'" />
                     </div>
                 </template>
             </HTable>
@@ -89,7 +94,7 @@
     import PlanLookModal from "@/views/sync/plan/PlanLookModal";
     import PlanSaveModal from "@/views/sync/plan/PlanSaveModal";
     import PlanUpdateModal from "@/views/sync/plan/PlanUpdateModal";
-    import {syncPlanDelete, syncPlanPage, syncPlanUpdateStatus} from "@/api/sync";
+    import {syncPlanDelete, syncPlanPage, syncPlanRefresh, syncPlanUpdateStatus} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
 
     export default {
@@ -103,6 +108,7 @@
         },
         data() {
             return {
+                btnLoading: false,
                 toolbarFixed: true,
                 searchParams: {
                     currentPage: 1,
@@ -116,12 +122,6 @@
                 tableData: [],
                 tableLoading: true,
                 tableColumns: [
-                    {
-                        title: 'uuid',
-                        dataIndex: 'uuid',
-                        key: 'uuid',
-                        ellipsis: true,
-                    },
                     {
                         title: '计划描述',
                         dataIndex: 'description',
@@ -163,10 +163,19 @@
                         key: 'updateTime',
                     },
                     {
+                        title: '计划状态',
+                        dataIndex: 'status',
+                        key: 'status',
+                        ellipsis: true,
+                        align: 'center',
+                        width: '100px',
+                        slots: { customRender: 'status' },
+                    },
+                    {
                         title: '操作',
                         key: 'action',
                         align: 'center',
-                        width: '200px',
+                        width: '180px',
                         slots: { customRender: 'action' },
                     },
                 ],
@@ -193,6 +202,14 @@
             },
         },
         methods:{
+            handlePlanRefresh() {
+                this.btnLoading = true;
+                syncPlanRefresh().then(e=>{
+                    this.$message.success("刷新系统资源成功！");
+                }).finally(()=>{
+                    this.btnLoading  = false;
+                })
+            },
             handleDelete(id){
                 syncPlanDelete(id).then(e=>{
                     this.$message.success("删除计划成功！");

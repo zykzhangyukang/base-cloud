@@ -79,6 +79,17 @@ export const syncPlanDetail = uuid => {
     })
 }
 
+/**
+ * 刷新同步计划
+ */
+export const syncPlanRefresh = data => {
+    return http({
+        url: `/sync/plan/refresh`,
+        method: 'put',
+        data: data
+    })
+}
+
 
 /**
  * 删除同步计划

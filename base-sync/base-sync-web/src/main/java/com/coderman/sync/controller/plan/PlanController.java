@@ -97,4 +97,13 @@ public class PlanController {
         return this.planService.updateStatus(planUpdateStatusDTO);
     }
 
+    @ApiOperation(httpMethod = SwaggerConstant.METHOD_PUT, value = "刷新同步计划")
+    @PutMapping(value = "/refresh")
+    @ApiReturnParams({
+            @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
+    })
+    public ResultVO<Void> refreshSyncPlan() {
+        return this.planService.refreshSyncPlan();
+    }
+
 }

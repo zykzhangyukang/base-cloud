@@ -14,6 +14,10 @@ import com.coderman.auth.model.resc.RescExample;
 import com.coderman.auth.model.resc.RescModel;
 import com.coderman.auth.service.resc.RescService;
 import com.coderman.auth.vo.resc.RescVO;
+import com.coderman.erp.constant.RedisConstant;
+import com.coderman.erp.util.AuthUtil;
+import com.coderman.erp.vo.AuthUserVO;
+import com.coderman.redis.service.RedisService;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.sync.util.MsgBuilder;
@@ -32,13 +36,14 @@ import java.util.*;
 @Service
 public class RescServiceImpl implements RescService {
 
-
     @Resource
     private RescDAO rescDAO;
 
-
     @Resource
     private FuncRescDAO funcRescDAO;
+
+    @Resource
+    private RedisService redisService;
 
     @Override
     @LogError(value = "资源列表")
@@ -274,16 +279,13 @@ public class RescServiceImpl implements RescService {
         Map<String, Set<Integer>> map = new HashMap<>();
 
         RescExample example = new RescExample();
-
         if (StringUtils.isNotBlank(project)) {
             example.createCriteria().andRescDomainEqualTo(project);
         }
 
         List<RescModel> resourceModels = this.rescDAO.selectByExample(example);
         Set<Integer> rescIds;
-
         for (RescModel resc : resourceModels) {
-
 
             if (map.containsKey(resc.getRescUrl())) {
 
@@ -292,17 +294,26 @@ public class RescServiceImpl implements RescService {
 
                 rescIds = new HashSet<>();
             }
-
-
             rescIds.add(resc.getRescId());
             map.put(resc.getRescUrl(), rescIds);
-
         }
 
         ResultVO<Map<String, Set<Integer>>> resultVO = new ResultVO<>();
         resultVO.setCode(ResultConstant.RESULT_CODE_200);
         resultVO.setResult(map);
-
         return resultVO;
+    }
+
+    @Override
+    @LogError(value = "刷新系统资源")
+    public ResultVO<Void> refreshSysResc() {
+
+        AuthUserVO current = AuthUtil.getCurrent();
+        if(null == current){
+            return ResultUtil.getFail("请登录后访问！");
+        }
+        this.redisService.sendMessage(RedisConstant.TOPIC_REFRESH_RESC , current.getUsername()  + "刷新系统资源！");
+
+        return ResultUtil.getSuccess();
     }
 }

@@ -72,7 +72,7 @@ public class WebSocketServiceImpl implements WebSocketService {
      *
      * @param websocketRedisMsg 消息内容
      */
-    @RedisChannelListener(channelName = RedisConstant.CHANNEL_WEBSOCKET_NOTIFY, clazz = WebsocketRedisMsg.class, envDiff = false)
+    @RedisChannelListener(channelName = RedisConstant.CHANNEL_WEBSOCKET_NOTIFY, clazz = WebsocketRedisMsg.class)
     public void handWebSocketNotify(WebsocketRedisMsg<Object> websocketRedisMsg) {
 
         log.info("Received Message: {}", JSON.toJSONString(websocketRedisMsg));

@@ -68,19 +68,16 @@ public class SyncPlanInitializer {
     }
 
 
-    @RedisChannelListener(channelName = RedisConstant.TOPIC_REFRESH_PLAN, envDiff = false)
-    public void refreshPlan(String messageContent) {
+    @RedisChannelListener(channelName = RedisConstant.TOPIC_REFRESH_PLAN)
+    public void refreshSyncPlan(String messageContent) {
 
         try {
 
-            log.info("刷新同步计划开始 -> {}", messageContent);
             this.init();
+            log.info("refreshSyncPlan - 刷新同步计划完成 -> {}", messageContent);
 
         } catch (Exception e) {
-            log.error("刷新同步计划失败 -> {}", messageContent);
-
-        } finally {
-            log.info("刷新同步计划结束 -> {}", messageContent);
+            log.error("refreshSyncPlan - 刷新同步计划失败 -> {}", messageContent);
         }
     }
 

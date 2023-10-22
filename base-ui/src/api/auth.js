@@ -144,6 +144,17 @@ export const authRescDelete = id => {
 }
 
 /**
+ * 刷新系统资源
+ */
+export const authRescRefresh = data => {
+    return http({
+        url: `/auth/resc/refresh`,
+        method: 'put',
+        data: data
+    })
+}
+
+/**
  * 新增资源
  */
 export const authRescSave = data => {
