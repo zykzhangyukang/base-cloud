@@ -3,7 +3,8 @@ import Stomp from 'stompjs'
 import store from '@/store/index'
 
 class MyWebSock {
-    url =   process.env.VUE_APP_API+'/sys_websocket'
+    // url =   process.env.VUE_APP_API+'/sys_websocket'
+    url =   'http://127.0.0.1:9870/sys_websocket'
 
     constructor() {
         this.stompClient = ''
@@ -33,7 +34,8 @@ class MyWebSock {
             Authorization: localStorage.getItem("token") || ""
         }
         // 向服务器发起websocket连接
-        this.stompClient.connect(headers, () => {
+        this.stompClient.connect(headers, (frame) => {
+                console.log('Connected: ' + frame);
                 this.stompClient.subscribe('/topic/sysMsg', this.subSysMsg, headers)
                 if (user) {
                     // 监听用户消息

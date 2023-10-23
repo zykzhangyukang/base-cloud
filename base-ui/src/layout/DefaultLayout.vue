@@ -22,17 +22,16 @@
 @import '../style/layout.less';
 </style>
 <script>
-import store from '../store';
-import AppAside from './AppAside'
-import AppHeader from './AppHeader'
-import AppFooter from './AppFooter'
-import avatar from '@/assets/images/user.jpg'
-import {authUserLogout} from '@/api/auth';
-import {Modal} from "ant-design-vue";
-import {createVNode} from "vue";
-import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
-import MyWebSock from "@/utils/socket";
-//返回除了首页之外的面包屑
+  import store from '../store';
+  import AppAside from './AppAside'
+  import AppHeader from './AppHeader'
+  import AppFooter from './AppFooter'
+  import avatar from '@/assets/images/user.jpg'
+  import {authUserLogout} from '@/api/auth';
+  import {Modal} from "ant-design-vue";
+  import {createVNode} from "vue";
+  import {ExclamationCircleOutlined} from '@ant-design/icons-vue';
+  //返回除了首页之外的面包屑
 const getBreadCrumb = (pathname,menuTree,crumb) => {
   // 首页返回false
   if(pathname === '/dashboard') return false;
