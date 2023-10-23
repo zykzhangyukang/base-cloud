@@ -3,7 +3,7 @@ import Stomp from 'stompjs'
 import store from '@/store/index'
 
 class MyWebSock {
-    url =   'http://127.0.0.1:9870/sys_websocket'
+    url =   process.env.VUE_APP_API+'/sys_websocket'
 
     constructor() {
         this.stompClient = ''
