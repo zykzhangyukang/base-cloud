@@ -17,7 +17,7 @@
                     </a-col>
                     <a-col :span="4">
                         <div class="op_btn_group">
-                            <span class="mark_read"><CheckOutlined />标记</span>
+                            <span class="mark_read"><EyeTwoTone />标记</span>
                           </div>
                     </a-col>
                   </a-row>
@@ -110,6 +110,6 @@
     .op_btn_group > .mark_read{
         font-size: 11px;
         cursor: pointer;
-        color: #ff9900;
+        color: #5cadff;
     }
 </style>

@@ -8,10 +8,10 @@
             </div>
         </div>
         <div class="right">
-            <div>
+            <div class="mr15">
                 <notifyNav></notifyNav>
             </div>
-            <div class="mr15" @click='screenFullChange'>
+            <div class="mr30 screen_full" @click='screenFullChange'>
                 <ShrinkOutlined v-if='isScreenFull'/>
                 <ArrowsAltOutlined v-else/>
             </div>
@@ -44,6 +44,7 @@
                         </a-menu>
                     </template>
                     <div class='ant-dropdown-link'>
+                        {{user.info.realName}}
                         <a-avatar :src='avatar' alt='avatar' :style="{ cursor: 'pointer' }">
                             <template v-slot:icon>
                                 <UserOutlined/>
@@ -147,3 +148,13 @@
         }
     }
 </script>
+<style>
+    .ant-dropdown-link{
+        cursor: pointer;
+        font-size: 12px;
+        color: #17233d;
+    }
+    .screen_full{
+        cursor: pointer;
+    }
+</style>

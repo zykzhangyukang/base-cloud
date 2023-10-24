@@ -80,6 +80,7 @@ export default {
                 })
             },
             handleOk() {
+                this.spinning = true;
                 this.confirmLoading = true;
               authFuncRescBindUpdate(this.form).then(res => {
                     this.$message.success("绑定资源成功！");
@@ -87,11 +88,13 @@ export default {
                     this.$emit('success')
                 }).finally(e=>{
                     this.confirmLoading = false;
+                    this.spinning = false;
                 })
             },
             handleClose() {
                 this.visible = false
                 this.confirmLoading = false;
+                this.spinning = false;
                 this.form = this.$options.data().form;
                 this.searchList = [];
                 this.searchValues = [];
