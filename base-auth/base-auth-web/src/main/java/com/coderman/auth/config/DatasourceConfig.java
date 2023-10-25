@@ -23,6 +23,9 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 
+/**
+ * @author zhangyukang
+ */
 @Configuration
 @EnableConfigurationProperties(MybatisProperties.class)
 @MapperScan(basePackages = DatasourceConfig.PACKAGE,sqlSessionFactoryRef = "authSqlSessionFactory")

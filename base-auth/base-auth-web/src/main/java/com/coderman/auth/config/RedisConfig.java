@@ -13,6 +13,9 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPoolConfig;
 
+/**
+ * @author zhangyukang
+ */
 @Component
 @Configuration("authRedisConfig")
 public class RedisConfig extends BaseRedisConfig {
