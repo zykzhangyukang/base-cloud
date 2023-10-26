@@ -356,22 +356,19 @@ public class FuncServiceImpl implements FuncService {
     private ResultVO<Void> getDeepFuncIds(List<Integer> funcIdList, Integer rootFuncId) {
 
         FuncModel rootNode = this.funcDAO.selectByPrimaryKey(rootFuncId);
+        if(null != rootNode){
 
-        if (AuthConstant.FUNC_ROOT_PARENT_ID.equals(rootNode.getParentId())) {
+            funcIdList.add(rootFuncId);
+            FuncExample example = new FuncExample();
+            example.createCriteria().andParentIdEqualTo(rootFuncId);
+            List<FuncModel> funcModels = this.funcDAO.selectByExample(example);
 
-            return ResultUtil.getWarn("不允许解绑最顶级的功能！");
-        }
+            if (!CollectionUtils.isEmpty(funcModels)) {
 
-        funcIdList.add(rootFuncId);
-        FuncExample example = new FuncExample();
-        example.createCriteria().andParentIdEqualTo(rootFuncId);
-        List<FuncModel> funcModels = this.funcDAO.selectByExample(example);
+                for (FuncModel funcModel : funcModels) {
 
-        if (!CollectionUtils.isEmpty(funcModels)) {
-
-            for (FuncModel funcModel : funcModels) {
-
-                getDeepFuncIds(funcIdList, funcModel.getFuncId());
+                    getDeepFuncIds(funcIdList, funcModel.getFuncId());
+                }
             }
         }
 

@@ -41,5 +41,8 @@ public class MessagePageDTO extends BaseModel {
     @ApiModelProperty(value = "MQ消息id")
     private String mid;
 
+    @ApiModelProperty(value = "消息内容")
+    private String msgContent;
+
 
 }

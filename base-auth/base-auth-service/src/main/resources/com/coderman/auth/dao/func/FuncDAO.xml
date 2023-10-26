@@ -361,15 +361,7 @@
     auth_func f
     <include refid="pageWhere"></include>
     group by  f.func_id, f.func_name, f.func_key, f.parent_id, f.create_time, f.update_time
-    order by
-    <choose>
-      <when test="parentId!=null">
-        f.func_id asc , f.func_type asc, f.func_sort asc
-      </when>
-      <otherwise>
-         f.func_sort asc, f.func_type asc
-      </otherwise>
-    </choose>
+    order by   f.func_id asc , f.func_type asc, f.func_sort asc
     limit #{offset},#{size}
   </select>
 

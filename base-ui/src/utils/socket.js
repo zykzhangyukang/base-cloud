@@ -35,7 +35,6 @@ class MyWebSock {
         }
         // 向服务器发起websocket连接
         this.stompClient.connect(headers, (frame) => {
-                console.log('Connected: ' + frame);
                 this.stompClient.subscribe('/topic/sysMsg', this.subSysMsg, headers)
                 if (user) {
                     // 监听用户消息

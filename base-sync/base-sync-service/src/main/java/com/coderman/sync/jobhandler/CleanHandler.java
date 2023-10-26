@@ -33,7 +33,8 @@ public class CleanHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String param) {
 
-        Date ltTime = DateUtils.addMinutes(new Date(), -5);
+        // 保存近7天的本地消息
+        Date ltTime = DateUtils.addDays(new Date(), -1);
 
         Set<String> databaseSets = new HashSet<>();
 

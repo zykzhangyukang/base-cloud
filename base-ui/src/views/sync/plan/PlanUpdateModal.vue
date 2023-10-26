@@ -11,7 +11,7 @@
         <a-spin :spinning="spinning" >
         <a-form :model="form" :label-col="labelCol"  ref="formRef" :rules="formRules"  :wrapper-col="wrapperCol">
             <a-form-item label="" name="planContent">
-                <a-textarea v-model:value="form.planContent"  :rows="15" autocomplete="off" />
+                <a-textarea v-model:value="form.planContent"  :rows="10" autocomplete="off" />
             </a-form-item>
         </a-form>
         </a-spin>

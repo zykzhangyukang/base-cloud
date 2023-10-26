@@ -19,7 +19,7 @@
                 <a-input v-model:value="form.realName" autocomplete="off" />
             </a-form-item>
             <a-form-item label="所属部门"  name="deptCode">
-                <a-select v-model:value="form.deptCode" placeholder="请选择部门" :style="{width:'200px'}" autocomplete="off">
+                <a-select v-model:value="form.deptCode" placeholder="请选择部门"  autocomplete="off">
                     <a-select-option v-for="item in deptList" :value="item.deptCode" :key="item.deptId">{{item.deptName}}</a-select-option>
                 </a-select>
             </a-form-item>

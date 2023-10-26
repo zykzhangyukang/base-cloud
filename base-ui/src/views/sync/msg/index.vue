@@ -1,15 +1,12 @@
 <template>
     <a-layout class='msg-container'>
         <a-card>
-            <div :style="{'textAlign':'right'}">
-                <a-button type="primary"  ><PlusOutlined />自动刷新</a-button>
-            </div>
             <a-form
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
                 <a-form-item label="源系统">
-                    <a-select v-model:value="searchParams.srcProject" :style="{width:'180px'}" placeholder="源系统">
+                    <a-select v-model:value="searchParams.srcProject" :style="{width:'200px'}" placeholder="源系统">
                         <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -17,6 +14,9 @@
                     <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" allowClear>
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
+                </a-form-item>
+                <a-form-item label="业务消息id">
+                    <a-input v-model:value="searchParams.msgId" :style="{width:'200px'}" placeholder="业务消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="发送状态">
                     <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态" allowClear>
@@ -27,6 +27,9 @@
                     <a-select v-model:value="searchParams.dealStatus" :style="{width:'180px'}" placeholder="处理状态" allowClear>
                         <a-select-option v-for="item in dealStatusG" :value="item.code" :key="item.code">{{dealStatusGName[item.code]}}</a-select-option>
                     </a-select>
+                </a-form-item>
+                <a-form-item label="消息内容">
+                    <a-input v-model:value="searchParams.msgContent" :style="{width:'190px'}" placeholder="消息内容"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
@@ -95,6 +98,8 @@
                     destProject: '',
                     dealStatus: '',
                     sendStatus: '',
+                    msgContent: '',
+                    msgId: '',
                 },
                 total: 0,
                 tableData: [],

@@ -4,9 +4,9 @@
       <a-card>
         <a-affix :offset-top="30">
           <div :style="{'textAlign':'right'}">
-            <a-button :style="{'marginRight': '10px'}" @click="handleCloseAll">收缩全部</a-button>
-            <a-button :style="{'marginRight': '10px'}" @click="handleExpandAll">展开全部</a-button>
-            <a-button type="dashed"  :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
+            <a-button :style="{'marginRight': '10px'}" @click="handleCloseAll" v-if="expand">全部折叠</a-button>
+            <a-button :style="{'marginRight': '10px'}" @click="handleExpandAll" v-if="!expand">全部展开</a-button>
+            <a-button :style="{'marginRight': '10px'}" @click="this.$router.push('/auth/role')">返回列表</a-button>
             <a-button type="primary" @click="handleAuthorized" :loading="loading">更新授权</a-button>
           </div>
         </a-affix>
@@ -97,6 +97,7 @@ export default {
   },
   data() {
     return {
+        expand: true,
         loading: false,
         confirmLoading: false,
         checkInfo: {
@@ -118,12 +119,14 @@ export default {
         let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
         reference.setExpandedKeys(this.getAllNodeKeys(e))
       })
+      this.expand = true;
     },
     handleCloseAll(){
       this.allTreeList.forEach(e => {
         let reference = this.$refs['roleAuthorizedTreeRef_' + e.funcId];
-        reference.setExpandedKeys([])
+        reference.setExpandedKeys(this.getAllRootNodeKeys(e))
       })
+      this.expand =false;
     },
     getAllNodeKeys(nodes) {
       let keys = [];
@@ -134,6 +137,13 @@ export default {
             keys = keys.concat(this.getAllNodeKeys(node));
           }
         }
+      }
+      return keys;
+    },
+    getAllRootNodeKeys(nodes) {
+      let keys = [];
+      if(nodes && nodes.funcId){
+        keys.push(nodes.funcId);
       }
       return keys;
     },
@@ -188,6 +198,7 @@ export default {
         this.$router.push('/auth/role')
       }).finally(() => {
         this.initLoading = false;
+        this.handleCloseAll();
       })
     }
   },

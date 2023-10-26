@@ -18,12 +18,9 @@
         <!-- 用户列表 -->
       <div v-if="userVOList && userVOList.length > 0">
         <a-divider >用户列表</a-divider>
-        <a-tag v-for="item in userVOList" :key="item.userId" class="ml15 user_item">
-          <a-tooltip>
-            <template #title>{{'账号:'+item.username}}</template>
-            {{item.realName + '-' + item.deptName}}
-          </a-tooltip>
-        </a-tag>
+        <a-button size="small" v-for="item in userVOList" :key="item.userId" class="ml15 user_item">
+          {{item.realName }}
+        </a-button>
       </div>
       </a-spin>
     </a-modal>

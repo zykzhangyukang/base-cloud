@@ -17,17 +17,14 @@
                                 :style="{'marginBottom':'10px'}"
                                 layout='inline'
                         >
-                            <a-form-item label="功能名称">
-                                <a-input v-model:value="searchParams.funcName" :style="{width:'150px'}" placeholder="功能名称输入框"  autocomplete="off" ></a-input>
+                            <a-form-item label="功能key">
+                                <a-input v-model:value="searchParams.funcKey" :style="{width:'180px'}" placeholder="功能key输入框"  autocomplete="off" ></a-input>
                             </a-form-item>
-                            <a-form-item label="资源URL">
-                                <a-input v-model:value="searchParams.rescUrl" :style="{width:'150px'}" placeholder="资源URL输入框"  autocomplete="off" ></a-input>
-                            </a-form-item>
-                            <a-form-item label="功能Key">
-                                <a-input v-model:value="searchParams.funcKey" :style="{width:'150px'}" placeholder="功能Key输入框"  autocomplete="off" ></a-input>
+                            <a-form-item label="资源url">
+                                <a-input v-model:value="searchParams.rescUrl" :style="{width:'180px'}" placeholder="资源url输入框"  autocomplete="off" ></a-input>
                             </a-form-item>
                             <a-form-item label="功能类型">
-                                <a-select v-model:value="searchParams.funcType" :style="{width:'150px'}" placeholder="功能类型">
+                                <a-select v-model:value="searchParams.funcType" :style="{width:'180px'}" placeholder="功能类型">
                                     <a-select-option v-for="item in funcTypeG" :value="item.code" :key="item.code">{{funcTypeGName[item.code]}}</a-select-option>
                                 </a-select>
                             </a-form-item>
@@ -61,7 +58,7 @@
                                 {{ funcTypeGName[text] }}
                             </template>
                             <template #funcKey="{ text }">
-                                [{{text}}]
+                                {{text}}
                             </template>
                             <template #rescVOList="{ record }">
                                    <span>
@@ -199,7 +196,7 @@ export default {
                         dataIndex: 'funcKey',
                         key: 'funcKey',
                         ellipsis: true,
-                        width: '180px',
+                        width: '160px',
                         slots: {customRender: 'funcKey'},
                     },
                     {
@@ -208,7 +205,7 @@ export default {
                         key: 'rescVOList',
                         slots: {customRender: 'rescVOList'},
                         align: 'center',
-                        width: '180px',
+                        width: '190px',
                         ellipsis: true,
                     },
                     {
@@ -239,7 +236,6 @@ export default {
                         align: 'center',
                         width: '200px',
                         slots: {customRender: 'action'},
-                        fixed: 'right',
                     },
                 ],
             }

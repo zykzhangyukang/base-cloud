@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 10px;margin-left: 10px;border: 1px solid #eee;border-radius: 5px;cursor: pointer">
+  <div style="margin-top: 10px;margin-left: 5px;border: 1px solid #efefef;border-radius: 5px;cursor: pointer">
     <a-tree
         :selectable="false"
         :tree-data="treeDataList"

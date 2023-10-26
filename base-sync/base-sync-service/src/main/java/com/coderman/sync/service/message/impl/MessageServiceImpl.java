@@ -45,6 +45,7 @@ public class MessageServiceImpl extends BaseService implements MessageService {
         Date endTime = messagePageDTO.getEndTime();
         String msgId = messagePageDTO.getMsgId();
         String mid = messagePageDTO.getMid();
+        String msgContent = messagePageDTO.getMsgContent();
 
         if (null == currentPage) {
             currentPage = 1;
@@ -70,15 +71,15 @@ public class MessageServiceImpl extends BaseService implements MessageService {
 
         if (SyncConstant.DB_TYPE_MONGO.equalsIgnoreCase(dbType)) {
 
-            return this.selectMessageByMongo(dbType, srcProject, destProject, sendStatus, dealStatus, startTime, endTime, msgId,mid, currentPage, pageSize, dbname);
+            return this.selectMessageByMongo(dbType, srcProject, destProject, sendStatus, dealStatus, startTime, endTime, msgId,mid, msgContent,currentPage, pageSize, dbname);
         } else {
 
-            return this.selectMessageBySql(dbType, srcProject, destProject, sendStatus, dealStatus, startTime, endTime, msgId,mid, currentPage, pageSize, dbname);
+            return this.selectMessageBySql(dbType, srcProject, destProject, sendStatus, dealStatus, startTime, endTime, msgId,mid, msgContent,currentPage, pageSize, dbname);
         }
     }
 
     private ResultVO<PageVO<List<MqMessageModel>>> selectMessageBySql(String dbType, String srcProject, String destProject, String sendStatus, String dealStatus, Date startTime, Date endTime, String msgId,
-                                                                      String mid,Integer currentPage, Integer pageSize, String dbname) {
+                                                                      String mid, String msgContent, Integer currentPage, Integer pageSize, String dbname) {
 
         StringBuilder builder = new StringBuilder();
 
@@ -124,6 +125,12 @@ public class MessageServiceImpl extends BaseService implements MessageService {
 
             builder.append(" and mid = ? ");
             paramList.add(mid);
+        }
+
+        if (StringUtils.isNotBlank(msgContent)) {
+
+            builder.append(" and msg_content like concat('%',?,'%') ");
+            paramList.add(msgContent);
         }
 
         if (null != startTime) {
@@ -250,7 +257,7 @@ public class MessageServiceImpl extends BaseService implements MessageService {
     }
 
     private ResultVO<PageVO<List<MqMessageModel>>> selectMessageByMongo(String dbType, String srcProject, String destProject, String sendStatus, String dealStatus, Date startTime, Date endTime, String msgId,
-                                                                        String mid,Integer currentPage, Integer pageSize, String dbname) {
+                                                                        String mid, String msgContent, Integer currentPage, Integer pageSize, String dbname) {
         MongoTemplate mongoTemplate;
 
         try {
