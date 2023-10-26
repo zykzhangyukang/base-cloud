@@ -73,7 +73,7 @@ http.interceptors.response.use(
 
             } else if (error.response.status === 503) {
 
-                message.error(' 网关转发异常，请稍后再试！');
+                message.error(error.response.data.msg ? error.response.data.msg : ' 网关转发异常，请稍后再试！（503）');
 
             }else if (error.response.status === 500){
 
