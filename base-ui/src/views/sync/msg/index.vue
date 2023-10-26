@@ -15,8 +15,11 @@
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="业务消息id">
-                    <a-input v-model:value="searchParams.msgId" :style="{width:'200px'}" placeholder="业务消息id"  autocomplete="off" ></a-input>
+                <a-form-item label="业务消息ID">
+                    <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="业务消息id"  autocomplete="off" ></a-input>
+                </a-form-item>
+                <a-form-item label="MQ消息ID">
+                    <a-input v-model:value="searchParams.mid" :style="{width:'180px'}" placeholder="MQ消息ID"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="发送状态">
                     <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态" allowClear>
@@ -100,6 +103,7 @@
                     sendStatus: '',
                     msgContent: '',
                     msgId: '',
+                    mid: ''
                 },
                 total: 0,
                 tableData: [],
