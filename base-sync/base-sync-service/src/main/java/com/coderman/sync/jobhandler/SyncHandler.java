@@ -1,7 +1,7 @@
 package com.coderman.sync.jobhandler;
 
+import com.coderman.service.config.PropertyConfig;
 import com.coderman.service.util.SpringContextUtil;
-import com.coderman.sync.config.SyncDBConfig;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.task.base.MsgTask;
@@ -18,7 +18,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +27,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class SyncHandler extends IJobHandler {
-
-    @Resource
-    private SyncDBConfig syncDBConfig;
 
     @Override
     public ReturnT<String> execute(String param) {
@@ -52,7 +48,7 @@ public class SyncHandler extends IJobHandler {
 
         XxlJobLogger.log("前"+Math.abs(begin)+"分钟 - 前"+Math.abs(end)+"分钟的消息重新投递到mq");
 
-        List<String> databases = syncDBConfig.listDatabases("message");
+        String[] databases = StringUtils.split(PropertyConfig.getConfigValue("pub_mq_message.db"), ",");
 
         for (String dbName : databases) {
 

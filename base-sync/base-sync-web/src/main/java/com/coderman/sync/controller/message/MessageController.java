@@ -27,7 +27,7 @@ public class MessageController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"pageRow", "totalRow", "currPage", "totalPage", "dataList"}),
             @ApiReturnParam(name = "MqMessageModel",value = {"srcProject", "msgContent", "createTime", "destProject", "sendStatus", "dealStatus", "dealCount",
-                    "sendTime", "ackTime", "mid","mqMessageId"})
+                    "sendTime", "ackTime", "mid","mqMessageId","uuid"})
     })
     public ResultVO<PageVO<List<MqMessageModel>>> selectMessagePage(@RequestBody MessagePageDTO messagePageDTO){
 

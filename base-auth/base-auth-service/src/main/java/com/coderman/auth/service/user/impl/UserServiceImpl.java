@@ -564,11 +564,14 @@ public class UserServiceImpl extends BaseService implements UserService {
 
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
-                        .addIntList("update_auth_demo_user", Collections.singletonList(userId))
-                        .build()
-        );
+        for (int i = 0; i < 2000; i++) {
+
+            SyncUtil.sync(
+                    MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
+                            .addIntList("update_auth_demo_user", Collections.singletonList(userId))
+                            .build()
+            );
+        }
 
         Set<String> singleton = Collections.singleton("您收到一条系统消息，请注意查收！" + UUIDUtils.getPrimaryValue());
         webSocketService.sendToUser(-1, userId , singleton);

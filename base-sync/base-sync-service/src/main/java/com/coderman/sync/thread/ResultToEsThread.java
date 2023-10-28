@@ -2,7 +2,6 @@ package com.coderman.sync.thread;
 
 import com.coderman.sync.es.EsService;
 import com.coderman.sync.result.ResultModel;
-import com.coderman.sync.task.base.BaseTask;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Lazy;
@@ -56,8 +55,6 @@ public class ResultToEsThread {
                             esService.batchInsertSyncResult(list);
                         }
 
-                        list.clear();
-
                         TimeUnit.SECONDS.sleep(3);
 
                     } catch (Exception e) {
@@ -68,8 +65,11 @@ public class ResultToEsThread {
                             TimeUnit.SECONDS.sleep(10);
                         } catch (InterruptedException ignored) {
                         }
-                    }
 
+                    }finally {
+
+                        list.clear();
+                    }
                 }
             }
         });

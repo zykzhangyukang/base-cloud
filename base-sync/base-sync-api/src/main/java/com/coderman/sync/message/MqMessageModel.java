@@ -14,6 +14,9 @@ public class MqMessageModel extends BaseModel {
     @ApiModelProperty(value = "本地消息表主键")
     private String mqMessageId;
 
+    @ApiModelProperty(value = "uuid/业务消息id")
+    private String uuid;
+
     @ApiModelProperty(value = "rocketmq消息id")
     private String mid;
 

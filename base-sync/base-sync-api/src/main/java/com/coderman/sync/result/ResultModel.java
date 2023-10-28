@@ -1,6 +1,7 @@
 package com.coderman.sync.result;
 
 import com.coderman.api.model.BaseModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -67,5 +68,10 @@ public class ResultModel extends BaseModel {
 
     @ApiModelProperty(value = "是否同步到es")
     private boolean syncToEs;
+
+    @ApiModelProperty(value = "高亮字段")
+    private String hlsSyncContent;
+    @ApiModelProperty(value = "高亮字段")
+    private String hlsMsgContent;
 
 }

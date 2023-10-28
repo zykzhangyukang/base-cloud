@@ -15,6 +15,9 @@ public class PlanPageDTO extends BaseModel {
     @ApiModelProperty(value = "每页显示条数")
     private Integer pageSize;
 
+    @ApiModelProperty(value = "描述信息")
+    private String description;
+
     @ApiModelProperty(value = "同步计划编号")
     private String planCode;
 

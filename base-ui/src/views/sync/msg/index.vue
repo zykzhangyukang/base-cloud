@@ -15,11 +15,11 @@
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="业务消息ID">
-                    <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="业务消息id"  autocomplete="off" ></a-input>
+                <a-form-item label="消息id">
+                    <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
-                <a-form-item label="MQ消息ID">
-                    <a-input v-model:value="searchParams.mid" :style="{width:'180px'}" placeholder="MQ消息ID"  autocomplete="off" ></a-input>
+                <a-form-item label="mq消息id">
+                    <a-input v-model:value="searchParams.mid" :style="{width:'180px'}" placeholder="mq消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="发送状态">
                     <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态" allowClear>
@@ -32,7 +32,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item label="消息内容">
-                    <a-input v-model:value="searchParams.msgContent" :style="{width:'190px'}" placeholder="消息内容"  autocomplete="off" ></a-input>
+                    <a-input v-model:value="searchParams.msgContent"   :style="{width:'250px'}"  placeholder="消息内容"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:plan:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
@@ -110,10 +110,9 @@
                 tableLoading: true,
                 tableColumns: [
                     {
-                        title: 'MQ消息',
-                        dataIndex: 'mid',
-                        key: 'mid',
-                        width: '280px',
+                        title: '消息id',
+                        dataIndex: 'uuid',
+                        width: '250px',
                         ellipsis: true,
                     },
                     {
@@ -127,6 +126,13 @@
                         dataIndex: 'destProject',
                         key: 'destProject',
                         slots: { customRender: 'destProject' },
+                    },
+                    {
+                        title: 'mq消息id',
+                        dataIndex: 'mid',
+                        key: 'mid',
+                        width: '260px',
+                        ellipsis: true,
                     },
                     {
                         title: '发送状态',
@@ -152,6 +158,7 @@
                         dataIndex: 'dealCount',
                         key: 'dealCount',
                         align: 'center',
+                        width: '100px',
                     },
                     {
                         title: '发送时间',

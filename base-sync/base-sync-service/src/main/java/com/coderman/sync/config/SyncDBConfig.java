@@ -1,15 +1,10 @@
 package com.coderman.sync.config;
 
 import lombok.Data;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @ConfigurationProperties(prefix = "sync.jdbc")
@@ -56,7 +51,7 @@ public class SyncDBConfig {
         // mysql
         private String initialSize;
 
-        // sqlserver
+        // sqlServer
         private String logAbandoned;
         private String removeAbandoned;
         private String removeAbandonedTimeout;
@@ -80,31 +75,4 @@ public class SyncDBConfig {
     }
 
     private List<SyncDbConfig> dbList;
-
-
-    /**
-     * 获取所有数据库名称
-     *
-     * @return
-     */
-    public List<String> listDatabases(String type) {
-
-        List<String> list = null;
-
-        if (CollectionUtils.isNotEmpty(dbList)) {
-
-            list = new ArrayList<>(dbList.size());
-
-            if (StringUtils.equalsIgnoreCase("callback", type)) {
-
-                return dbList.stream().filter(e -> BooleanUtils.isTrue(e.getCallback())).map(SyncDbConfig::getDbname).collect(Collectors.toList());
-
-            } else if (StringUtils.equalsIgnoreCase("message", type)) {
-
-                return dbList.stream().filter(e -> BooleanUtils.isTrue(e.getMessage())).map(SyncDbConfig::getDbname).collect(Collectors.toList());
-            }
-        }
-
-        return list;
-    }
 }

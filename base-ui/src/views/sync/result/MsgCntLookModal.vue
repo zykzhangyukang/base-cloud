@@ -17,7 +17,7 @@
     import 'highlight.js/styles/idea.css';
 
     export default {
-        name: "PlanLookModal.vue",
+        name: "MsgCntLookModal.vue",
         directives: {
             highlightjs,
         },

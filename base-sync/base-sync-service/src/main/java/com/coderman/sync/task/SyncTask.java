@@ -276,6 +276,9 @@ public class SyncTask {
 
             String remark = "系统标记成功";
 
+            // 标记ES状态
+            SpringContextUtil.getBean(EsService.class).updateSyncResultSuccess(this.resultModel, remark);
+
             jdbcTemplate.update("update sync_result set status=?,remark=? where msg_id=? and status=?", preparedStatement -> {
 
                 preparedStatement.setString(1, PlanConstant.RESULT_STATUS_SUCCESS);
@@ -283,9 +286,6 @@ public class SyncTask {
                 preparedStatement.setString(3, this.resultModel.getMsgId());
                 preparedStatement.setString(4, PlanConstant.RESULT_STATUS_FAIL);
             });
-
-            // 标记ES状态
-            SpringContextUtil.getBean(EsService.class).updateSyncResultSuccess(this.resultModel, remark);
         }
 
     }

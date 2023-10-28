@@ -64,7 +64,7 @@ public class ResultController {
     })
     public com.coderman.api.vo.ResultVO<Void> signSuccess(String uuid) throws IOException {
 
-        return this.resultService.signSuccess(uuid, AuthUtil.getCurrent().getUsername() + "-手动标记成功");
+        return this.resultService.signSuccess(uuid, AuthUtil.getCurrent().getRealName() + "手动标记成功");
     }
 
     @ApiOperation(httpMethod = SwaggerConstant.METHOD_POST, value = "校验同步结果")

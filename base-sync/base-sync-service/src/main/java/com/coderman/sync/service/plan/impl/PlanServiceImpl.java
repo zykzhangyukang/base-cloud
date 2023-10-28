@@ -299,6 +299,7 @@ public class PlanServiceImpl implements PlanService {
         String sortOrder = planPageDTO.getSortOrder();
         String srcProject = planPageDTO.getSrcProject();
         String destProject = planPageDTO.getDestProject();
+        String description = planPageDTO.getDescription();
 
         StringBuilder countSql = new StringBuilder("select count(1) ");
         StringBuilder realSql = new StringBuilder("select uuid,plan_code,description,src_db,dest_db,src_project,dest_project,plan_content,status,create_time,update_time,plan_content");
@@ -321,6 +322,12 @@ public class PlanServiceImpl implements PlanService {
 
             sql.append(" and plan_code like ?");
             params.add("%" + planCode + "%");
+        }
+
+        if (StringUtils.isNotBlank(description)) {
+
+            sql.append(" and description like ?");
+            params.add("%" + description + "%");
         }
 
         if (StringUtils.isNotBlank(status)) {

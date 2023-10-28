@@ -24,6 +24,7 @@ import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -36,6 +37,7 @@ import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -58,9 +60,6 @@ public class EsServiceImpl implements EsService {
 
     // 当前使用的索引名
     public String syncResultIndexName;
-
-    @Resource
-    private ResultService resultService;
 
 
     @Override
@@ -131,12 +130,6 @@ public class EsServiceImpl implements EsService {
             log.error("批量更新ES同步记录状态失败:{}",JSON.toJSONString(response.getBulkFailures()));
         }
 
-        // 如果是RocketMQ重试消息,标记成功，写入redis防止RocketMQ消息后续继续重试。
-//        if (StringUtils.isNotBlank(resultModel.getMqId()) && Arrays.asList(SyncConstant.MSG_ROCKET_MQ , SyncConstant.MSG_ROCKET_ORDER_MQ).contains(resultModel.getMsgSrc())) {
-//
-//            log.warn("RocketMQ重试消息->标记成功. .mqId:{}",resultModel.getMqId());
-//            this.resultService.successMsgSave2Redis(resultModel.getMqId(), 60 * 60 * 2);
-//        }
     }
 
     @Override
@@ -152,10 +145,35 @@ public class EsServiceImpl implements EsService {
         SearchHits hits = response.getHits();
 
         List<ResultModel> list = new ArrayList<>(30);
-
         for (SearchHit hit : hits) {
 
-            list.add(JSON.parseObject(hit.getSourceAsString(), ResultModel.class));
+            ResultModel resultModel = JSON.parseObject(hit.getSourceAsString(), ResultModel.class);
+            resultModel.setHlsSyncContent(resultModel.getSyncContent());
+            resultModel.setHlsMsgContent(resultModel.getMsgContent());
+            list.add(resultModel);
+
+            // 高亮字段设置
+            Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+            HighlightField msgContentField = highlightFields.get("msgContent");
+            HighlightField syncContentField = highlightFields.get("syncContent");
+
+            if(msgContentField!=null && msgContentField.getFragments()!=null){
+                Text[] fragments = msgContentField.getFragments();
+                StringBuilder newMsgContent = new StringBuilder();
+                for (Text text : fragments) {
+                    newMsgContent.append(text);
+                }
+                resultModel.setHlsMsgContent(newMsgContent.toString());
+            }
+
+            if(syncContentField!=null && syncContentField.getFragments()!=null){
+                Text[] fragments = syncContentField.getFragments();
+                StringBuilder newSyncContent = new StringBuilder();
+                for (Text text : fragments) {
+                    newSyncContent.append(text);
+                }
+                resultModel.setHlsSyncContent(newSyncContent.toString());
+            }
         }
 
         PageVO<List<ResultModel>> pageVO = new PageVO<>(hits.getTotalHits(), list);

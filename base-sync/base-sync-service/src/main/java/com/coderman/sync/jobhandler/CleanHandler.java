@@ -1,6 +1,6 @@
 package com.coderman.sync.jobhandler;
 
-import com.coderman.sync.config.SyncDBConfig;
+import com.coderman.service.config.PropertyConfig;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.executor.AbstractExecutor;
@@ -18,16 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 @JobHandler(value = "cleanHandler")
 @Component
 @Slf4j
 public class CleanHandler extends IJobHandler {
-
-    @Resource
-    private SyncDBConfig syncDBConfig;
 
     @SneakyThrows
     @Override
@@ -38,23 +34,19 @@ public class CleanHandler extends IJobHandler {
 
         Set<String> databaseSets = new HashSet<>();
 
-        List<String> messageDatabases = syncDBConfig.listDatabases("message");
-        List<String> callbackDatabases = syncDBConfig.listDatabases("callback");
+        List<String> messageDatabases = Arrays.asList(StringUtils.split(PropertyConfig.getConfigValue("pub_mq_message.db"), ","));
+        List<String> callbackDatabases= Arrays.asList(StringUtils.split(PropertyConfig.getConfigValue("pub_callback.db"), ","));
 
         databaseSets.addAll(messageDatabases);
         databaseSets.addAll(callbackDatabases);
-
-
         for (String dbname : databaseSets) {
 
             try {
-
 
                 /***************************** 删除本地消息表冗余数据  【本地消息 】********************************/
 
                 // 获取db类型
                 String dbType = SyncContext.getContext().getDbType(dbname);
-
                 // 批量参数sql
                 String batchDelSql = StringUtils.EMPTY;
 
@@ -100,10 +92,6 @@ public class CleanHandler extends IJobHandler {
                     this.deleteLoop(dbname, batchDelSql, paramList);
                 }
 
-
-                /******************************** 删除同步系统冗余数据 【同步记录】 ********************************/
-                // TODO
-
             } catch (Exception e) {
 
                 XxlJobLogger.log("清除冗余数据失败:" + dbname + ",msg:" + e.getMessage());
@@ -139,24 +127,19 @@ public class CleanHandler extends IJobHandler {
             sqlMeta.setSql(batchDelSql);
             sqlMeta.setParamList(SyncConvert.toArrayList(paramList));
 
-
             executor.sql(sqlMeta);
 
             sqlMeta.setSql(SqlUtil.fillParam(sqlMeta,executor));
-
             List<SqlMeta> resultList = executor.execute();
 
             if (CollectionUtils.isNotEmpty(resultList) && null != resultList.get(0)) {
-
                 deleteRows = resultList.get(0).getAffectNum();
-
             } else {
 
                 deleteRows = 0;
             }
 
             XxlJobLogger.log("清除冗余数据消息记录,第" + batchNum + "批, 数据库->" + dbName + " 条数->" + deleteRows);
-
             log.info("清除冗余数据消息记录:{},dbName:{}", deleteRows, dbName);
 
             batchNum++;

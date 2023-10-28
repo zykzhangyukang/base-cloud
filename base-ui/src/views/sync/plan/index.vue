@@ -8,6 +8,9 @@
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
+                <a-form-item label="计划描述">
+                    <a-input v-model:value="searchParams.description" :style="{width:'180px'}" placeholder="计划描述输入框"  autocomplete="off" allowClear></a-input>
+                </a-form-item>
                 <a-form-item label="计划编号" name='planCode'>
                     <a-input v-model:value="searchParams.planCode" :style="{width:'180px'}" placeholder="计划编号输入框"  autocomplete="off" ></a-input>
                 </a-form-item>
@@ -116,7 +119,8 @@
                     planCode: '',
                     status: '',
                     srcProject: '',
-                    destProject: ''
+                    destProject: '',
+                    description: '',
                 },
                 total: 0,
                 tableData: [],

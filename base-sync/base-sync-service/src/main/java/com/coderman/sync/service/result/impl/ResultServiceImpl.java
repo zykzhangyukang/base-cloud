@@ -30,6 +30,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -148,6 +149,15 @@ public class ResultServiceImpl implements ResultService {
                 .sort("msgCreateTime", SortOrder.DESC)
                 .sort("syncTime", SortOrder.DESC)
                 .query(queryBuilder);
+
+        HighlightBuilder highlightBuilder = new HighlightBuilder()
+                .field(new HighlightBuilder.Field("msgContent").highlighterType("unified"))
+                .field(new HighlightBuilder.Field("syncContent").highlighterType("unified"))
+                .preTags("<font color='#ea4335'>")
+                .postTags("</font>")
+                .fragmentSize(20)
+                .numOfFragments(1);
+        searchSourceBuilder.highlighter(highlightBuilder);
 
         return this.esService.searchSyncResult(searchSourceBuilder);
     }

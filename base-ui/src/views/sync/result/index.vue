@@ -8,9 +8,6 @@
                 <a-form-item label="计划编号">
                     <a-input v-model:value="searchParams.planCode" :style="{width:'180px'}" placeholder="计划编号输入框"  autocomplete="off" allowClear></a-input>
                 </a-form-item>
-                <a-form-item label="关键字">
-                    <a-input v-model:value="searchParams.keywords" :style="{width:'260px'}" placeholder=" 消息内容，同步内容，计划编号"  autocomplete="off" allowClear></a-input>
-                </a-form-item>
                 <a-form-item label="源系统">
                     <a-select v-model:value="searchParams.srcProject" :style="{width:'180px'}" placeholder="源系统" allowClear>
                         <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
@@ -36,6 +33,9 @@
                         <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
+                <a-form-item label="关键字">
+                    <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容，计划编号"  autocomplete="off" ></a-input>
+                </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
@@ -58,15 +58,16 @@
                     :loading='tableLoading'
                     rowKey='uuid'
                     bordered
+                    size="small"
                     :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type: 'radio' }"
                     :columns='tableColumns'
                     :data-source='tableData'
             >
-                <template #msgContent="{ record }">
-                    <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)">  {{ record.msgContent }}</span>
+                <template #hlsMsgContent="{ record }">
+                    <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)"  v-html=" record.hlsMsgContent"></span>
                 </template>
-                <template #syncContent="{ record }">
-                   <span id="sync_content" @click="this.$refs.SyncCntLookModal.open(record.syncContent)"> {{ record.syncContent }}</span>
+                <template #hlsSyncContent="{ record }">
+                   <span id="sync_content" @click="this.$refs.SyncCntLookModal.open(record.syncContent)" v-html="record.hlsSyncContent"></span>
                 </template>
                 <template #srcProject="{ text }">
                     {{ srcProjectGName[text] }}
@@ -132,7 +133,7 @@
                 selectedRows: [],
                 tooltipStyle: {
                     color: 'white',
-                    fontSize: '10px',
+                    fontSize: '12px',
                     width: '800px',
                 },
                 toolbarFixed: true,
@@ -163,6 +164,7 @@
                         dataIndex: 'planName',
                         key: 'planName',
                         ellipsis: true,
+                        width: 120,
                     },
                     {
                         title: '源系统',
@@ -197,17 +199,19 @@
                     },
                     {
                         title: '同步内容',
-                        dataIndex: 'syncContent',
-                        key: 'syncContent',
+                        dataIndex: 'hlsSyncContent',
+                        key: 'hlsSyncContent',
+                        width: '150px',
                         ellipsis: true,
-                        slots: { customRender: 'syncContent' },
+                        slots: { customRender: 'hlsSyncContent' },
                     },
                     {
                         title: '消息内容',
-                        dataIndex: 'msgContent',
-                        key: 'msgContent',
+                        dataIndex: 'hlsMsgContent',
+                        key: 'hlsMsgContent',
+                        width: '150px',
                         ellipsis: true,
-                        slots: { customRender: 'msgContent' },
+                        slots: { customRender: 'hlsMsgContent' },
                     },
                     {
                         title: '重试次数',
@@ -392,8 +396,7 @@
         font-size: 13px;
     }
     #sync_content,#msg_content{
-        font-family: Corbel,serif;
-        font-size: 13px;
+        font-size: 11px;
         cursor: pointer;
         color: #409eff;
     }
