@@ -2,7 +2,6 @@ package com.coderman.sync.init;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -32,16 +31,12 @@ public class SyncLifecycle implements SmartLifecycle {
         if (this.initialized.compareAndSet(false, true)) {
 
             logger.info("初始化数据源...");
-
             this.dataSourceInitializer.init();
-
             logger.info("初始化数据源结束...");
 
 
             logger.info("初始化同步计划");
-
             this.syncPlanInitializer.init();
-
             logger.info("初始化同步计划结束");
         }
 

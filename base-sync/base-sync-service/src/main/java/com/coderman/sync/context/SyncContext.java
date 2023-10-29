@@ -9,12 +9,11 @@ import com.coderman.sync.plan.meta.TableMeta;
 import com.coderman.sync.result.ResultModel;
 import com.coderman.sync.task.SyncTask;
 import com.coderman.sync.task.base.BaseTask;
-import com.coderman.sync.thread.SyncRetryThread;
 import com.coderman.sync.thread.ResultToEsThread;
+import com.coderman.sync.thread.SyncRetryThread;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -58,7 +57,7 @@ public class SyncContext {
     private Map<String, PlanMeta> planMetaMap = new ConcurrentHashMap<>();
 
     // 是否锁定同步任务,默认锁定
-    private boolean lockSyncTask = true;
+    private volatile boolean lockSyncTask = true;
 
     // 正在进行中的同步任务数量
     private AtomicInteger syncTaskCount = new AtomicInteger(0);
@@ -162,11 +161,11 @@ public class SyncContext {
         // 被锁定,暂停后继续执行
         while (this.lockSyncTask) {
 
-            logger.error("暂停同步任务,等待同步计划刷新");
+            logger.warn("暂停同步任务,等待同步计划刷新!");
 
             if (count > 20) {
 
-                logger.error("同步任务锁定超时,自动结束");
+                logger.error("同步任务锁定超时,自动结束!");
             }
 
             count++;
@@ -177,7 +176,7 @@ public class SyncContext {
 
             } catch (InterruptedException e) {
 
-                logger.error("暂停同步任务失败:{}", e.getMessage(), e);
+                logger.error("暂停同步任务失败! :{}", e.getMessage(), e);
             }
         }
 
@@ -200,17 +199,18 @@ public class SyncContext {
 
             if (count > 20) {
 
-                logger.error("等待同步任务超时");
+                logger.error("等待同步任务超时!");
                 break;
             }
 
             count++;
 
             try {
+
                 TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException e) {
 
-                logger.error("等待同步任务结束失败");
+                logger.error("等待同步任务结束失败!");
             }
         }
     }

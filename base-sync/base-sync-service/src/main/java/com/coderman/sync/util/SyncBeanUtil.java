@@ -30,7 +30,6 @@ import java.util.List;
 public class SyncBeanUtil {
 
 
-
     /**
      * 注册MySQL的数据源
      */
@@ -206,11 +205,10 @@ public class SyncBeanUtil {
         MongoClient client = new MongoClient(serverList, options);
 
         beanFactory.registerSingleton(config.getBeanId() + "_mongoClient", client);
-        beanFactory.registerSingleton(config.getBeanId() + "_mongoDbFactory", new SimpleMongoDbFactory(client,config.getDb()));
+        beanFactory.registerSingleton(config.getBeanId() + "_mongoDbFactory", new SimpleMongoDbFactory(client, config.getDb()));
 
         BeanDefinitionBuilder dsBuilder = BeanDefinitionBuilder.genericBeanDefinition(MongoTemplate.class);
         dsBuilder.addConstructorArgReference(config.getBeanId() + "_mongoDbFactory");
-
 
         // 注册模板
         beanFactory.registerBeanDefinition(config.getBeanId() + "_mongoTemplate", dsBuilder.getBeanDefinition());

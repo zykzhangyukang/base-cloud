@@ -76,7 +76,7 @@ public abstract class AbstractExecutor {
 
         } else {
 
-            throw new SyncException(ErrorCodeEnum.DB_NOT_CONFIG, "数据库[" + dbName + "]类型未知或配置不存在" + dbType);
+            throw new SyncException(ErrorCodeEnum.DB_NOT_CONFIG, "数据库[" + dbName + "]类型未知或配置不存在,dbType[" + dbType+"]");
         }
 
 
