@@ -87,7 +87,7 @@ public class SyncTask {
 
 
         // 这里判断一下该同步消息是否已经被处理成功过.
-        Date after7Day = DateUtils.addDays(new Date(), -7);
+        Date after7Day = DateUtils.addDays(new Date(), -3);
         String sql = "select count(1) as c from sync_result where msg_id=? and msg_create_time < ? and status=? and msg_src = ?";
         int count = Optional.ofNullable(SpringContextUtil.getBean(JdbcTemplate.class).queryForObject(sql, Integer.class, resultModel.getMsgId(), after7Day, PlanConstant.RESULT_STATUS_SUCCESS, msgSrc)).orElse(0);
 

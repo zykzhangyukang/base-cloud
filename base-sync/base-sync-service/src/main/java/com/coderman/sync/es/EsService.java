@@ -5,6 +5,7 @@ import com.coderman.sync.result.ResultModel;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface EsService {
@@ -33,4 +34,13 @@ public interface EsService {
      * @return
      */
     com.coderman.api.vo.ResultVO<PageVO<List<ResultModel>>> searchSyncResult(SearchSourceBuilder searchSourceBuilder) throws IOException;
+
+    /**
+     * 批量删除同步记录
+     *
+     * @param ltTime
+     * @param deleteSize
+     * @return
+     */
+    int batchDeleteSyncResult(Date ltTime, int deleteSize) throws IOException;
 }

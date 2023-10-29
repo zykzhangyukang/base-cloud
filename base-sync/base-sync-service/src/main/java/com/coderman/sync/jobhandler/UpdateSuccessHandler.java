@@ -100,7 +100,8 @@ public class UpdateSuccessHandler extends IJobHandler {
             }
         }
 
-        XxlJobLogger.log("system-job标记成功任务,处理成功条数..." + num);
+        XxlJobLogger.log("system-job标记成功任务,处理成功条数:" + num);
+        log.info("system-job标记成功任务,处理成功条数:" + num);
         return ReturnT.SUCCESS;
     }
 }

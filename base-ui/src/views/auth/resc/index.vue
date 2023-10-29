@@ -51,7 +51,7 @@
                 <template #action="{ record }">
                     <div class="action-btns">
                         <a  class="btn-text-mini" href="javascript:;" @click="handleUpdate(record.rescId)" v-permission="'auth:resc:update'"><EditOutlined/>编辑</a>
-                        <a  class="btn-text-mini" href="javascript:;" @click="handleFuncSearch(record.rescUrl)" v-permission="'auth:resc:funcSearch'"><SearchOutlined />功能</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="handleFuncSearch(record.rescUrl)" v-permission="'auth:resc:funcSearch'"><LinkOutlined />功能</a>
                          <a-popconfirm
                                  title="您确定要删除该资源吗?"
                                  ok-text="确定"

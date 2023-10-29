@@ -8,7 +8,6 @@ import com.coderman.service.util.SpringContextUtil;
 import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.es.EsService;
 import com.coderman.sync.result.ResultModel;
-import com.coderman.sync.service.result.ResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.action.admin.indices.alias.Alias;
@@ -31,6 +30,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
@@ -174,6 +174,48 @@ public class EsServiceImpl implements EsService {
 
         PageVO<List<ResultModel>> pageVO = new PageVO<>(hits.getTotalHits(), list);
         return ResultUtil.getSuccessPage(ResultModel.class, pageVO);
+    }
+
+    @Override
+    public int batchDeleteSyncResult(Date ltTime, int limit) throws IOException {
+
+        int totalDeleted = 0; // 用于计算已删除的文档数量
+        int batchSize = 1000; // 每次删除 1000
+
+        while (true) {
+
+            int remainingDelete = limit - totalDeleted; // 计算剩余需要删除的文档数量
+
+            // 限制每次处理的文档数量不超过剩余需要删除的数量和设定的删除大小
+            int currentDeleteSize = Math.min(batchSize, remainingDelete);
+
+            DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(this.syncResultIndexName);
+
+            BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                    .must(QueryBuilders.rangeQuery("msgCreateTime").lt(ltTime.getTime()))
+                    .should(QueryBuilders.termQuery("status", PlanConstant.RESULT_STATUS_SUCCESS));
+
+            deleteByQueryRequest.setRefresh(true);
+            deleteByQueryRequest.setQuery(boolQueryBuilder);
+            deleteByQueryRequest.setBatchSize(currentDeleteSize); // 控制每批次处理的文档数量
+            deleteByQueryRequest.setSize(currentDeleteSize); // 控制每次请求返回的文档数量
+
+            BulkByScrollResponse response = this.restHighLevelClient.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
+
+            long deletedDocuments = response.getStatus().getDeleted();
+
+            if (deletedDocuments == 0) {
+                break;
+            }
+
+            totalDeleted += deletedDocuments; // 更新已删除的文档数量
+
+            if (totalDeleted >= limit) {
+                break; // 如果已删除的文档数量达到限制数量，则退出循环
+            }
+        }
+
+        return totalDeleted;
     }
 
 

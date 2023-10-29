@@ -20,17 +20,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@JobHandler(value = "cleanHandler")
+@JobHandler(value = "cleanMessageHandler")
 @Component
 @Slf4j
-public class CleanHandler extends IJobHandler {
+public class CleanMessageHandler extends IJobHandler {
 
     @SneakyThrows
     @Override
     public ReturnT<String> execute(String param) {
 
         // 保存近7天的本地消息
-        Date ltTime = DateUtils.addDays(new Date(), -1);
+        Date ltTime = DateUtils.addDays(new Date(), -7);
 
         Set<String> databaseSets = new HashSet<>();
 

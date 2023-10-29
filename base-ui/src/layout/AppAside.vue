@@ -29,13 +29,11 @@ export default {
     }
   },
   computed:{
-    theme() {
-      return store.state.app.theme
-    },
   },
   data(){
     return {
       Logo,
+      theme: 'light',
     }
   }
 }

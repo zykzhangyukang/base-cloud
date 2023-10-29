@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@JobHandler(value = "syncHandler")
+@JobHandler(value = "repeatSyncHandler")
 @Component
 @Slf4j
-public class SyncHandler extends IJobHandler {
+public class RepeatSyncHandler extends IJobHandler {
 
     @Override
     public ReturnT<String> execute(String param) {
