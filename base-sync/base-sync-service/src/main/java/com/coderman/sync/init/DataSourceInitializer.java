@@ -1,6 +1,5 @@
 package com.coderman.sync.init;
 
-import com.coderman.service.util.SpringContextUtil;
 import com.coderman.sync.config.SyncDBConfig;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.db.*;
@@ -62,9 +61,9 @@ public class DataSourceInitializer {
             try {
 
                 AbstractExecutor abstractExecutor = AbstractExecutor.build(dbName);
+
                 log.info("数据库{} 连接初始化完成:{}", dbName, abstractExecutor);
             } catch (Exception e) {
-
                 log.error("数据库{} 连接初始化失败:{}", dbName, e.getMessage());
             }
         }

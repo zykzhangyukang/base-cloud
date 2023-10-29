@@ -32,7 +32,7 @@ public class CallbackRetryThread {
             @Override
             public void run() {
 
-                log.info("回调重试线程启动...");
+                log.info("回调重试线程启动");
 
                 while (true){
 

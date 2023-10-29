@@ -43,7 +43,7 @@ public class ResultToEsThread {
             @Override
             public void run() {
 
-                log.info("同步ES线程启动...");
+                log.info("同步ES线程启动");
 
                 List<ResultModel> list = new ArrayList<>();
 

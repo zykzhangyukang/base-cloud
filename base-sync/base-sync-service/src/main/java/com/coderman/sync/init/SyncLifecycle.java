@@ -30,12 +30,12 @@ public class SyncLifecycle implements SmartLifecycle {
 
         if (this.initialized.compareAndSet(false, true)) {
 
-            logger.info("初始化数据源...");
+            logger.info("初始化数据源开始");
             this.dataSourceInitializer.init();
-            logger.info("初始化数据源结束...");
+            logger.info("初始化数据源结束");
 
 
-            logger.info("初始化同步计划");
+            logger.info("初始化同步计划开始");
             this.syncPlanInitializer.init();
             logger.info("初始化同步计划结束");
         }

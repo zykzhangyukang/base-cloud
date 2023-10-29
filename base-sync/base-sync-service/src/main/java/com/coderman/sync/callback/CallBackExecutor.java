@@ -165,7 +165,7 @@ public class CallBackExecutor {
 
                 while (true) {
 
-                    log.info("线程可用性检测开始.......");
+                    log.info("线程可用性检测启动");
 
                     for (String key : callBackNodeMap.keySet()) {
 
