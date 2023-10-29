@@ -9,6 +9,10 @@
                 <template #extra>
                     <a-button key="console" type="primary">马上体验</a-button>
                     <a-button key="buy">立即联系</a-button>
+                    <a-radio-group v-model:value="theme" @change="changeTheme">
+                        <a-radio-button value="light">亮色主题</a-radio-button>
+                        <a-radio-button value="dark">暗色主题</a-radio-button>
+                    </a-radio-group>
                 </template>
             </a-result>
         </a-card>
@@ -16,18 +20,27 @@
 </template>
 
 <script>
-import store from '@/store/index'
-export default {
-  name: "Dashboard..vue",
-  data() {
-    return {
+    import store from '@/store/index'
 
+    export default {
+        name: "Dashboard..vue",
+        data() {
+            return {
+            }
+        },
+        methods:{
+            changeTheme(e){
+                store.setAppTheme(e.target.value);
+                localStorage.setItem('theme', e.target.value);
+            }
+        },
+        computed: {
+            user() {
+                return store.state.user;
+            },
+            theme() {
+                return store.state.app.theme
+            },
+        }
     }
-  },
-  computed:{
-    user() {
-      return store.state.user;
-    }
-  }
-}
 </script>

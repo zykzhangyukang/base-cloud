@@ -4,6 +4,7 @@ export default {
     // 应用信息
     app: {
       menuToggle: false,
+      theme: localStorage.getItem('theme') || 'light'
     },
     // 用户信息
     user: {
@@ -43,6 +44,9 @@ export default {
     Object.keys(list).forEach(key => {
       _store.const[key] = list[key]
     });
+  },
+  setAppTheme(theme){
+    this.state.app.theme = theme;
   },
   addUserMsg(msg) {
     this.state.message.messageList.unshift(msg);

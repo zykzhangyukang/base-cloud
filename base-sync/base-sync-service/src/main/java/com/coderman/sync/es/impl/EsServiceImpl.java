@@ -67,9 +67,9 @@ public class EsServiceImpl implements EsService {
     public boolean batchInsertSyncResult(List<ResultModel> resultModelList) throws IOException {
 
         boolean result = false;
+        long startTime = System.currentTimeMillis();
 
         BulkRequest bulkRequest = new BulkRequest();
-
         for (ResultModel resultModel : resultModelList) {
             IndexRequest indexRequest = new IndexRequest(this.syncResultIndexName).type("resultModel");
             indexRequest.source(JSON.toJSONString(resultModel), XContentType.JSON);
@@ -78,7 +78,6 @@ public class EsServiceImpl implements EsService {
         }
 
         BulkResponse bulkResponse = this.restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-
         if (bulkResponse.hasFailures()) {
 
             log.error("批量插入同步记录到es错误:" + bulkResponse.buildFailureMessage());
@@ -86,9 +85,7 @@ public class EsServiceImpl implements EsService {
         } else {
 
             result = true;
-
             List<String> uuidList = resultModelList.stream().map(ResultModel::getUuid).distinct().collect(Collectors.toList());
-
             if (CollectionUtils.isNotEmpty(uuidList)) {
 
                 // 更新es同步状态
@@ -99,6 +96,7 @@ public class EsServiceImpl implements EsService {
                 namedParameterJdbcTemplate.update("update sync_result set sync_To_es = 1 where uuid in (:params)", params);
             }
 
+            log.info("自动刷新 - 同步计划到Es,总数:{}, 耗时:{} ms", uuidList.size() , System.currentTimeMillis() - startTime);
         }
 
         return result;
@@ -148,8 +146,6 @@ public class EsServiceImpl implements EsService {
         for (SearchHit hit : hits) {
 
             ResultModel resultModel = JSON.parseObject(hit.getSourceAsString(), ResultModel.class);
-            resultModel.setHlsSyncContent(resultModel.getSyncContent());
-            resultModel.setHlsMsgContent(resultModel.getMsgContent());
             list.add(resultModel);
 
             // 高亮字段设置

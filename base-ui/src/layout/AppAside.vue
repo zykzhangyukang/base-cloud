@@ -12,6 +12,7 @@
 <script>
 import Logo from '../assets/images/logo.svg'
 import SliderMenu from './SliderMenu.vue'
+import store from "@/store";
 export default {
   name: 'AppAside',
   components: {
@@ -27,10 +28,14 @@ export default {
       type: Array
     }
   },
+  computed:{
+    theme() {
+      return store.state.app.theme
+    },
+  },
   data(){
     return {
       Logo,
-      theme: 'light'
     }
   }
 }

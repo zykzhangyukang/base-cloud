@@ -155,7 +155,7 @@ public class ResultServiceImpl implements ResultService {
                 .field(new HighlightBuilder.Field("syncContent").highlighterType("unified"))
                 .preTags("<font color='#ea4335'>")
                 .postTags("</font>")
-                .fragmentSize(20)
+                .fragmentSize(10)
                 .numOfFragments(1);
         searchSourceBuilder.highlighter(highlightBuilder);
 

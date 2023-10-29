@@ -57,7 +57,7 @@ public class JdbcExecutor extends AbstractExecutor {
                     List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sqlMeta.getSql(), sqlMeta.getParamList().get(0));
                     sqlMeta.setResultList(resultList);
 
-                    log.info("执行SQL语句返回结果:{}", JSON.toJSONString(resultList));
+                    log.debug("执行SQL语句返回结果:{}", JSON.toJSONString(resultList));
 
                 } catch (Exception e) {
 
@@ -156,7 +156,7 @@ public class JdbcExecutor extends AbstractExecutor {
 
     private void printLog(String sql, List<Object[]> paramList) {
 
-        if (log.isInfoEnabled()) {
+        if (log.isDebugEnabled()) {
 
             StringBuilder stringBuilder = new StringBuilder();
 

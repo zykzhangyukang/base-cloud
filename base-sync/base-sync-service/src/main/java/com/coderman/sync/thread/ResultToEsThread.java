@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -56,6 +57,7 @@ public class ResultToEsThread {
                         }
 
                         TimeUnit.SECONDS.sleep(3);
+                        log.debug("自动刷新 - 队列数据刷新到ES， 等待中...");
 
                     } catch (Exception e) {
 
@@ -100,7 +102,7 @@ public class ResultToEsThread {
 
             list.add(resultModel);
 
-            if (list.size() > 50) {
+            if (list.size() >= 50) {
 
                 this.esService.batchInsertSyncResult(list);
 

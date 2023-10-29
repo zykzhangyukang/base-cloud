@@ -74,7 +74,7 @@ public class ResultHandler extends IJobHandler {
         XxlJobLogger.log(stopWatch.prettyPrint());
         XxlJobLogger.log("总记录数:" + resultModels.size());
 
-        log.info("刷新记录到ES总数:{}",resultModels.size());
+        log.info("补偿器 -  刷新记录到ES总数:{}",resultModels.size());
 
         return ReturnT.SUCCESS;
     }

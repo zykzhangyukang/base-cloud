@@ -15,7 +15,7 @@
                 <ShrinkOutlined v-if='isScreenFull'/>
                 <ArrowsAltOutlined v-else/>
             </div>
-            <div>
+            <div class="user_avatar_wrapper">
                 <a-dropdown>
                     <template v-slot:overlay>
                         <a-menu :style="{ width: '15rem' }">
@@ -156,5 +156,9 @@
     }
     .screen_full{
         cursor: pointer;
+    }
+    .user_avatar_wrapper{
+        width: 100px;
+        text-align: center;
     }
 </style>

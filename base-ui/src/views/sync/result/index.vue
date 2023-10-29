@@ -64,10 +64,10 @@
                     :data-source='tableData'
             >
                 <template #hlsMsgContent="{ record }">
-                    <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)"  v-html=" record.hlsMsgContent"></span>
+                    <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)"  v-html="record.hlsMsgContent || record.msgContent"></span>
                 </template>
                 <template #hlsSyncContent="{ record }">
-                   <span id="sync_content" @click="this.$refs.SyncCntLookModal.open(record.syncContent)" v-html="record.hlsSyncContent"></span>
+                   <span id="sync_content" @click="this.$refs.SyncCntLookModal.open(record.syncContent)" v-html="record.hlsSyncContent || record.syncContent"></span>
                 </template>
                 <template #srcProject="{ text }">
                     {{ srcProjectGName[text] }}
