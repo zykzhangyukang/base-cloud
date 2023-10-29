@@ -211,8 +211,6 @@ public class CallBackExecutor {
                 }
             }
         });
-
-        log.info("节点可用性线程启动...");
     }
 
 

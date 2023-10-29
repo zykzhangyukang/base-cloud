@@ -43,6 +43,8 @@ public class ResultToEsThread {
             @Override
             public void run() {
 
+                log.info("同步ES线程启动...");
+
                 List<ResultModel> list = new ArrayList<>();
 
                 while (loop) {
@@ -90,8 +92,6 @@ public class ResultToEsThread {
                 }
             }
         });
-
-        log.info("同步ES线程启动...");
     }
 
     private void insertBatchRecord(List<ResultModel> list) throws IOException {

@@ -182,6 +182,8 @@ public class SyncRetryThread {
             @Override
             public void run() {
 
+                log.info("同步失败重试线程启动...");
+
                 while (true) {
 
                     try {
@@ -230,8 +232,6 @@ public class SyncRetryThread {
                 }
             }
         });
-
-        log.info("同步重试线程启动...");
 
     }
 
