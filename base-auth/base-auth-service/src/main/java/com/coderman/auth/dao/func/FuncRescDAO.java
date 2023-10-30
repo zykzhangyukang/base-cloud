@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @author zhangyukang
+ */
 public interface FuncRescDAO extends BaseDAO<FuncRescModel, FuncRescExample> {
 
 

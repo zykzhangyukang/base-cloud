@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @author Administrator
+ */
 public interface RoleFuncDAO extends BaseDAO<RoleFuncModel,RoleFuncExample> {
 
 

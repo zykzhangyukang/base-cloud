@@ -12,6 +12,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author zhangyukang
+ */
 public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
 
     /**
@@ -90,6 +93,7 @@ public interface FuncDAO extends BaseDAO<FuncModel, FuncExample> {
      * 根据用户id获取所有目录
      *
      * @param userId
+     * @param funcType
      * @return
      */
     List<FuncTreeVO> selectAllByUserIdAndFuncType(@Param(value = "userId") Integer userId,@Param(value = "funcType") String funcType);

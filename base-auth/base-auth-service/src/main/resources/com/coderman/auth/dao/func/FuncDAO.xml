@@ -539,7 +539,7 @@
           AND f.func_type = #{funcType}
         </if>
       </where>
-       ORDER BY f.func_sort ASC
+       ORDER BY f.func_key ASC , f.func_sort ASC
   </select>
 
   <select id="selectFuncInfo" resultMap="funcInfoResultMap">

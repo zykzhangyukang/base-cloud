@@ -9,18 +9,21 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author zhangyukang
+ */
 public interface RescDAO extends BaseDAO<RescModel, RescExample> {
 
     /**
      * 根据url查询资源信息
-     *
+     * @param rescUrl
      * @return
      */
     RescVO selectByRescUrl(@Param(value = "rescUrl") String rescUrl);
 
     /**
      * 用户列表
-     *
+     * @param conditionMap
      * @return
      */
     List<RescVO> page(Map<String, Object> conditionMap);

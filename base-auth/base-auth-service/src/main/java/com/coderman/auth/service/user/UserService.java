@@ -20,7 +20,7 @@ public interface UserService {
 
     /**
      * 用户列表
-     *
+     * @param queryVO
      * @return
      */
     ResultVO<PageVO<List<UserVO>>> page(UserPageDTO queryVO);
