@@ -12,6 +12,7 @@ import com.coderman.sync.task.base.BaseTask;
 import com.coderman.sync.thread.ResultToEsThread;
 import com.coderman.sync.thread.SyncRetryThread;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
@@ -277,6 +278,9 @@ public class SyncContext {
     }
 
     public String getDbByProject(String srcProject) {
+        if(StringUtils.isBlank(srcProject)){
+            return null;
+        }
         return this.projectDbMap.get(srcProject);
     }
 }

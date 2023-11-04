@@ -94,7 +94,7 @@
                     <span>
                         <!-- 成功 -->
                         <span class="success" v-if="record.status === 'success'">
-                               {{ resultStatusGName[record.status] }}
+                               {{ resultStatusGName[record.status] + ' ('+((new Date(record.syncTime).getTime())  - (new Date(record.msgCreateTime).getTime()) ) / 1000+')'}}
                         </span>
                         <!-- 失败 -->
                         <span class="fail" v-if="record.status === 'fail'">
@@ -136,7 +136,7 @@
             HPage,
             MsgCntLookModal,
             SyncCntLookModal,
-            ValidDataLookModal
+            ValidDataLookModal,
         },
         data() {
             return {
@@ -435,11 +435,12 @@
     .success {
         color: #00b96b;
         cursor: pointer;
+        font-size: 12px;
     }
     .fail {
         color: #ed4014;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 12px;
     }
     #sync_content,#msg_content{
         font-size: 12px;

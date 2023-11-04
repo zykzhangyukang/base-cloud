@@ -11,7 +11,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item label="目标系统">
-                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" allowClear>
+                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" >
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -159,11 +159,13 @@
                         title: '发送状态',
                         dataIndex: 'sendStatus',
                         key: 'sendStatus',
+                        align: 'center',
                         slots: { customRender: 'sendStatus' },
                     },
                     {
                         title: '处理状态',
                         dataIndex: 'dealStatus',
+                        align: 'center',
                         key: 'dealStatus',
                         slots: { customRender: 'dealStatus' },
                     },

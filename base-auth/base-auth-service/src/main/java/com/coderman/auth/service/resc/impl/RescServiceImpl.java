@@ -141,6 +141,12 @@ public class RescServiceImpl implements RescService {
                         .build()
         );
 
+        SyncUtil.sync(
+                MsgBuilder.create("insert_auth_bizedu_resc", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("insert_auth_bizedu_resc", Collections.singletonList(insert.getRescId()))
+                        .build()
+        );
+
 
         return ResultUtil.getSuccess();
     }
@@ -202,6 +208,11 @@ public class RescServiceImpl implements RescService {
                         .addIntList("update_auth_demo_resc", Collections.singletonList(rescId))
                         .build()
         );
+        SyncUtil.sync(
+                MsgBuilder.create("update_auth_bizedu_resc", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("update_auth_bizedu_resc", Collections.singletonList(rescId))
+                        .build()
+        );
 
         return ResultUtil.getSuccess();
     }
@@ -228,6 +239,11 @@ public class RescServiceImpl implements RescService {
         SyncUtil.sync(
                 MsgBuilder.create("delete_auth_demo_resc", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("delete_auth_demo_resc", Collections.singletonList(rescId))
+                        .build()
+        );
+        SyncUtil.sync(
+                MsgBuilder.create("delete_auth_bizedu_resc", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("delete_auth_bizedu_resc", Collections.singletonList(rescId))
                         .build()
         );
 

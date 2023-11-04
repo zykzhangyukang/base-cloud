@@ -150,6 +150,11 @@ public class RoleServiceImpl implements RoleService {
                         .addIntList("insert_auth_demo_role", Collections.singletonList(insert.getRoleId()))
                         .build()
         );
+        SyncUtil.sync(
+                MsgBuilder.create("insert_auth_bizedu_role", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("insert_auth_bizedu_role", Collections.singletonList(insert.getRoleId()))
+                        .build()
+        );
 
         return ResultUtil.getSuccess();
     }
@@ -179,6 +184,11 @@ public class RoleServiceImpl implements RoleService {
         SyncUtil.sync(
                 MsgBuilder.create("delete_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("delete_auth_demo_role", Collections.singletonList(roleId))
+                        .build()
+        );
+        SyncUtil.sync(
+                MsgBuilder.create("delete_auth_bizedu_role", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("delete_auth_bizedu_role", Collections.singletonList(roleId))
                         .build()
         );
 
@@ -232,6 +242,11 @@ public class RoleServiceImpl implements RoleService {
         SyncUtil.sync(
                 MsgBuilder.create("update_auth_demo_role", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC)
                         .addIntList("update_auth_demo_role", Collections.singletonList(roleId))
+                        .build()
+        );
+        SyncUtil.sync(
+                MsgBuilder.create("update_auth_bizedu_role", ProjectEnum.AUTH, ProjectEnum.BIZEDU)
+                        .addIntList("update_auth_bizedu_role", Collections.singletonList(roleId))
                         .build()
         );
 

@@ -15,7 +15,9 @@ public interface SyncConstant {
     /**
      * 目标系统
      */
-    @ConstList(group = "dest_project",name = "权限系统Q")
+    @ConstList(group = "dest_project",name ="企业课程系统")
+    public static final String SRC_PROJECT_BIZEDU= "bizedu";
+    @ConstList(group = "dest_project",name = "权限系统-sync")
     public static final String SRC_PROJECT_AUTH_SYNC= "auth_sync";
     @ConstList(group = "dest_project",name ="订单系统")
     public static final String SRC_PROJECT_ORDER= "order";
@@ -90,14 +92,14 @@ public interface SyncConstant {
     /**
      * 同步消息发送状态
      */
+    @ConstList(group = "send_status",name = "待发送")
+    public static final String SEND_STATUS_WAIT = "wait";
+    @ConstList(group = "send_status",name = "发送中")
+    public static final String SEND_STATUS_SENDING = "sending";
     @ConstList(group = "send_status",name = "发送成功")
     public static final String SEND_STATUS_SUCCESS = "success";
     @ConstList(group = "send_status",name = "发送失败")
     public static final String SEND_STATUS_FAIL = "fail";
-    @ConstList(group = "send_status",name = "发送中")
-    public static final String SEND_STATUS_SENDING = "sending";
-    @ConstList(group = "send_status",name = "待发送")
-    public static final String SEND_STATUS_WAIT = "wait";
 
 
     /**

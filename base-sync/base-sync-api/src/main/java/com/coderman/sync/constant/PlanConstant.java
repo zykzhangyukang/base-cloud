@@ -41,8 +41,12 @@ public interface PlanConstant {
     /**
      * 回调状态
      */
+    @ConstList(group = "callback_status", name = "待回调")
     public static final String CALLBACK_STATUS_WAIT = "wait";
+    @ConstList(group = "callback_status", name = "回调中")
     public static final String CALLBACK_STATUS_ING = "ing";
+    @ConstList(group = "callback_status", name = "失败")
     public static final String CALLBACK_STATUS_FAIL = "fail";
+    @ConstList(group = "callback_status", name = "成功")
     public static final String CALLBACK_STATUS_SUCCESS = "success";
 }

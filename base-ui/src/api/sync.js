@@ -1,5 +1,15 @@
 import http from "@/utils/request";
 
+/**
+ * 同步回调列表
+ */
+export const syncCallbackPage = data => {
+    return http({
+        url: `/sync/callback/page`,
+        method: 'post',
+        data: data
+    })
+}
 
 /**
  * 同步消息列表
@@ -18,7 +28,7 @@ export const syncMsgPage = data => {
  */
 export const syncResultValidData = data => {
     return http({
-        url: `/sync/result//valid/data`,
+        url: `/sync/result/valid/data`,
         method: 'post',
         data
     })

@@ -3,7 +3,6 @@ package com.coderman.auth.service.user.impl;
 import com.coderman.api.constant.CommonConstant;
 import com.coderman.api.constant.RedisDbConstant;
 import com.coderman.api.constant.ResultConstant;
-import com.coderman.api.model.BaseModel;
 import com.coderman.api.util.PageUtil;
 import com.coderman.api.util.ResultUtil;
 import com.coderman.api.vo.PageVO;
@@ -485,6 +484,12 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .build()
         );
 
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("insert_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + insertModel.getUserId())
+                        .addIntList("insert_auth_bizedu_user", Collections.singletonList(insertModel.getUserId()))
+                        .build()
+        );
+
         return ResultUtil.getSuccess();
     }
 
@@ -518,6 +523,11 @@ public class UserServiceImpl extends BaseService implements UserService {
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("delete_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("delete_auth_demo_user", Collections.singletonList(userId))
+                        .build()
+        );
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("delete_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
+                        .addIntList("delete_auth_bizedu_user", Collections.singletonList(userId))
                         .build()
         );
 
@@ -567,6 +577,12 @@ public class UserServiceImpl extends BaseService implements UserService {
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user", Collections.singletonList(userId))
+                        .build()
+        );
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
+                        .addIntList("update_auth_bizedu_user", Collections.singletonList(userId))
                         .build()
         );
 
@@ -637,14 +653,20 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
 
         UserModel updateModel = new UserModel();
+        updateModel.setUpdateTime(new Date());
         updateModel.setUserId(userId);
         updateModel.setUserStatus(AuthConstant.USER_STATUS_ENABLE);
-        updateModel.setUpdateTime(new Date());
         this.userDAO.updateByPrimaryKeySelective(updateModel);
 
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
+                        .build()
+        );
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
+                        .addIntList("update_auth_bizedu_user_status", Collections.singletonList(userId))
                         .build()
         );
 
@@ -675,6 +697,12 @@ public class UserServiceImpl extends BaseService implements UserService {
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_status", Collections.singletonList(userId))
+                        .build()
+        );
+
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
+                        .addIntList("update_auth_bizedu_user_status", Collections.singletonList(userId))
                         .build()
         );
 
@@ -786,6 +814,11 @@ public class UserServiceImpl extends BaseService implements UserService {
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_pwd", Collections.singletonList(userId))
+                        .build()
+        );
+        SyncUtil.sync(
+                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
+                        .addIntList("update_auth_bizedu_user_pwd", Collections.singletonList(userId))
                         .build()
         );
 

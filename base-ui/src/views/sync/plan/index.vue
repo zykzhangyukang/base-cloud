@@ -52,7 +52,7 @@
                     <a-switch size="small" :checked="record.status === 'normal'" @click="handleUpdateStatus(record.uuid,record.status)" v-permission="'sync:plan:updateStatus'" />
                 </template>
                 <template #planCode="{ record }">
-                   <a class="btn-text-mini" href="javascript:void(0);" @click="handlePlanLook(record.uuid)"> {{ record.planCode }}</a>
+                   <a class="btn-text-small" href="javascript:void(0);" @click="handlePlanLook(record.uuid)"> {{ record.planCode }}</a>
                 </template>
                 <template #srcProject="{ text }">
                     {{ srcProjectGName[text] }}
