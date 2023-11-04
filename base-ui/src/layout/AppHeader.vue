@@ -9,9 +9,9 @@
         </div>
         <div class="right">
             <div class="mr15">
-                <notifyNav></notifyNav>
+                <NotifyNav></NotifyNav>
             </div>
-            <div class="mr30 screen_full" @click='screenFullChange'>
+            <div class="mr15 screen_full" @click='screenFullChange'>
                 <ShrinkOutlined v-if='isScreenFull'/>
                 <ArrowsAltOutlined v-else/>
             </div>
@@ -74,12 +74,12 @@
     import { Modal } from 'ant-design-vue';
     import {authUserRefreshLogin} from "@/api/auth";
     import store from "@/store";
-    import notifyNav from '@/components/notify/notfiyNav'
+    import NotifyNav from '@/components/notify/NotifyNav'
 
     export default {
         name: 'AppHeader',
         components: {
-            notifyNav,
+            NotifyNav,
             MenuUnfoldOutlined,
             MenuFoldOutlined,
             ShrinkOutlined,
@@ -156,6 +156,7 @@
     }
     .screen_full{
         cursor: pointer;
+        margin-left: 10px;
     }
     .user_avatar_wrapper{
         width: 100px;

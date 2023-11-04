@@ -34,7 +34,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item label="关键字">
-                    <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容，计划编号"  autocomplete="off" ></a-input>
+                    <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
@@ -62,6 +62,7 @@
                     :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, type: 'radio' }"
                     :columns='tableColumns'
                     :data-source='tableData'
+                    @change="handleTableChange"
             >
                 <template #hlsMsgContent="{ record }">
                     <span  id="msg_content" @click="this.$refs.MsgCntLookModal.open(record.msgContent)"  v-html="record.hlsMsgContent || record.msgContent"></span>
@@ -146,7 +147,9 @@
                     msgSrc: '',
                     repeatCount: null,
                     srcProject: '',
-                    destProject: ''
+                    destProject: '',
+                    sortField: '',
+                    sortOrder: ''
                 },
                 total: 0,
                 tableData: [],
@@ -219,6 +222,7 @@
                         key: 'repeatCount',
                         ellipsis: true,
                         width: 100,
+                        sorter: true,
                         align: 'center',
                         slots: { customRender: 'repeatCount' },
                     },
@@ -226,11 +230,13 @@
                         title: '创建时间',
                         dataIndex: 'msgCreateTime',
                         key: 'msgCreateTime',
+                        sorter: true,
                     },
                     {
                         title: '同步时间',
                         dataIndex: 'syncTime',
                         key: 'syncTime',
+                        sorter: true,
                     },
                     {
                         title: '备注信息',
@@ -275,6 +281,17 @@
             },
         },
         methods:{
+            handleTableChange(pagination, filters, sorter, { currentDataSource }){
+                if(sorter.field && sorter.order){
+                    this.searchParams.sortField = sorter.field;
+                    this.searchParams.sortOrder = sorter.order;
+                }else {
+                    this.searchParams.sortField = '';
+                    this.searchParams.sortOrder = '';
+                }
+
+                this.queryData();
+            },
             onSelectChange(selectedRowKeys, selectedRows) {
                 this.selectedRowKeys = selectedRowKeys;
                 this.selectedRows = selectedRows;
@@ -348,9 +365,14 @@
                     currentPage: this.searchParams.currentPage,
                     pageSize: this.searchParams.pageSize
                 }
+                const sort = {
+                    sortField: this.searchParams.sortField,
+                    sortOrder: this.searchParams.sortOrder,
+                }
                 this.searchParams = {
                     ...this.$options.data().searchParams,
-                    ...page
+                    ...page,
+                    ...sort
                 }
                 this.selectedRowKeys = [];
                 this.selectedRows = [];
@@ -396,7 +418,7 @@
         font-size: 13px;
     }
     #sync_content,#msg_content{
-        font-size: 11px;
+        font-size: 12px;
         cursor: pointer;
         color: #409eff;
     }

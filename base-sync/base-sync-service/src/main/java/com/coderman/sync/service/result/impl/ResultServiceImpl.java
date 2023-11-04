@@ -49,9 +49,6 @@ public class ResultServiceImpl implements ResultService {
     private EsService esService;
 
     @Resource
-    private ResultService resultService;
-
-    @Resource
     private JdbcTemplate jdbcTemplate;
 
     @Resource
@@ -101,43 +98,33 @@ public class ResultServiceImpl implements ResultService {
         String keywords = resultPageDTO.getKeywords();
 
         if (StringUtils.isNotBlank(keywords)) {
-
-
             BoolQueryBuilder shouldQuery = QueryBuilders.boolQuery();
             shouldQuery.should(QueryBuilders.matchPhraseQuery("planName", keywords));
             shouldQuery.should(QueryBuilders.matchPhraseQuery("msgContent", keywords));
             shouldQuery.should(QueryBuilders.matchPhraseQuery("syncContent", keywords));
-            shouldQuery.should(QueryBuilders.matchPhraseQuery("errorMsg", keywords));
             queryBuilder.must(shouldQuery);
-
         }
 
         if (StringUtils.isNotBlank(resultPageDTO.getPlanCode())) {
 
             queryBuilder.must(QueryBuilders.termQuery("planCode", resultPageDTO.getPlanCode()));
         }
-
         if (StringUtils.isNotBlank(resultPageDTO.getSyncStatus())) {
 
             queryBuilder.must(QueryBuilders.termQuery("status", resultPageDTO.getSyncStatus()));
         }
-
         if (StringUtils.isNotBlank(resultPageDTO.getMsgSrc())) {
 
             queryBuilder.must(QueryBuilders.termQuery("msgSrc", resultPageDTO.getMsgSrc()));
         }
-
-
         if (StringUtils.isNotBlank(resultPageDTO.getSrcProject())) {
 
             queryBuilder.must(QueryBuilders.termQuery("srcProject", resultPageDTO.getSrcProject()));
         }
-
         if (StringUtils.isNotBlank(resultPageDTO.getDestProject())) {
 
             queryBuilder.must(QueryBuilders.termQuery("destProject", resultPageDTO.getDestProject()));
         }
-
         if (resultPageDTO.getRepeatCount() != null) {
 
             queryBuilder.must(QueryBuilders.rangeQuery("repeatCount").gte(resultPageDTO.getRepeatCount()));
@@ -145,11 +132,37 @@ public class ResultServiceImpl implements ResultService {
 
         SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
                 .from((currentPage - 1) * pageSize)
-                .size(pageSize)
-                .sort("msgCreateTime", SortOrder.DESC)
-                .sort("syncTime", SortOrder.DESC)
-                .query(queryBuilder);
+                .size(pageSize);
 
+        // 自定义排序方式
+        if (StringUtils.isNotBlank(resultPageDTO.getSortField()) && StringUtils.isNotBlank(resultPageDTO.getSortOrder())) {
+            if (StringUtils.equals("msgCreateTime", resultPageDTO.getSortField()) && StringUtils.equals("ascend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("msgCreateTime", SortOrder.ASC);
+            } else if (StringUtils.equals("msgCreateTime", resultPageDTO.getSortField()) && StringUtils.equals("descend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("msgCreateTime", SortOrder.DESC);
+            }
+
+            if (StringUtils.equals("syncTime", resultPageDTO.getSortField()) && StringUtils.equals("ascend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("syncTime", SortOrder.ASC);
+            } else if (StringUtils.equals("syncTime", resultPageDTO.getSortField()) && StringUtils.equals("descend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("syncTime", SortOrder.DESC);
+            }
+
+            if (StringUtils.equals("repeatCount", resultPageDTO.getSortField()) && StringUtils.equals("ascend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("repeatCount", SortOrder.ASC);
+            } else if (StringUtils.equals("repeatCount", resultPageDTO.getSortField()) && StringUtils.equals("descend", resultPageDTO.getSortOrder())) {
+                searchSourceBuilder.sort("repeatCount", SortOrder.DESC);
+            }
+
+        } else {
+
+            // 默认排序方式
+            searchSourceBuilder
+                    .sort("msgCreateTime", SortOrder.DESC)
+                    .sort("syncTime", SortOrder.DESC);
+        }
+
+        searchSourceBuilder.query(queryBuilder);
         HighlightBuilder highlightBuilder = new HighlightBuilder()
                 .field(new HighlightBuilder.Field("msgContent").highlighterType("unified"))
                 .field(new HighlightBuilder.Field("syncContent").highlighterType("unified"))
@@ -231,9 +244,9 @@ public class ResultServiceImpl implements ResultService {
         AbstractExecutor destExecutor = null;
         try {
             srcExecutor = this.buildExecutor(msgMeta, planMeta, "src");
-            destExecutor= this.buildExecutor(msgMeta, planMeta, "dest");
-        }catch (Exception e){
-            log.error("构建执行器错误！message:{},msgContent:{}",e.getMessage(),msgContent,e);
+            destExecutor = this.buildExecutor(msgMeta, planMeta, "dest");
+        } catch (Exception e) {
+            log.error("构建执行器错误！message:{},msgContent:{}", e.getMessage(), msgContent, e);
         }
 
         if (Objects.isNull(srcExecutor) || Objects.isNull(destExecutor) || CollectionUtils.isEmpty(srcExecutor.getSqlList()) || CollectionUtils.isEmpty(destExecutor.getSqlList())) {

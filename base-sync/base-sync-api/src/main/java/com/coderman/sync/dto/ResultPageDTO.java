@@ -44,4 +44,12 @@ public class ResultPageDTO extends BaseModel {
     @ApiModelProperty(value = "重试次数")
     private Integer repeatCount;
 
+    @ApiModelProperty(value = "排序字段")
+    private String sortField;
+
+    @ApiModelProperty(value = "排序方式")
+    private String sortOrder;
+
+
+
 }
