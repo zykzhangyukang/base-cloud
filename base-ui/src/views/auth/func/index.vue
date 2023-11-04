@@ -223,10 +223,10 @@ export default {
                         ellipsis: true,
                     },
                     {
-                        title: '更新时间',
-                        dataIndex: 'updateTime',
+                        title: '创建时间',
+                        dataIndex: 'createTime',
                         align: 'center',
-                        key: 'updateTime',
+                        key: 'createTime',
                         width: '150px',
                         ellipsis: true,
                     },

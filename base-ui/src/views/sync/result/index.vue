@@ -36,6 +36,16 @@
                 <a-form-item label="关键字">
                     <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>
                 </a-form-item>
+                <a-form-item label="创建时间">
+                    <a-range-picker
+                            style="width: 200px"
+                            v-model:value="timeList"
+                            :ranges="ranges"
+                            valueFormat="YYYY-MM-DD HH:mm:ss"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            showTime
+                    />
+                </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
@@ -106,9 +116,10 @@
 </template>
 
 <script>
+    import moment from 'moment';
     import HTable from "@/components/table/HTable";
     import HPage from "@/components/pagination/HPage";
-    import {syncResultPage, syncResultRepeatSync, syncResultSignSuccess, syncResultValidData} from "@/api/sync";
+    import {syncResultPage, syncResultRepeatSync, syncResultSignSuccess} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
     import MsgCntLookModal from "@/views/sync/result/MsgCntLookModal";
     import SyncCntLookModal from "@/views/sync/result/SyncCntLookModal";
@@ -130,6 +141,13 @@
             return {
                 loading2: false,
                 loading3: false,
+                timeList: [],
+                ranges: {
+                    "今天": [moment().startOf("day"), moment().endOf('day')],
+                    "昨天": [moment().subtract(1, 'day').startOf("day"), moment().subtract(1, 'day').endOf('day')],
+                    "近7天": [moment().subtract(7, 'day').startOf("day"), moment().endOf('day')],
+                    "本月": [moment().startOf('month'), moment().endOf('month')]
+                },
                 selectedRowKeys: [],
                 selectedRows: [],
                 tooltipStyle: {
@@ -149,7 +167,9 @@
                     srcProject: '',
                     destProject: '',
                     sortField: '',
-                    sortOrder: ''
+                    sortOrder: '',
+                    startTime: null,
+                    endTime: null,
                 },
                 total: 0,
                 tableData: [],
@@ -222,7 +242,6 @@
                         key: 'repeatCount',
                         ellipsis: true,
                         width: 100,
-                        sorter: true,
                         align: 'center',
                         slots: { customRender: 'repeatCount' },
                     },
@@ -376,6 +395,7 @@
                 }
                 this.selectedRowKeys = [];
                 this.selectedRows = [];
+                this.timeList = []
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;
@@ -391,6 +411,10 @@
             async queryData() {
                 try {
                     this.tableLoading = true
+                    if(this.timeList && this.timeList.length === 2){
+                        this.searchParams.startTime = this.timeList[0];
+                        this.searchParams.endTime = this.timeList[1];
+                    }
                     const res = await syncResultPage(this.searchParams)
                     const { totalRow, dataList } = res.result
                     this.total = totalRow
@@ -408,9 +432,8 @@
 
 <style scoped>
     .success {
-        color: #19be6b;
+        color: #00b96b;
         cursor: pointer;
-        font-size: 13px;
     }
     .fail {
         color: #ed4014;

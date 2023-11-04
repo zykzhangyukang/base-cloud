@@ -15,14 +15,24 @@
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
+                <a-form-item label="创建时间">
+                    <a-range-picker
+                            style="width: 200px"
+                            v-model:value="timeList"
+                            :ranges="ranges"
+                            valueFormat="YYYY-MM-DD HH:mm:ss"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            showTime
+                    />
+                </a-form-item>
                 <a-form-item label="消息id">
                     <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="mq消息id">
-                    <a-input v-model:value="searchParams.mid" :style="{width:'180px'}" placeholder="mq消息id"  autocomplete="off" ></a-input>
+                    <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="mq消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="发送状态">
-                    <a-select v-model:value="searchParams.sendStatus" :style="{width:'180px'}" placeholder="发送状态" allowClear>
+                    <a-select v-model:value="searchParams.sendStatus" :style="{width:'200px'}" placeholder="发送状态" allowClear>
                         <a-select-option v-for="item in sendStatusG" :value="item.code" :key="item.code">{{sendStatusGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -83,6 +93,7 @@
     import {syncMsgPage} from "@/api/sync";
     import constant, {syncDomain} from "@/utils/constant";
     import MsgCntLookModal from "@/views/sync/result/MsgCntLookModal";
+    import moment from "moment";
 
     export default {
         name: "plan.vue",
@@ -94,6 +105,13 @@
         data() {
             return {
                 toolbarFixed: true,
+                timeList: [],
+                ranges: {
+                    "今天": [moment().startOf("day"), moment().endOf('day')],
+                    "昨天": [moment().subtract(1, 'day').startOf("day"), moment().subtract(1, 'day').endOf('day')],
+                    "近7天": [moment().subtract(7, 'day').startOf("day"), moment().endOf('day')],
+                    "本月": [moment().startOf('month'), moment().endOf('month')]
+                },
                 searchParams: {
                     currentPage: 1,
                     pageSize: 20,
@@ -213,6 +231,7 @@
                     ...this.$options.data().searchParams,
                     ...page
                 }
+                this.timeList = [];
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;
@@ -226,6 +245,10 @@
             async queryData() {
                 try {
                     this.tableLoading = true
+                    if(this.timeList && this.timeList.length === 2){
+                        this.searchParams.startTime = this.timeList[0];
+                        this.searchParams.endTime = this.timeList[1];
+                    }
                     const res = await syncMsgPage(this.searchParams)
                     const { totalRow, dataList } = res.result
                     this.total = totalRow

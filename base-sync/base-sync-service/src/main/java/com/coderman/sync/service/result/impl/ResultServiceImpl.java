@@ -148,12 +148,6 @@ public class ResultServiceImpl implements ResultService {
                 searchSourceBuilder.sort("syncTime", SortOrder.DESC);
             }
 
-            if (StringUtils.equals("repeatCount", resultPageDTO.getSortField()) && StringUtils.equals("ascend", resultPageDTO.getSortOrder())) {
-                searchSourceBuilder.sort("repeatCount", SortOrder.ASC);
-            } else if (StringUtils.equals("repeatCount", resultPageDTO.getSortField()) && StringUtils.equals("descend", resultPageDTO.getSortOrder())) {
-                searchSourceBuilder.sort("repeatCount", SortOrder.DESC);
-            }
-
         } else {
 
             // 默认排序方式

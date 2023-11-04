@@ -240,6 +240,8 @@ public class CallBackExecutor {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 
                 result = true;
+
+                log.info("同步消息回调节点检测成功:{} ", callbackUrl);
             }
 
         } catch (Exception e) {
