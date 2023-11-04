@@ -38,6 +38,7 @@
                             style="width: 200px"
                             v-model:value="timeList"
                             :ranges="ranges"
+                            :allowClear="false"
                             valueFormat="YYYY-MM-DD HH:mm:ss"
                             format="YYYY-MM-DD HH:mm:ss"
                             showTime
@@ -141,7 +142,7 @@
             return {
                 loading2: false,
                 loading3: false,
-                timeList: [],
+                timeList: [moment().subtract(7, 'day').startOf("day").format("YYYY-MM-DD HH:mm:ss"), moment().endOf('day').format("YYYY-MM-DD HH:mm:ss")],
                 ranges: {
                     "今天": [moment().startOf("day"), moment().endOf('day')],
                     "昨天": [moment().subtract(1, 'day').startOf("day"), moment().subtract(1, 'day').endOf('day')],
@@ -395,7 +396,7 @@
                 }
                 this.selectedRowKeys = [];
                 this.selectedRows = [];
-                this.timeList = []
+                this.timeList = [moment().subtract(7, 'day').startOf("day").format("YYYY-MM-DD HH:mm:ss"), moment().endOf('day').format("YYYY-MM-DD HH:mm:ss")];
             },
             pageCurrentChange(page, pageSize) {
                 this.searchParams.currentPage = page;
