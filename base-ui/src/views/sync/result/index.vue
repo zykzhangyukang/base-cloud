@@ -33,9 +33,6 @@
                         <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="关键字">
-                    <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>
-                </a-form-item>
                 <a-form-item label="创建时间">
                     <a-range-picker
                             style="width: 200px"
@@ -45,6 +42,9 @@
                             format="YYYY-MM-DD HH:mm:ss"
                             showTime
                     />
+                </a-form-item>
+                <a-form-item label="关键字">
+                    <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
