@@ -370,6 +370,7 @@
                         syncResultRepeatSync(p.uuid).then(e=>{
                             _this.$message.success("操作成功,请刷新查看！");
                             _this.selectedRowKeys = [];
+                            _this.selectedRows = [];
                         }).finally(()=>{
                             _this.loading3 = false;
                         })

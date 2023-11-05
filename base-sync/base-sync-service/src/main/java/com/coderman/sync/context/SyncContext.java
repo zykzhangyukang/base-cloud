@@ -88,8 +88,11 @@ public class SyncContext {
     }
 
 
-    public String getDbType(String dbname) {
-        return this.dbTypeMap.get(dbname);
+    public String getDbType(String dbName) {
+        if(StringUtils.isBlank(dbName)){
+            return null;
+        }
+        return this.dbTypeMap.get(dbName);
     }
 
 

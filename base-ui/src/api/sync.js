@@ -3,6 +3,17 @@ import http from "@/utils/request";
 /**
  * 同步回调列表
  */
+export const syncCallbackRepeat = data => {
+    return http({
+        url: `/sync/callback/repeat`,
+        method: 'post',
+        data: data
+    })
+}
+
+/**
+ * 同步回调列表
+ */
 export const syncCallbackPage = data => {
     return http({
         url: `/sync/callback/page`,

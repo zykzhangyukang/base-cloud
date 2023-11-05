@@ -7,15 +7,22 @@ import com.coderman.api.vo.ResultVO;
 import com.coderman.service.anntation.LogError;
 import com.coderman.service.anntation.LogErrorParam;
 import com.coderman.service.util.SpringContextUtil;
+import com.coderman.sync.callback.CallbackContext;
 import com.coderman.sync.callback.CallbackModel;
+import com.coderman.sync.callback.meta.CallbackTask;
+import com.coderman.sync.constant.PlanConstant;
 import com.coderman.sync.constant.SyncConstant;
 import com.coderman.sync.context.SyncContext;
 import com.coderman.sync.dto.CallbackPageDTO;
+import com.coderman.sync.dto.CallbackRepeatDTO;
 import com.coderman.sync.service.callback.CallbackService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +60,76 @@ public class CallbackServiceImpl implements CallbackService {
         } else {
             return this.selectCallbackPageBySql(callbackPageDTO);
         }
+    }
+
+    @Override
+    @LogError(value = "重新回调")
+    public ResultVO<Void> repeatCallback(@LogErrorParam CallbackRepeatDTO callbackRepeatDTO) {
+
+        String destProject = callbackRepeatDTO.getDestProject();
+        List<String> uuidList = callbackRepeatDTO.getUuidList();
+
+        if (StringUtils.isBlank(destProject)) {
+
+            return ResultUtil.getWarn("目标项目不能为空！");
+        }
+
+        String dbName = SyncContext.getContext().getDbByProject(destProject);
+        String dbType = SyncContext.getContext().getDbType(dbName);
+
+        if (CollectionUtils.isEmpty(uuidList)) {
+
+            return ResultUtil.getWarn("请选择需要回调的数据！");
+        }
+
+        if (SyncConstant.DB_TYPE_MONGO.equals(dbType)) {
+
+            MongoTemplate mongoTemplate = SpringContextUtil.getBean(dbName + "_mongoTemplate");
+            Query query = new Query();
+            List<CallbackModel> resultList = mongoTemplate.find(query, CallbackModel.class);
+            for (CallbackModel callbackModel : resultList) {
+
+                CallbackTask callbackTask = new CallbackTask();
+                callbackTask.setProject(callbackModel.getDestProject());
+                callbackTask.setUuid(callbackModel.getUuid());
+                callbackTask.setFirst(false);
+                callbackTask.setDb(callbackModel.getDbName());
+                callbackTask.setMsg(callbackModel.getMsgContent());
+
+                // 加入回调队列
+                CallbackContext.getCallbackContext().addTask(callbackTask);
+            }
+
+        } else {
+
+            JdbcTemplate jdbcTemplate = SpringContextUtil.getBean(dbName + "_template");
+
+            // 查询需要回调的记录
+            String selectSql = "select uuid, dest_project, msg_content, db_name from pub_callback where status = '" + PlanConstant.CALLBACK_STATUS_FAIL + "' and uuid in ";
+
+            selectSql += " (" + StringUtils.repeat("?", ",", uuidList.size()) + ")";
+
+            if (!SyncConstant.DB_TYPE_ORACLE.equals(dbType)) {
+                selectSql += ";";
+            }
+
+            List<Map<String, Object>> resultMapList = jdbcTemplate.queryForList(selectSql, uuidList.toArray());
+
+            for (Map<String, Object> resultMap : resultMapList) {
+
+                CallbackTask callbackTask = new CallbackTask();
+                callbackTask.setProject(resultMap.get("dest_project").toString());
+                callbackTask.setUuid(resultMap.get("uuid").toString());
+                callbackTask.setFirst(false);
+                callbackTask.setDb(resultMap.get("db_name").toString());
+                callbackTask.setMsg(resultMap.get("msg_content").toString());
+
+                // 加入回调队列
+                CallbackContext.getCallbackContext().addTask(callbackTask);
+            }
+        }
+
+        return ResultUtil.getSuccess();
     }
 
     private ResultVO<PageVO<List<CallbackModel>>> selectCallbackPageBySql(CallbackPageDTO callbackPageDTO) {

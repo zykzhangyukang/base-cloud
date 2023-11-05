@@ -14,6 +14,9 @@ public class CallbackModel extends BaseModel {
     @ApiModelProperty(value = "uuid")
     private String uuid;
 
+    @ApiModelProperty(value = "数据库名称")
+    private String dbName;
+
     @ApiModelProperty(value = "消息id")
     private String msgId;
 
