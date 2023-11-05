@@ -14,6 +14,9 @@ public class CallbackModel extends BaseModel {
     @ApiModelProperty(value = "uuid")
     private String uuid;
 
+    @ApiModelProperty(value = "消息id")
+    private String msgId;
+
     @ApiModelProperty(value = "消息内容")
     private String msgContent;
 

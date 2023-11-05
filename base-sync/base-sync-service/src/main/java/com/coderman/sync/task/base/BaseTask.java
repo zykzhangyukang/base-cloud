@@ -17,11 +17,6 @@ public class BaseTask implements Delayed {
         this.delayTime = System.nanoTime() + TimeUnit.SECONDS.toNanos(delayTime);
     }
 
-
-    public Integer getRetryTimes() {
-        return retry.getAndIncrement();
-    }
-
     @Override
     public long getDelay(TimeUnit unit) {
         return unit.convert(this.delayTime  - System.nanoTime(),TimeUnit.NANOSECONDS);

@@ -34,8 +34,29 @@ public class CallbackServiceImpl implements CallbackService {
     @LogError(value = "消息回调列表")
     public ResultVO<PageVO<List<CallbackModel>>> selectCallbackPage(@LogErrorParam CallbackPageDTO callbackPageDTO) {
 
-        Integer currentPage = callbackPageDTO.getCurrentPage();
-        Integer pageSize = callbackPageDTO.getPageSize();
+        String destProject = callbackPageDTO.getDestProject();
+        String dbName = SyncContext.getContext().getDbByProject(destProject);
+
+        if (StringUtils.isBlank(dbName)) {
+            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
+        }
+
+        String dbType = SyncContext.getContext().getDbType(dbName);
+        if (StringUtils.isEmpty(dbType)) {
+            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
+        }
+
+        if (SyncConstant.DB_TYPE_MONGO.equals(dbType)) {
+
+            return this.selectCallbackPageByMongo(callbackPageDTO);
+
+        } else {
+            return this.selectCallbackPageBySql(callbackPageDTO);
+        }
+    }
+
+    private ResultVO<PageVO<List<CallbackModel>>> selectCallbackPageBySql(CallbackPageDTO callbackPageDTO) {
+
         String srcProject = callbackPageDTO.getSrcProject();
         String destProject = callbackPageDTO.getDestProject();
         Date startTime = callbackPageDTO.getStartTime();
@@ -44,6 +65,12 @@ public class CallbackServiceImpl implements CallbackService {
         String status = callbackPageDTO.getStatus();
         String msgContent = callbackPageDTO.getMsgContent();
         Integer repeatCount = callbackPageDTO.getRepeatCount();
+        String msgId = callbackPageDTO.getMsgId();
+        String dbName = SyncContext.getContext().getDbByProject(destProject);
+
+
+        Integer currentPage = callbackPageDTO.getCurrentPage();
+        Integer pageSize = callbackPageDTO.getPageSize();
 
         if (currentPage == null) {
             currentPage = 1;
@@ -53,35 +80,12 @@ public class CallbackServiceImpl implements CallbackService {
             pageSize = CommonConstant.SYS_PAGE_SIZE;
         }
 
-        String dbname = SyncContext.getContext().getDbByProject(destProject);
-
-        if (StringUtils.isBlank(dbname)) {
-            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
-        }
-
-        String dbType = SyncContext.getContext().getDbType(dbname);
-
-        if (StringUtils.isEmpty(dbType)) {
-            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
-        }
-
-        if (SyncConstant.DB_TYPE_MONGO.equals(dbType)) {
-
-            return this.selectCallbackPageByMongo(srcProject, destProject, status, repeatCount, startTime, endTime, planCode, msgContent, currentPage, pageSize, dbname, dbType);
-
-        } else {
-            return this.selectCallbackPageBySql(srcProject, destProject, status, repeatCount, startTime, endTime, planCode, msgContent, currentPage, pageSize, dbname, dbType);
-        }
-    }
-
-    private ResultVO<PageVO<List<CallbackModel>>> selectCallbackPageBySql(String srcProject, String destProject
-            , String status, Integer repeatCount, Date startTime, Date endTime
-            , String planCode, String msgContent, Integer currentPage, Integer pageSize, String dbname, String dbType) {
+        String dbType = SyncContext.getContext().getDbType(dbName);
 
         JdbcTemplate jdbcTemplate;
 
         try {
-            jdbcTemplate = SpringContextUtil.getBean(dbname + "_template");
+            jdbcTemplate = SpringContextUtil.getBean(dbName + "_template");
         } catch (NoSuchBeanDefinitionException e) {
             return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
         }
@@ -116,6 +120,12 @@ public class CallbackServiceImpl implements CallbackService {
 
             stringBuilder.append(" and status = ? ");
             paramList.add(status);
+        }
+
+        if (StringUtils.isNotBlank(msgId)) {
+
+            stringBuilder.append(" and msg_id = ? ");
+            paramList.add(msgId);
         }
 
 
@@ -198,6 +208,7 @@ public class CallbackServiceImpl implements CallbackService {
 
                 CallbackModel model = new CallbackModel();
                 model.setUuid(resultMap.get("uuid").toString());
+                model.setMsgId(resultMap.get("msg_id").toString());
                 model.setMsgContent(resultMap.get("msg_content").toString());
                 model.setSrcProject(resultMap.get("src_project").toString());
                 model.setDestProject(resultMap.get("dest_project").toString());
@@ -235,23 +246,23 @@ public class CallbackServiceImpl implements CallbackService {
 
             builder.append(" top ").append(count).append(" = ");
             builder.append(" from ( select row_number() over(order by callback_id desc)");
-            builder.append(" as rownumber, uuid, src_project,dest_project,msg_content,create_time,send_time,ack_time,repeat_count,status,remark ");
+            builder.append(" as rownumber, uuid,msg_id, src_project,dest_project,msg_content,create_time,send_time,ack_time,repeat_count,status,remark ");
             builder.append(" from pub_callback with(nolock) ");
 
         } else if (StringUtils.equals(dbType, SyncConstant.DB_TYPE_ORACLE)) {
 
             builder.append(" a1.* ");
-            builder.append(" from (select uuid,src_project ,dest_project ,msg_content ,create_time ,send_time ,ack_time, repeat_count, status, remark, rownum as rn from pub_callback");
+            builder.append(" from (select uuid,msg_id,src_project ,dest_project ,msg_content ,create_time ,send_time ,ack_time, repeat_count, status, remark, rownum as rn from pub_callback");
 
         } else {
 
-            builder.append(" uuid , src_project, dest_project,msg_content,create_time,send_time,ack_time,repeat_count,status,remark ");
+            builder.append(" uuid ,msg_id, src_project, dest_project,msg_content,create_time,send_time,ack_time,repeat_count,status,remark ");
             builder.append(" from pub_callback ");
         }
         return builder.toString();
     }
 
-    private ResultVO<PageVO<List<CallbackModel>>> selectCallbackPageByMongo(String srcProject, String destProject, String status, Integer repeatCount, Date startTime, Date endTime, String planCode, String msgId, Integer currentPage, Integer pageSize, String s, String dbname) {
+    private ResultVO<PageVO<List<CallbackModel>>> selectCallbackPageByMongo(CallbackPageDTO callbackPageDTO) {
         return null;
     }
 }

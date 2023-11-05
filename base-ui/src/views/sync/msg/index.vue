@@ -5,6 +5,17 @@
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
+                <a-form-item label="创建时间">
+                    <a-range-picker
+                            style="width: 200px"
+                            v-model:value="timeList"
+                            :ranges="ranges"
+                            :allowClear="false"
+                            valueFormat="YYYY-MM-DD HH:mm:ss"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            showTime
+                    />
+                </a-form-item>
                 <a-form-item label="源系统">
                     <a-select v-model:value="searchParams.srcProject" :style="{width:'200px'}" placeholder="源系统">
                         <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
@@ -18,8 +29,8 @@
                 <a-form-item label="消息id">
                     <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>
                 </a-form-item>
-                <a-form-item label="mq消息id">
-                    <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="mq消息id"  autocomplete="off" ></a-input>
+                <a-form-item label="MQ消息">
+                    <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="MQ消息"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="发送状态">
                     <a-select v-model:value="searchParams.sendStatus" :style="{width:'200px'}" placeholder="发送状态" allowClear>
@@ -30,17 +41,6 @@
                     <a-select v-model:value="searchParams.dealStatus" :style="{width:'180px'}" placeholder="处理状态" allowClear>
                         <a-select-option v-for="item in dealStatusG" :value="item.code" :key="item.code">{{dealStatusGName[item.code]}}</a-select-option>
                     </a-select>
-                </a-form-item>
-                <a-form-item label="创建时间">
-                    <a-range-picker
-                            style="width: 200px"
-                            v-model:value="timeList"
-                            :ranges="ranges"
-                            :allowClear="false"
-                            valueFormat="YYYY-MM-DD HH:mm:ss"
-                            format="YYYY-MM-DD HH:mm:ss"
-                            showTime
-                    />
                 </a-form-item>
                 <a-form-item label="消息内容">
                     <a-input v-model:value="searchParams.msgContent"   :style="{width:'250px'}"  placeholder="消息内容"  autocomplete="off" ></a-input>
@@ -149,7 +149,7 @@
                         slots: { customRender: 'destProject' },
                     },
                     {
-                        title: 'mq消息id',
+                        title: 'MQ消息',
                         dataIndex: 'mid',
                         key: 'mid',
                         width: '260px',

@@ -5,6 +5,17 @@
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
+                <a-form-item label="创建时间">
+                    <a-range-picker
+                            style="width: 200px"
+                            v-model:value="timeList"
+                            :ranges="ranges"
+                            :allowClear="false"
+                            valueFormat="YYYY-MM-DD HH:mm:ss"
+                            format="YYYY-MM-DD HH:mm:ss"
+                            showTime
+                    />
+                </a-form-item>
                 <a-form-item label="计划编号">
                     <a-input v-model:value="searchParams.planCode" :style="{width:'180px'}" placeholder="计划编号输入框"  autocomplete="off" allowClear></a-input>
                 </a-form-item>
@@ -32,17 +43,6 @@
                     <a-select v-model:value="searchParams.repeatCount" :style="{width:'180px'}" placeholder="重试次数" allowClear>
                         <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
                     </a-select>
-                </a-form-item>
-                <a-form-item label="创建时间">
-                    <a-range-picker
-                            style="width: 200px"
-                            v-model:value="timeList"
-                            :ranges="ranges"
-                            :allowClear="false"
-                            valueFormat="YYYY-MM-DD HH:mm:ss"
-                            format="YYYY-MM-DD HH:mm:ss"
-                            showTime
-                    />
                 </a-form-item>
                 <a-form-item label="关键字">
                     <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>

@@ -26,7 +26,7 @@ public class CallbackController {
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
             @ApiReturnParam(name = "PageVO",value = {"pageRow", "totalRow", "currPage", "totalPage", "dataList"}),
             @ApiReturnParam(name = "CallbackModel",value = {"srcProject", "msgContent", "createTime", "destProject", "sendStatus", "dealStatus", "dealCount",
-                    "sendTime", "ackTime", "mid","remark", "uuid", "status", "repeatCount"})
+                    "sendTime", "ackTime", "mid","remark", "uuid", "status", "repeatCount","msgId"})
     })
     public ResultVO<PageVO<List<CallbackModel>>> selectCallbackPage(@RequestBody CallbackPageDTO callbackPageDTO){
 

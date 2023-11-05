@@ -163,9 +163,9 @@ public class CallBackExecutor {
             @Override
             public void run() {
 
-                while (true) {
+                log.info("线程可用性检测启动");
 
-                    log.info("线程可用性检测启动");
+                while (true) {
 
                     for (String key : callBackNodeMap.keySet()) {
 
@@ -324,7 +324,6 @@ public class CallBackExecutor {
 
             } catch (Throwable throwable) {
 
-
                 log.error("回调失败", throwable);
             }
         });
@@ -369,10 +368,8 @@ public class CallBackExecutor {
         updateBuilder.table("pub_callback").column("status").column("ack_time");
         updateBuilder.whereIn("uuid", 1);
 
-        if (!callback.isFirst()) {
-
-            updateBuilder.inc("repeat_count", 1);
-        }
+        // 重试次数+1
+        updateBuilder.inc("repeat_count", 1);
 
         List<Object> paramList = new ArrayList<>();
 
@@ -392,9 +389,6 @@ public class CallBackExecutor {
         sqlMeta.setParamList(SyncConvert.toArrayList(paramList));
 
         executor.sql(sqlMeta);
-
-
-
         executor.execute();
 
     }
@@ -545,12 +539,12 @@ public class CallBackExecutor {
 
                     }else {
 
-                        log.error("业务系统回调失败:{}", resultStr);
+                        log.error("业务系统回调失败,resultVO code 错误！！！resultVO:{}, retryCount:{}", resultStr, callback.getRetry());
                     }
                 }
             }else {
 
-                log.error("业务系统回调,http状态码错误 !!!!!!!:{}", response.getStatusLine());
+                log.error("业务系统回调 url:{} ,http状态码错误 ！！！statusLine:{}, retryCount:{}",callbackUrl, response.getStatusLine(), callback.getRetry());
             }
 
         } catch (Exception e) {

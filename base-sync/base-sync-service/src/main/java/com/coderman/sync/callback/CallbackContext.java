@@ -58,15 +58,17 @@ public class CallbackContext {
 
     public void addTaskToDelayQueue(CallbackTask callbackTask) {
 
-        if (callbackTask.getRetryTimes() == 0) {
+        int retryTimes = callbackTask.getRetry().getAndIncrement();
+
+        if (retryTimes == 0) {
 
             callbackTask.setDelayTime(10);
 
-        } else if (callbackTask.getRetryTimes() == 1) {
+        } else if (retryTimes == 1) {
 
             callbackTask.setDelayTime(30);
 
-        } else if (callbackTask.getRetryTimes() == 2) {
+        } else if (retryTimes == 2) {
 
             callbackTask.setDelayTime(60);
 

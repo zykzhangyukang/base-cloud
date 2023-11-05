@@ -300,6 +300,7 @@ public class SyncDataTask extends AbstractTask {
 
         insertBuilder.table("pub_callback");
         insertBuilder.column("uuid");
+        insertBuilder.column("msg_id");
         insertBuilder.column("sync_uuid");
         insertBuilder.column("src_project");
         insertBuilder.column("dest_project");
@@ -321,6 +322,7 @@ public class SyncDataTask extends AbstractTask {
             String uuid = UUIDUtils.getPrimaryValue();
 
             paramObjectList.add(uuid);
+            paramObjectList.add(syncTask.getResultModel().getMsgId());
             paramObjectList.add(syncTask.getResultModel().getUuid());
             paramObjectList.add(syncTask.getPlanMeta().getProjectMeta().getSrcProject());
             paramObjectList.add(callbackMeta.getProject());

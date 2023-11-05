@@ -5,27 +5,6 @@
                     :style="{'marginBottom':'10px'}"
                     layout='inline'
             >
-                <a-form-item label="源系统">
-                    <a-select v-model:value="searchParams.srcProject" :style="{width:'200px'}" placeholder="源系统">
-                        <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="目标系统">
-                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" >
-                        <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="回调状态">
-                    <a-select v-model:value="searchParams.status" :style="{width:'180px'}" placeholder="回调状态" allowClear>
-                        <a-select-option v-for="item in callbackStatusG" :value="item.code" :key="item.code">{{callbackStatusGName[item.code]}}</a-select-option>
-                    </a-select>
-                </a-form-item>
-                <a-form-item label="回调次数">
-                    <a-select v-model:value="searchParams.repeatCount" :style="{width:'180px'}" placeholder="回调次数" allowClear>
-                        <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
-                    </a-select>
-                </a-form-item>
-
                 <a-form-item label="创建时间">
                     <a-range-picker
                             style="width: 200px"
@@ -36,6 +15,29 @@
                             format="YYYY-MM-DD HH:mm:ss"
                             showTime
                     />
+                </a-form-item>
+                <a-form-item label="源系统">
+                    <a-select v-model:value="searchParams.srcProject" :style="{width:'200px'}" placeholder="源系统">
+                        <a-select-option v-for="item in srcProjectG" :value="item.code" :key="item.code">{{srcProjectGName[item.code]}}</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="目标系统">
+                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" >
+                        <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="消息id">
+                    <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>
+                </a-form-item>
+                <a-form-item label="回调状态">
+                    <a-select v-model:value="searchParams.status" :style="{width:'180px'}" placeholder="回调状态" allowClear>
+                        <a-select-option v-for="item in callbackStatusG" :value="item.code" :key="item.code">{{callbackStatusGName[item.code]}}</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="回调次数">
+                    <a-select v-model:value="searchParams.repeatCount" :style="{width:'180px'}" placeholder="回调次数" allowClear>
+                        <a-select-option v-for="item in repeatCountG" :value="item.code" :key="item.code">{{repeatCountGName[item.code]}}</a-select-option>
+                    </a-select>
                 </a-form-item>
                 <a-form-item label="消息内容">
                     <a-input v-model:value="searchParams.msgContent"   :style="{width:'250px'}"  placeholder="消息内容"  autocomplete="off" ></a-input>
@@ -112,6 +114,7 @@
                     destProject: 'bizedu',
                     status: '',
                     planCode: '',
+                    msgId: '',
                     startTime: null,
                     endTime: null,
                 },
@@ -119,6 +122,13 @@
                 tableData: [],
                 tableLoading: true,
                 tableColumns: [
+                    {
+                        title: '消息id',
+                        dataIndex: 'msgId',
+                        key: 'msgId',
+                        width: '250px',
+                        ellipsis: true,
+                    },
                     {
                         title: '源系统',
                         dataIndex: 'srcProject',
