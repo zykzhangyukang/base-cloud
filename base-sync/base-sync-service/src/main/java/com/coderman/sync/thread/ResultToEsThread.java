@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -63,7 +62,7 @@ public class ResultToEsThread {
 
                     } catch (Exception e) {
 
-                        log.error("同步结果到ES失败:{}", e.getMessage());
+                        log.error("同步结果到ES失败:{}", e.getMessage(), e);
 
                         try {
                             TimeUnit.SECONDS.sleep(10);

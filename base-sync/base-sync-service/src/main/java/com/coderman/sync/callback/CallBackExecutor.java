@@ -123,7 +123,7 @@ public class CallBackExecutor {
 
         List<CallbackConfig.Callback> targets = callbackConfig.getDestList();
 
-        if(CollectionUtils.isNotEmpty(targets)){
+        if (CollectionUtils.isNotEmpty(targets)) {
 
             for (CallbackConfig.Callback callback : targets) {
 
@@ -269,22 +269,21 @@ public class CallBackExecutor {
     /**
      * 失败次数超过3次切换节点为不可用
      *
-     * @param callback 回调任务
+     * @param callback    回调任务
      * @param callbackUrl 回调url
      */
-    private void checkSwitchNode(CallbackTask callback,String callbackUrl){
+    private void checkSwitchNode(CallbackTask callback, String callbackUrl) {
 
-        if(!this.unFailMap.containsKey(callbackUrl)){
+        if (!this.unFailMap.containsKey(callbackUrl)) {
 
-            this.unFailMap.put(callbackUrl,new AtomicInteger(0));
+            this.unFailMap.put(callbackUrl, new AtomicInteger(0));
         }
 
         int failCount = this.unFailMap.get(callbackUrl).incrementAndGet();
 
-        if(failCount>3){
-
+        if (failCount > 3) {
             this.callBackNodeMap.get(callback.getProject()).switchUnAvailableNode(callbackUrl);
-            this.unFailMap.put(callbackUrl,new AtomicInteger(0));
+            this.unFailMap.put(callbackUrl, new AtomicInteger(0));
         }
 
     }
@@ -317,7 +316,6 @@ public class CallBackExecutor {
             try {
 
                 boolean result = dealWithTask(callbackTask);
-
                 if (!result) {
                     CallbackContext.getCallbackContext().addTaskToDelayQueue(callbackTask);
                 }
@@ -423,10 +421,8 @@ public class CallBackExecutor {
 
             executor.sql(sqlMeta);
 
-            sqlMeta.setSql(SqlUtil.fillParam(sqlMeta,executor));
-
+            sqlMeta.setSql(SqlUtil.fillParam(sqlMeta, executor));
             List<SqlMeta> sqlMetaList = executor.execute();
-
             if (sqlMetaList != null && sqlMetaList.size() == 1 && sqlMetaList.get(0).getResultList() != null && sqlMetaList.get(0).getResultList().size() > 0) {
 
                 callbackId = sqlMetaList.get(0).getResultList().get(0).get("callback_id");
@@ -471,11 +467,8 @@ public class CallBackExecutor {
         sqlMeta.setSqlType(SyncConstant.OPERATE_TYPE_UPDATE);
 
         executor.sql(sqlMeta);
-
-        sqlMeta.setSql(SqlUtil.fillParam(sqlMeta,executor));
-
+        sqlMeta.setSql(SqlUtil.fillParam(sqlMeta, executor));
         List<SqlMeta> metaList = executor.execute();
-
         if (metaList.size() == 1 && metaList.get(0).getAffectNum() == 1) {
 
             success = true;
@@ -537,14 +530,14 @@ public class CallBackExecutor {
 
                         result = true;
 
-                    }else {
+                    } else {
 
                         log.error("业务系统回调失败,resultVO code 错误！！！resultVO:{}, retryCount:{}", resultStr, callback.getRetry());
                     }
                 }
-            }else {
+            } else {
 
-                log.error("业务系统回调 url:{} ,http状态码错误 ！！！statusLine:{}, retryCount:{}",callbackUrl, response.getStatusLine(), callback.getRetry());
+                log.error("业务系统回调 url:{} ,http状态码错误 ！！！statusLine:{}, retryCount:{}", callbackUrl, response.getStatusLine(), callback.getRetry());
             }
 
         } catch (Exception e) {
@@ -554,14 +547,14 @@ public class CallBackExecutor {
                 log.error("回调失败,无法连接主机");
             }
 
-            if(e instanceof ConnectTimeoutException){
+            if (e instanceof ConnectTimeoutException) {
 
                 log.error("回调失败,网络超时");
             }
 
-            log.error("回调失败异常,e:{}",e.getMessage(),e);
+            log.error("回调失败异常,e:{}", e.getMessage(), e);
 
-            this.checkSwitchNode(callback,callbackUrl);
+            this.checkSwitchNode(callback, callbackUrl);
 
         } finally {
 

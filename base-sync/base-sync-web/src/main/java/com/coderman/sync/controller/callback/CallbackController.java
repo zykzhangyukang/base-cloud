@@ -4,6 +4,7 @@ import com.coderman.api.vo.PageVO;
 import com.coderman.api.vo.ResultVO;
 import com.coderman.swagger.annotation.ApiReturnParam;
 import com.coderman.swagger.annotation.ApiReturnParams;
+import com.coderman.swagger.constant.SwaggerConstant;
 import com.coderman.sync.callback.CallbackModel;
 import com.coderman.sync.dto.CallbackPageDTO;
 import com.coderman.sync.dto.CallbackRepeatDTO;
@@ -21,7 +22,7 @@ public class CallbackController {
     @Resource
     private CallbackService callbackService;
 
-    @ApiOperation(value = "消息回调列表")
+    @ApiOperation(value = "消息回调列表",httpMethod = SwaggerConstant.METHOD_POST)
     @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),
@@ -35,7 +36,7 @@ public class CallbackController {
     }
 
 
-    @ApiOperation(value = "重新回调")
+    @ApiOperation(value = "重新回调",httpMethod = SwaggerConstant.METHOD_POST)
     @PostMapping(value = "/repeat")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),

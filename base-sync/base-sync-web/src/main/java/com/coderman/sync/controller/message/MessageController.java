@@ -9,7 +9,10 @@ import com.coderman.sync.dto.MessagePageDTO;
 import com.coderman.sync.message.MqMessageModel;
 import com.coderman.sync.service.message.MessageService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -21,7 +24,7 @@ public class MessageController {
     @Resource
     private MessageService messageService;
 
-    @ApiOperation(value = "本地消息列表查询",httpMethod = SwaggerConstant.METHOD_GET)
+    @ApiOperation(value = "本地消息列表查询",httpMethod = SwaggerConstant.METHOD_POST)
     @PostMapping(value = "/page")
     @ApiReturnParams({
             @ApiReturnParam(name = "ResultVO", value = {"code", "msg", "result"}),

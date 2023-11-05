@@ -74,7 +74,7 @@ public class CallbackContext {
 
         } else {
 
-            log.error("超过重试次数,禁止重试，callbackTask:{}", JSON.toJSONString(callbackTask));
+            log.error("超过重试次数 3 次,禁止重试，callbackTask:{}", JSON.toJSONString(callbackTask));
             return;
         }
 
