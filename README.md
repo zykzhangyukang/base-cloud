@@ -15,6 +15,7 @@
 -Dspring.cloud.nacos.discovery.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.server-addr=http://coderman.love:8848
 -Dspring.cloud.nacos.config.file-extension=yaml
+-Dspring.cloud.nacos.config.auto-refresh=true
 -Dspring.cloud.nacos.config.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yml
 -Dspring.main.allow-bean-definition-overriding=true
@@ -32,6 +33,7 @@
 -Dspring.cloud.nacos.discovery.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.server-addr=http://coderman.love:8848
 -Dspring.cloud.nacos.config.file-extension=yaml
+-Dspring.cloud.nacos.config.auto-refresh=true
 -Dspring.cloud.nacos.config.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yml
 -Dspring.main.allow-bean-definition-overriding=true
@@ -52,6 +54,7 @@ java -Dspring.application.name=base-job -Dspring.profiles.active=dev -Ddomain=jo
 -Dspring.cloud.nacos.discovery.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.server-addr=http://coderman.love:8848
 -Dspring.cloud.nacos.config.file-extension=yaml
+-Dspring.cloud.nacos.config.auto-refresh=true
 -Dspring.cloud.nacos.config.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yml
 -Dspring.main.allow-bean-definition-overriding=true
@@ -72,6 +75,7 @@ java -Dspring.application.name=base-auth -Dspring.profiles.active=dev -Ddomain=a
 -Dspring.cloud.nacos.discovery.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.server-addr=http://www.coderman.love:8848
 -Dspring.cloud.nacos.config.file-extension=yaml
+-Dspring.cloud.nacos.config.auto-refresh=true
 -Dspring.cloud.nacos.config.namespace=c9d135e5-095d-43b7-b94a-2e40f79d82b1
 -Dspring.cloud.nacos.config.shared-configs[0]=base-common.yaml
 -Dspring.main.allow-bean-definition-overriding=true
