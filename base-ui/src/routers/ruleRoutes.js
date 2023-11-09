@@ -1,13 +1,13 @@
-const authUser = () => import(/* webpackChunkName: 'login' */'../views/auth/user/index');
-const authRole = () => import(/* webpackChunkName: 'login' */'../views/auth/role/index');
-const authRoleAuthorized = ()=> import(/* webpackChunkName: 'login' */'../views/auth/role/RoleAuthorized');
-const authResc = () => import(/* webpackChunkName: 'login' */'../views/auth/resc/index');
-const authFunc = () => import(/* webpackChunkName: 'login' */'../views/auth/func/index');
+const authUser = () => import(/* webpackChunkName: 'authUser' */'../views/auth/user/index');
+const authRole = () => import(/* webpackChunkName: 'authRole' */'../views/auth/role/index');
+const authRoleAuthorized = ()=> import(/* webpackChunkName: 'authRoleAuthorized' */'../views/auth/role/RoleAuthorized');
+const authResc = () => import(/* webpackChunkName: 'authResc' */'../views/auth/resc/index');
+const authFunc = () => import(/* webpackChunkName: 'authFunc' */'../views/auth/func/index');
 
-const syncPlan = () => import(/* webpackChunkName: 'login' */'../views/sync/plan/index');
-const syncResult = () => import(/* webpackChunkName: 'login' */'../views/sync/result/index');
-const syncMsg = () => import(/* webpackChunkName: 'login' */'../views/sync/msg/index');
-const syncCallback = () => import(/* webpackChunkName: 'login' */'../views/sync/callback/index');
+const syncPlan = () => import(/* webpackChunkName: 'syncPlan' */'../views/sync/plan/index');
+const syncResult = () => import(/* webpackChunkName: 'syncResult' */'../views/sync/result/index');
+const syncMsg = () => import(/* webpackChunkName: 'syncMsg' */'../views/sync/msg/index');
+const syncCallback = () => import(/* webpackChunkName: 'syncCallback' */'../views/sync/callback/index');
 
 const routes = [
 

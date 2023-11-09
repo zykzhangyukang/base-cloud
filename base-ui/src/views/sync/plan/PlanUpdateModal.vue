@@ -69,10 +69,13 @@
                 this.$refs.formRef.resetFields();
             },
             open(uuid){
+                this.visible = true;
+                this.spinning = true;
                 syncPlanDetail(uuid).then(res=>{
                     this.form.uuid = uuid;
                     this.form.planContent = res.result.planContent;
-                    this.visible = true;
+                }).finally(e=>{
+                    this.spinning = false;
                 });
             }
         }

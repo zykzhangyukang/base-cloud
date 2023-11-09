@@ -6,9 +6,11 @@
              :footer="null"
              @cancel="handleClose"
     >
+        <a-spin :spinning="spinning" >
             <pre class="plan_code">
               <code v-highlightjs class="xml" :key="Math.ceil(Math.random()*100000)">{{code}}</code>
             </pre>
+        </a-spin>
     </a-modal>
 </template>
 
@@ -30,6 +32,7 @@
                 code: '',
                 codeKey: '',
                 visible: false,
+                spinning: false,
             }
         },
         methods:{
@@ -37,12 +40,15 @@
                 this.visible = false
             },
             open(uuid) {
+                this. spinning = true;
+                this.visible = true;
                 syncPlanDetail(uuid).then(res=>{
                     this.title = res.result.description;
                     this.code = res.result.planContent;
                     this.codeKey = res.result.planCode;
-                    this.visible = true;
-                })
+                }).finally(()=>{
+                    this.spinning = false;
+                });
             }
         },
     }
