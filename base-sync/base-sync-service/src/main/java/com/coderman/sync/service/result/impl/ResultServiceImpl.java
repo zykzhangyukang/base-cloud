@@ -248,13 +248,22 @@ public class ResultServiceImpl implements ResultService {
             return ResultUtil.getSuccessList(CompareVO.class, Collections.emptyList());
         }
 
-        // 查询源表数据
-        List<SqlMeta> srcResultList = srcExecutor.execute();
-        Map<String, CompareVO> srcResultMap = this.transformData(planMeta, srcResultList, convert, "src");
+        Map<String, CompareVO> srcResultMap;
+        Map<String, CompareVO> destResultMap;
+        try {
 
-        // 查询目标表数据
-        List<SqlMeta> destResultList = destExecutor.execute();
-        Map<String, CompareVO> destResultMap = this.transformData(planMeta, destResultList, convert, "dest");
+            // 查询源表数据
+            List<SqlMeta> srcResultList = srcExecutor.execute();
+            srcResultMap = this.transformData(planMeta, srcResultList, convert, "src");
+
+            // 查询目标表数据
+            List<SqlMeta> destResultList = destExecutor.execute();
+            destResultMap = this.transformData(planMeta, destResultList, convert, "dest");
+
+        } catch (Exception e) {
+
+            return ResultUtil.getSuccessList(CompareVO.class, Collections.emptyList());
+        }
 
 
         // 封装结果集

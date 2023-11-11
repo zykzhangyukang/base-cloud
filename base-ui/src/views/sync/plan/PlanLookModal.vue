@@ -37,7 +37,8 @@
         },
         methods:{
             handleClose() {
-                this.visible = false
+                this.visible = false;
+                this.code = null;
             },
             open(uuid) {
                 this. spinning = true;

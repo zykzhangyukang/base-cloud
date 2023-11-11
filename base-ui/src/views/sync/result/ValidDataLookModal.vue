@@ -31,7 +31,9 @@
                 </tr>
                 </tbody>
             </table>
-            <div class="isCenter" v-if="validTables.length === 0">暂无数据</div>
+            <div class="isCenter" v-if="validTables.length === 0">
+                <a-empty />
+            </div>
         </div>
         </a-spin>
     </a-modal>
