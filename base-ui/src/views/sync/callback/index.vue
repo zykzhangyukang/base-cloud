@@ -121,7 +121,7 @@
                     currentPage: 1,
                     pageSize: 20,
                     srcProject: 'auth',
-                    destProject: 'bizedu',
+                    destProject: 'auth_sync',
                     status: '',
                     planCode: '',
                     msgId: '',

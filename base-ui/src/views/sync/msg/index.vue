@@ -26,9 +26,6 @@
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="MQ消息">
-                    <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="MQ消息"  autocomplete="off" ></a-input>
-                </a-form-item>
                 <a-form-item label="发送状态">
                     <a-select v-model:value="searchParams.sendStatus" :style="{width:'200px'}" placeholder="发送状态" allowClear>
                         <a-select-option v-for="item in sendStatusG" :value="item.code" :key="item.code">{{sendStatusGName[item.code]}}</a-select-option>
@@ -38,6 +35,9 @@
                     <a-select v-model:value="searchParams.dealStatus" :style="{width:'180px'}" placeholder="处理状态" allowClear>
                         <a-select-option v-for="item in dealStatusG" :value="item.code" :key="item.code">{{dealStatusGName[item.code]}}</a-select-option>
                     </a-select>
+                </a-form-item>
+                <a-form-item label="MQ消息">
+                    <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="MQ消息"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="消息id">
                     <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>

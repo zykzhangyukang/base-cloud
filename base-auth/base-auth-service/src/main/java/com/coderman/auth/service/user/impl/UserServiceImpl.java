@@ -484,11 +484,7 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .build()
         );
 
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("insert_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + insertModel.getUserId())
-                        .addIntList("insert_auth_bizedu_user", Collections.singletonList(insertModel.getUserId()))
-                        .build()
-        );
+
 
         return ResultUtil.getSuccess();
     }
@@ -525,12 +521,6 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .addIntList("delete_auth_demo_user", Collections.singletonList(userId))
                         .build()
         );
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("delete_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
-                        .addIntList("delete_auth_bizedu_user", Collections.singletonList(userId))
-                        .build()
-        );
-
 
         return ResultUtil.getSuccess();
     }
@@ -580,11 +570,6 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .build()
         );
 
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
-                        .addIntList("update_auth_bizedu_user", Collections.singletonList(userId))
-                        .build()
-        );
 
         Set<String> singleton = Collections.singleton("您收到一条系统消息，请注意查收！" + UUIDUtils.getPrimaryValue());
         webSocketService.sendToUser(-1, userId , singleton);
@@ -664,11 +649,6 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .build()
         );
 
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
-                        .addIntList("update_auth_bizedu_user_status", Collections.singletonList(userId))
-                        .build()
-        );
 
         return ResultUtil.getSuccess();
     }
@@ -700,11 +680,6 @@ public class UserServiceImpl extends BaseService implements UserService {
                         .build()
         );
 
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
-                        .addIntList("update_auth_bizedu_user_status", Collections.singletonList(userId))
-                        .build()
-        );
 
         return ResultUtil.getSuccess();
     }
@@ -814,11 +789,6 @@ public class UserServiceImpl extends BaseService implements UserService {
         SyncUtil.sync(
                 MsgBuilder.createOrderlyMsg("update_auth_demo_user", ProjectEnum.AUTH, ProjectEnum.AUTH_SYNC, "user:" + userId)
                         .addIntList("update_auth_demo_user_pwd", Collections.singletonList(userId))
-                        .build()
-        );
-        SyncUtil.sync(
-                MsgBuilder.createOrderlyMsg("update_auth_bizedu_user", ProjectEnum.AUTH, ProjectEnum.BIZEDU, "user:" + userId)
-                        .addIntList("update_auth_bizedu_user_pwd", Collections.singletonList(userId))
                         .build()
         );
 

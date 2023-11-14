@@ -19,6 +19,7 @@ import com.coderman.sync.service.callback.CallbackService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -45,7 +46,7 @@ public class CallbackServiceImpl implements CallbackService {
         String dbName = SyncContext.getContext().getDbByProject(destProject);
 
         if (StringUtils.isBlank(dbName)) {
-            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
+            return ResultUtil.getWarnPage(CallbackModel.class, "目标系统不能为空，请选择目标系统！");
         }
 
         String dbType = SyncContext.getContext().getDbType(dbName);
@@ -248,7 +249,8 @@ public class CallbackServiceImpl implements CallbackService {
         try {
             count = jdbcTemplate.queryForObject(sql, paramList.toArray(), Integer.class);
         } catch (Exception e) {
-            return ResultUtil.getWarnPage(CallbackModel.class, "无此系统信息，请重新选择系统！");
+
+            return ResultUtil.getFailPage(CallbackModel.class,  "查询列表错误！" + ExceptionUtils.getRootCauseMessage(e));
         }
 
         List<CallbackModel> list = new ArrayList<>();

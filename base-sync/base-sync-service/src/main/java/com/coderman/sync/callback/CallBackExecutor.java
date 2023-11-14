@@ -274,6 +274,10 @@ public class CallBackExecutor {
      */
     private void checkSwitchNode(CallbackTask callback, String callbackUrl) {
 
+        if(StringUtils.isBlank(callbackUrl)){
+            return;
+        }
+
         if (!this.unFailMap.containsKey(callbackUrl)) {
 
             this.unFailMap.put(callbackUrl, new AtomicInteger(0));

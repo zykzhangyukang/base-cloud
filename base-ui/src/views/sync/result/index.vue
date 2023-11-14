@@ -48,7 +48,7 @@
                     <a-input v-model:value="searchParams.keywords" :style="{width:'250px'}"  placeholder=" 消息内容，同步内容"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
+                        <a-button   type="primary" @click="pageSearchChange" v-permission="'sync:result:page'"><template #icon><SearchOutlined /></template>搜索</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button type="default" @click="pageSearchReset">重置</a-button>
@@ -140,6 +140,7 @@
         },
         data() {
             return {
+                searchStatus: false,
                 loading2: false,
                 loading3: false,
                 timeList: [moment().subtract(7, 'day').startOf("day").format("YYYY-MM-DD HH:mm:ss"), moment().endOf('day').format("YYYY-MM-DD HH:mm:ss")],
