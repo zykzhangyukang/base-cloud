@@ -38,6 +38,7 @@ public class WebSocketServiceImpl implements WebSocketService {
      * @param payload    消息内容
      * @return void
      */
+    @Override
     public void sendToUser(Integer senderId, Integer receiverId, Object payload) {
 
         String sender = String.valueOf(senderId);

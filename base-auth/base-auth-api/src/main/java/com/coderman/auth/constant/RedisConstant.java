@@ -13,7 +13,7 @@ public interface RedisConstant {
     public static final String CHANNEL_REFRESH_RESC = "TOPIC://REFRESH_RESC";
 
     /**
-     * websocket消息广告
+     * websocket消息广播
      */
     public static final String CHANNEL_WEBSOCKET_NOTIFY = "TOPIC://WEBSOCKET_NOTIFY";
 
