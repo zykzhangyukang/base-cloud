@@ -152,7 +152,7 @@ public class PlanServiceImpl implements PlanService {
 
             return ResultUtil.getFail("请登录后访问！");
         }
-        this.redisService.sendMessage(RedisConstant.TOPIC_REFRESH_PLAN, current.getUsername() + "刷新同步计划！");
+        this.redisService.sendTopicMessage(RedisConstant.TOPIC_REFRESH_PLAN, current.getUsername() + "刷新同步计划！");
 
         return ResultUtil.getSuccess();
     }

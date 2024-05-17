@@ -37,7 +37,7 @@
                                @confirm="handleDelete(record.roleId)">
                                <a class="btn-text-mini" href="javascript:;" v-permission="'auth:role:delete'" ><DeleteOutlined/>删除</a>
                         </a-popconfirm>
-                        <a  class="btn-text-mini" href="javascript:;" @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)" v-permission="'auth:role:funcUpdate'"><LockOutlined/>授权</a>
+                        <a  class="btn-text-mini" href="javascript:;" @click="this.$router.push(`/auth/role/authorized?roleId=${record.roleId}`)" v-permission="'auth:role:funcUpdate'"><SettingOutlined />授权</a>
                     </div>
                 </template>
             </HTable>

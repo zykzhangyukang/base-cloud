@@ -22,7 +22,7 @@
                     </a-select>
                 </a-form-item>
                 <a-form-item label="目标系统">
-                    <a-select v-model:value="searchParams.destProject" :style="{width:'180px'}" placeholder="目标系统" >
+                    <a-select v-model:value="searchParams.destProject" :style="{width:'200px'}" placeholder="目标系统" >
                         <a-select-option v-for="item in destProjectG" :value="item.code" :key="item.code">{{destProjectGName[item.code]}}</a-select-option>
                     </a-select>
                 </a-form-item>
@@ -39,8 +39,8 @@
                 <a-form-item label="MQ消息">
                     <a-input v-model:value="searchParams.mid" :style="{width:'200px'}" placeholder="MQ消息"  autocomplete="off" ></a-input>
                 </a-form-item>
-                <a-form-item label="消息id">
-                    <a-input v-model:value="searchParams.msgId" :style="{width:'180px'}" placeholder="消息id"  autocomplete="off" ></a-input>
+                <a-form-item label="消息ID">
+                    <a-input v-model:value="searchParams.msgId" :style="{width:'200px'}" placeholder="消息ID"  autocomplete="off" ></a-input>
                 </a-form-item>
                 <a-form-item label="消息内容">
                     <a-input v-model:value="searchParams.msgContent"   :style="{width:'250px'}"  placeholder="消息内容"  autocomplete="off" ></a-input>
@@ -131,7 +131,7 @@
                 tableLoading: true,
                 tableColumns: [
                     {
-                        title: '消息id',
+                        title: '消息ID',
                         dataIndex: 'uuid',
                         width: '250px',
                         ellipsis: true,

@@ -16,6 +16,7 @@ import com.coderman.sync.util.SqlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -246,7 +247,7 @@ public class CallBackExecutor {
 
         } catch (Exception e) {
 
-            log.error("回调检测失败:{},callbackUrl:{}", e.getMessage(), callbackUrl);
+            log.error("回调检测失败:{},callbackUrl:{}", ExceptionUtils.getRootCauseMessage(e), callbackUrl);
 
         } finally {
 
