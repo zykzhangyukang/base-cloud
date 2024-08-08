@@ -160,9 +160,9 @@ public class UpdateBuilder {
             if (CollectionUtils.isNotEmpty(this.inList)) {
 
 
-                for (SyncPair<String, Integer> param : this.incList) {
+                for (SyncPair<String, Integer> param : this.inList) {
 
-                    String replaceStr = StringUtils.repeat("?", "?", param.getValue());
+                    String replaceStr = StringUtils.repeat("?", ",", param.getValue());
                     whereStrList.add(param.getKey() + " in (" + replaceStr + ")");
                 }
             }
